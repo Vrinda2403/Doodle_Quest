@@ -4,7 +4,7 @@ import QuizFlash from "./components/quiz/QuizFlash";
 import Quiz from "./components/quiz/Quiz";
 import QuizReward from "./components/quiz/QuizReward";
 import Child from "./components/dashboards/Child";
-
+import PaperDrawing from "./components/drawingPages/paperDrawing";
 function App() {
   return (
     <Router>
