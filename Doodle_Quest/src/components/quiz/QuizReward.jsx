@@ -13,7 +13,7 @@ const QuizReward = () => {
 
   useEffect(() => {
     if (countdown === 0) {
-      navigate("/child"); 
+      navigate("/"); 
       return;
     }
 
