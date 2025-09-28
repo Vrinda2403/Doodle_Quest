@@ -13,6 +13,7 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
         <Route path="/" element={<Child />} />
+        <Route path="/paperdrawing" element={<PaperDrawing />} />
       </Routes>
     </Router>
   );
