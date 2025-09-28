@@ -1,9 +1,17 @@
-import React from 'react'
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import QuizFlash from "./components/quiz/QuizFlash";
+import Quiz from "./components/quiz/Quiz";
 
-const App = () => {
+function App() {
   return (
-    <div>App</div>
-  )
+    <Router>
+      <Routes>
+        <Route path="/quizflash" element={<QuizFlash />} />
+        <Route path="/quiz" element={<Quiz />} />
+      </Routes>
+    </Router>
+  );
 }
 
-export default App
+export default App;
