@@ -42,13 +42,13 @@ function PaperDrawing() {
           {/* Right Side - Images */}
           <div className="flex-1 relative">
             {/* Vintage Camera Image Placeholder */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-              <img src="../assets/images/camera.png" alt="Camera"></img>
+            <div className="absolute bottom-10 right-20 w-11/12 h-96 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+              <img src="/src/assets/camera.png" alt="Camera" className="w-full h-full object-cover -rotate-[10deg]"></img>
             </div>
 
             {/* Family Image Placeholder */}
-            <div className="absolute top-32 right-0 w-64 h-48 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-              <img src="../assets/images/family.png" alt="Family at Table"></img>
+            <div className="absolute top-60 right-24 w-11/12 h-48 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+              <img src="/src/assets/FamilyTable.png" alt="Family at Table" className="w-full h-full object-cover"></img>
             </div>
             
             {/* Date Dropdown */}
