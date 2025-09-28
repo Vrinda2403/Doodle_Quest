@@ -4,6 +4,8 @@ import QuizFlash from "./components/quiz/QuizFlash";
 import Quiz from "./components/quiz/Quiz";
 import QuizReward from "./components/quiz/QuizReward";
 import Child from "./components/dashboards/Child";
+import PaperDrawing from "./components/drawingPages/paperDrawing";
+import ScreenDrawing from "./components/drawingPages/screenDrawing";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
         <Route path="/" element={<Child />} />
+        <Route path="/paperdrawing" element={<PaperDrawing />} />
+        <Route path="/screendrawing" element={<ScreenDrawing />} />
       </Routes>
     </Router>
   );
