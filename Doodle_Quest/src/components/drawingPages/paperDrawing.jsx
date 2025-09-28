@@ -78,7 +78,7 @@ function PaperDrawing() {
                   <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b">Update</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="bg-gray-300">
                 <tr>
                   <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
                     No tasks assigned yet
