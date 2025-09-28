@@ -9,6 +9,7 @@ export default {
       fontFamily: {
         alexandria: ['"Alexandria"', 'sans-serif'],
         robotoSlab: ['"Roboto Slab"', 'serif'],
+        orbitron:["Orbitron","sans"],
       },
     },
   },
