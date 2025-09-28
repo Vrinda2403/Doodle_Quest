@@ -12,7 +12,7 @@ function App() {
         <Route path="/quizflash" element={<QuizFlash />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
-        <Route path="/home" element={<Child />} />
+        <Route path="/" element={<Child />} />
       </Routes>
     </Router>
   );
