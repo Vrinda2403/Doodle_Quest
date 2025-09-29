@@ -1,4 +1,56 @@
+import { useRef, useEffect } from 'react'; 
 function ScreenDrawing() {
+    const canvasRef = useRef(null);
+      let drawing = false;
+    let lastX = 0;
+    let lastY = 0;
+
+    useEffect(()=>{
+        const canvas = canvasRef.current;
+        if(!canvas) return;
+
+        const context = canvas.getContext('2d');
+        context.strokeStyle = 'black';
+        context.lineWidth = 2;
+        context.lineCap = 'round';
+
+
+         canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+const startDrawing = (e) => {
+   
+    drawing = true;
+    lastX = e.offsetX;
+    lastY = e.offsetY;
+  }
+  const stopDrawing = () => {
+    drawing=false
+  }
+const draw = (e) => {
+    if(!drawing) return;
+    context.beginPath();
+    context.moveTo(lastX, lastY);
+    context.lineTo(e.offsetX, e.offsetY);
+    context.stroke();
+    lastX = e.offsetX;
+    lastY = e.offsetY;
+  }
+  // const clearbtn=document.querySelector('.clear');
+  canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseout", stopDrawing);
+    canvas.addEventListener("mousemove", draw);
+  //   if(clearbtn)
+  //   {
+  //  clearbtn.addEventListener('click',()=>{
+  //   context.clearRect(0,0,canvas.width,canvas.height);
+  //  });
+  // }
+    },[])
+
+
+
+
   return (
     <div className="min-h-screen bg-[#F2EAD3]">
       {/* Navbar */}
@@ -34,7 +86,10 @@ function ScreenDrawing() {
               
             </div>
             <div className="flex gap-4">
-            <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2">
+            <button className=" bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2" onClick={()=>{
+              const context = canvasRef.current.getContext('2d');
+              context.clearRect(0,0,canvasRef.current.width,canvasRef.current.height);
+            }}>
               <div className="w-4 h-4 bg-white rounded-sm"></div>
               Clear
             </button>
@@ -53,7 +108,7 @@ function ScreenDrawing() {
               <div className="w-6 h-6 relative left-8 bg-gray-600 rounded"></div>
             </div>
             <div className="bg-white border-2 border-gray-300 absolute bottom-10 right-20 w-11/12 h-80 rounded-lg flex items-center justify-center text-gray-500 text-sm">
-
+             <canvas ref={canvasRef} className="w-full h-full rounded-lg"></canvas>
             </div>
             
             {/* Date Dropdown */}
