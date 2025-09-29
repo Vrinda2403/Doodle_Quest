@@ -6,7 +6,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        alexandria: ['"Alexandria"', 'sans-serif'],
+        robotoSlab: ['"Roboto Slab"', 'serif'],
+        orbitron:["Orbitron","sans"],
+      },
+    },
   },
   plugins: [
   
