@@ -82,7 +82,7 @@ function ScreenDrawing() {
           {/* Left Column: Clue Box */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-2 mb-2">
-              <img src="/src/assets/lightbulb.png" alt="Clue Icon" className="w-7 h-7" />
+              {/* <img src="/src/assets/lightbulb.png" alt="Clue Icon" className="w-7 h-7" /> */}
               <h2 className="text-xl font-['Orbitron'] font-bold text-white">Clue Box</h2>
             </div>
             <div className="bg-white h-72 w-full border-4 border-white rounded-2xl shadow-xl"></div>
