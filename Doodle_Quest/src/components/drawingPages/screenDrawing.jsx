@@ -58,11 +58,16 @@ const draw = (e) => {
         <div className="flex items-center space-x-4">
           {/* Home icon*/}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 bg-gray-600 rounded-sm"><img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" /></div>
+          
+              <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
+         
           </div>
           {/* Back arrow icon */}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 transform rotate-180"><img src="/src/assets/click.png" className="w-4 h-4" alt="Back" /></div>
+
+            {/* <div className="w-4 h-4 transform rotate-180"> */}
+              <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+            {/* </div> */}
           </div>
         </div>
       </div>
@@ -123,7 +128,9 @@ const draw = (e) => {
           <div className="flex items-center gap-3 mb-6">
             <h1 className="text-3xl font-['Orbitron'] text-gray-800">To-Do's</h1>
             {/*  To Do icon  */}
-            <div className="w-6 h-6 bg-gray-600 rounded"><img src="/src/assets/todo.png" alt="To Do" className="w-full h-full" /></div>
+            <div className="w-6 h-6 bg-gray-600 rounded">
+              <img src="/src/assets/todo.png" alt="To Do" className=" rounded w-8 h-8" />
+              </div>
           </div>
           
           <div className="bg-white rounded-lg shadow-lg overflow-hidden w-[90%] ">
