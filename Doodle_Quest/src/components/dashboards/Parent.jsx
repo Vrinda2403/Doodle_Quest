@@ -80,16 +80,13 @@ const Parent = () => {
                
 
             </div>
-            <div className="grid grid-rows-[370px_400px] mt-6">
+            <div className="grid grid-rows-[370px_360px] mt-6">
                 <div>
                     <img src="src/assets/division.png" alt="" width="400" />
                 </div>
                 <div>
                     <img src="src/assets/total.png" alt=""  width="400"/>
                 </div>
-
-
-                   
             </div>
      </div>
 
