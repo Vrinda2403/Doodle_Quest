@@ -35,24 +35,19 @@ const draw = (e) => {
     lastX = e.offsetX;
     lastY = e.offsetY;
   }
-  // const clearbtn=document.querySelector('.clear');
+
   canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseout", stopDrawing);
     canvas.addEventListener("mousemove", draw);
-  //   if(clearbtn)
-  //   {
-  //  clearbtn.addEventListener('click',()=>{
-  //   context.clearRect(0,0,canvas.width,canvas.height);
-  //  });
-  // }
+ 
     },[])
 
 
 
 
   return (
-    <div className="min-h-screen bg-[#F2EAD3]">
+    <div className="min-h-screen bg-[#f7c9e3]">
       {/* Navbar */}
       <div className="bg-[#1E3A8A] px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-8">
@@ -63,37 +58,38 @@ const draw = (e) => {
         <div className="flex items-center space-x-4">
           {/* Home icon*/}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 bg-gray-600 rounded-sm"></div>
+            <div className="w-4 h-4 bg-gray-600 rounded-sm"><img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" /></div>
           </div>
           {/* Back arrow icon */}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 bg-gray-600 transform rotate-180"></div>
+            <div className="w-4 h-4 transform rotate-180"><img src="/src/assets/click.png" className="w-4 h-4" alt="Back" /></div>
           </div>
         </div>
       </div>
 
       {/* Main Content Area */}
-      <div className="px-8 py-8">
-        <div className="flex gap-8">
+      <div className="px-8 py-8 bg-[url(/src/assets/screenbg.png)]  min-h-screen bg-cover bg-left-top ">
+        <div className="flex gap-8 z-10">
           {/* Left Side - Clue Box */}
           <div className="flex-2">
             <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-3xl font-['Orbitron'] text-gray-800">CLUE BOX</h1>
-              {/* Clue icon  */}
-              <div className="w-6 h-6 bg-gray-600 rounded"></div>
+              <h1 className="text-3xl font-['Orbitron'] font-bold text-black">CLUE BOX</h1>
+              
             </div>
-            <div className="bg-white h-72 w-full border-2 border-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500">
+            <div className="bg-white h-72 w-full border-2  border-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500">
               
             </div>
             <div className="flex gap-4">
-            <button className=" bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2" onClick={()=>{
+              {/* Clear button */}
+            <button className=" bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2 absolute bottom-11 right-32 z-10" onClick={()=>{
               const context = canvasRef.current.getContext('2d');
               context.clearRect(0,0,canvasRef.current.width,canvasRef.current.height);
             }}>
               <div className="w-4 h-4 bg-white rounded-sm"></div>
               Clear
             </button>
-            <button className="bg-[#5DC001] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2">
+            {/* submit button  */}
+            <button className="bg-[#5DC001] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2 absolute bottom-11 right-64 z-10">
               <div className="w-4 h-4 bg-white rounded-sm"></div>
               Submit
             </button>
@@ -101,36 +97,39 @@ const draw = (e) => {
           </div>
 
           {/* Right Side - Screen Canvas */}
-          <div className="flex-1 relative">
+          <div className="flex-1 relative ht-[400px]">
             <div className="flex items-center gap-3 mb-4">
-              <h1 className=" relative left-8 text-3xl font-['Orbitron'] text-gray-800">SCREEN CANVAS</h1>
+              <h1 className=" relative left-8 text-3xl font-['Orbitron'] text-black font-bold">SCREEN CANVAS</h1>
               {/* Screen icon  */}
-              <div className="w-6 h-6 relative left-8 bg-gray-600 rounded"></div>
+              <div className="w-6 h-6 relative left-8 bg-gray-600 rounded"><img src="/src/assets/screen.png" alt="Screen" className="w-full h-full" /></div>
             </div>
-            <div className="bg-white border-2 border-gray-300 absolute bottom-10 right-20 w-11/12 h-80 rounded-lg flex items-center justify-center text-gray-500 text-sm">
+            <div className="bg-white border-2 border-gray-300 absolute top-18 right-20 w-11/12 h-[500px] rounded-lg flex items-center justify-center text-gray-500 text-sm">
              <canvas ref={canvasRef} className="w-full h-full rounded-lg"></canvas>
             </div>
             
             {/* Date Dropdown */}
-            <div className="absolute bottom-0 right-0">
+            <div className="absolute top-[700px] right-0">
               <select className="bg-white border border-gray-300 rounded px-3 py-2 text-sm">
                 <option>Select Date</option>
               </select>
             </div>
           </div>
         </div>
-
-        {/* To-Do Section */}
-        <div className="mt-12">
+        <br></br>
+        </div>
+                {/* To-Do Section */}
+        <div>
+        <div className="mt-12 ml-12">
           <div className="flex items-center gap-3 mb-6">
             <h1 className="text-3xl font-['Orbitron'] text-gray-800">To-Do's</h1>
-            {/* Clipboard icon  */}
-            <div className="w-6 h-6 bg-gray-600 rounded"></div>
+            {/*  To Do icon  */}
+            <div className="w-6 h-6 bg-gray-600 rounded"><img src="/src/assets/todo.png" alt="To Do" className="w-full h-full" /></div>
           </div>
           
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <img src="/src/assets/sofa.png" alt="Sofa" className="absolute bottom-0 right-0 w-1/4 h-auto" />
-            <div className=" w-full">
+          <div className="bg-white rounded-lg shadow-lg overflow-hidden w-[90%] ">
+            {/* Sofa Image */}
+            <img src="/src/assets/sofa.png" alt="Sofa" className="absolute top-[800px] right-0 w-1/4 h-auto" />
+            <div className="w-full">
             <table className="w-full">
               <thead className="bg-gray-50">
                 <tr>
@@ -142,7 +141,7 @@ const draw = (e) => {
               </thead>
               <tbody className="bg-gray-300">
                 <tr>
-                  <td colSpan="4" className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan="4" className="px-6 py-12 text-center text-gray-500 w-9 h-56">
                     No tasks assigned yet
                   </td>
                 </tr>
