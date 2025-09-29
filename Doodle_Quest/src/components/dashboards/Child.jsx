@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
+import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import BlueBG from '../../assets/BlueBG.png'
 import CloudRainbow from '../../assets/Cloudrainbow.png'
 import CloudSun from '../../assets/CloudSun.png'
@@ -9,6 +11,7 @@ import Icon1 from '../../assets/Icon1.png'
 import Icon2 from '../../assets/Icon2.png'
 import Icon3 from '../../assets/Icon3.png'
 import Icon4 from '../../assets/Icon4.png'
+import Kiddy from '../../assets/Kiddy.png'
 
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
@@ -46,6 +49,22 @@ const Child = () => {
     },
   ];
 
+
+const footerLinks = {
+  services: [
+    { name: 'Screen Drawing', href: '/screendrawing' },
+    { name: 'Paper Drawing', href: '/paperdrawing' },
+    { name: 'Personalized Stories', href: '/storytime' },
+    { name: 'Quizzes', href: '/quizflash' },
+  ],
+  useful: [
+    { name: 'About us', href: '/' },
+    { name: 'Our team', href: '/' },
+    { name: 'Privacy policy', href: '/' },
+    { name: 'Contact us', href: '/' },
+    { name: 'Terms of service', href: '/' },
+  ]
+};
 
   return (
     <div>
@@ -173,6 +192,90 @@ const Child = () => {
         </main>
       </div>
 
+
+      {/*Footer */}
+      <footer className="bg-[#FDF9F0] text-gray-800 font-sans p-2 md:px-16 md:pt-40">
+        <div className='py-4 container mx-auto'>
+          <img src={Kiddy} alt="Kiddy Logo" className="w-24" />
+        </div>
+        <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+          {/* Column 1: About Company */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg uppercase">ABOUT COMPANY</h3>
+            <p className="text-sm leading-relaxed">
+              Transform your child's drawings into magical learning adventures! Our AI recognizes their doodles and creates personalized stories, games, and STEM challenges.
+            </p>
+            <div className="flex space-x-3">
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
+                <FaTwitter />
+              </a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
+                <FaFacebookF />
+              </a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
+                <FaInstagram />
+              </a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
+                <FaLinkedinIn />
+              </a>
+            </div>
+          </div>
+
+          {/* Column 2: Our Services */}
+          <div className="space-y-4">
+      <h3 className="font-bold text-lg">Our Services</h3>
+      <ul className="space-y-2">
+        {footerLinks.services.map(link => (
+          <li key={link.name}>
+            {/* Change: <a> changed to <Link> and href to to */}
+            <Link to={link.href} className="text-sm hover:underline">{link.name}</Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+          {/* Column 3: Useful Links */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Useful links</h3>
+            <ul className="space-y-2">
+              {footerLinks.useful.map(link => (
+                <li key={link.name}>
+                  <a href={link.href} className="text-sm hover:underline">{link.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Column 4: Newsletter */}
+          <div className="space-y-4">
+            <h3 className="font-bold text-lg">Newsletter</h3>
+            <p className="text-sm">
+              Applications prodize before front end ortals visualize front end.
+            </p>
+            <form>
+              <input
+                type="email"
+                placeholder="Your email"
+                className="w-full p-3 bg-gray-800 text-white placeholder-gray-400 rounded-md mb-3 focus:outline-none"
+              />
+              <button
+                type="submit"
+                className="w-full bg-[#F5A623] text-black font-bold p-3 rounded-md hover:bg-orange-500 transition-colors"
+              >
+                Subscribe
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="mt-12 pt-8 border-t border-gray-300 text-center">
+          <p className="text-sm text-gray-500">
+            &copy; {new Date().getFullYear()} DoodleQuest. All Rights Reserved.
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
