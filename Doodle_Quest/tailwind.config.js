@@ -12,6 +12,8 @@ export default {
         robotoSlab: ['"Roboto Slab"', 'serif'],
         orbitron:['"Orbitron"',"sans"],
         righteous: ['"Righteous"', "sans"],
+        'marck-script': ['"Marck Script"', 'cursive'],
+        'salsa': ['Salsa', 'cursive'],
       },
     },
   },
