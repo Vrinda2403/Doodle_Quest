@@ -103,11 +103,11 @@ function ScreenDrawing() {
             onClick={handleClearCanvas}
             className="bg-[#D0021B] px-8 py-3 rounded-xl text-white text-lg flex items-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-red-700 transition"
           >
-            <img src="/src/assets/clear-icon.png" alt="" className="w-5 h-5" />
+            {/* <img src="/src/assets/clear-icon.png" alt="" className="w-5 h-5" /> */}
             Clear
           </button>
           <button className="bg-[#4CAF50] px-8 py-3 rounded-xl text-white text-lg flex items-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-green-700 transition">
-            <img src="/src/assets/submit-icon.png" alt="" className="w-5 h-5" />
+            {/* <img src="/src/assets/submit-icon.png" alt="" className="w-5 h-5" /> */}
             Submit
           </button>
         </div>
