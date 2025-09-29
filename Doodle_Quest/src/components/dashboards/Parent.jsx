@@ -57,8 +57,14 @@ const Parent = () => {
                 </div>
                 <div className="grid grid-cols-[250px_250px] gap-2">
                     <div className="grid grid-rows-[150px_150px] gap-2">
-                           <div className="d1">
-                            <img src="src/assets/d1.png" alt="" width="230px" />
+                           <div className="w-56 h-36 bg-[#EBDAC5] rounded-lg border border-black relative ">
+                               <p className="mt-2 ml-2 text-sm">Total Drawing</p>
+                               <p className="mt-3 ml-3 text-2xl font-bold">47</p>
+                               <p className="mt-3 ml-3 text-sm">This week</p>
+                               <p className="mt-3 ml-3 text-sm text-[#277B23]">+12% from last week</p>
+                               <div className="bg-[#C6A7E8] w-11 h-11 left-44 rounded-md absolute top-1 p-1">
+                               <img src="src/assets/copy.png" alt="" className="" width="40"/>
+                               </div>
                            </div>
                            <div className="d2">
                             <img src="src/assets/d2.png" alt="" width="230px" />
@@ -67,11 +73,23 @@ const Parent = () => {
 
                     <div className="grid grid-rows[250px_250px]">
                          <div className="grid grid-rows-[150px_150px] gap-2">
-                           <div className="d1">
-                            <img src="src/assets/d3.png" alt="" width="230px" />
+                           <div className=" w-56 h-36 bg-[#C8E1A5] rounded-lg border border-black relative">
+                               <p className="mt-2 ml-2 text-sm"> Story Listened</p>
+                               <p className="mt-3 ml-3 text-2xl font-bold">10</p>
+                               <p className="mt-3 ml-3 text-sm">This week</p>
+                               <p className="mt-3 ml-3 text-sm text-[#277B23]">+12% from last week</p>
+                               <div className="bg-[#C6A7E8] w-11 h-11 left-44 rounded-md absolute top-1 p-1">
+                               <img src="src/assets/copy.png" alt="" className="" width="40"/>
+                               </div>
                            </div>
-                           <div className="d2">
-                            <img src="src/assets/d4.png" alt="" width="230px" />
+                           <div className="d2  w-56 h-36 bg-[#85DCE4] rounded-lg border border-black relative">
+                                <p className="mt-2 ml-2 text-sm">Screen Time</p>
+                               <p className="mt-3 ml-3 text-2xl font-bold">470 Min</p>
+                               <p className="mt-3 ml-3 text-sm">This week</p>
+                               <p className="mt-3 ml-3 text-sm text-[#277B23]">+12% from last week</p>
+                               <div className="bg-[#93F898] w-11 h-11 left-44 rounded-md absolute top-1 p-1">
+                               <img src="src/assets/laptop.png" alt="" className="" width="40"/>
+                               </div>
                            </div>
                     </div>
 
@@ -93,7 +111,9 @@ const Parent = () => {
 
 </div>
       <div className="">
-        <img src="src/assets/" alt="" />
+        <img src="src/assets/footer.png" alt="" width="1200"  className="m-auto mt-8" />
+      </div>
+      <div className="bg-[#203851] h-16 mt-6">
 
       </div>
 
