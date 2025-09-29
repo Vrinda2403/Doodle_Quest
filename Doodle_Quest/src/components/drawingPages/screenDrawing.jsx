@@ -59,6 +59,7 @@ function ScreenDrawing() {
   };
 
   return (
+
     <div className="min-h-screen bg-[#EAD6DE] flex flex-col">
       <nav className="bg-[#2C2A4A] px-6 py-2 flex items-center justify-between shadow-lg text-white">
         <img src="/src/assets/doodle-quest-logo.png" alt="DoodleQuest Logo" className="h-12" />
