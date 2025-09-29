@@ -1,164 +1,159 @@
-import { useRef, useEffect } from 'react'; 
+import React, { useRef, useEffect } from 'react';
+import screenBG from '../../assets/screenBG.png'
+
+// Using your hardcoded asset paths as requested
 function ScreenDrawing() {
-    const canvasRef = useRef(null);
-      let drawing = false;
-    let lastX = 0;
-    let lastY = 0;
+  const canvasRef = useRef(null);
+  const drawingState = useRef({ isDrawing: false, lastX: 0, lastY: 0 });
 
-    useEffect(()=>{
-        const canvas = canvasRef.current;
-        if(!canvas) return;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext('2d');
 
-        const context = canvas.getContext('2d');
-        context.strokeStyle = 'black';
-        context.lineWidth = 2;
-        context.lineCap = 'round';
+    const setCanvasSize = () => {
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+      context.strokeStyle = 'black';
+      context.lineWidth = 4;
+      context.lineCap = 'round';
+      context.lineJoin = 'round';
+    };
+    setCanvasSize();
 
+    const startDrawing = (e) => {
+      drawingState.current.isDrawing = true;
+      [drawingState.current.lastX, drawingState.current.lastY] = [e.offsetX, e.offsetY];
+    };
+    const stopDrawing = () => {
+      drawingState.current.isDrawing = false;
+    };
+    const draw = (e) => {
+      if (!drawingState.current.isDrawing) return;
+      context.beginPath();
+      context.moveTo(drawingState.current.lastX, drawingState.current.lastY);
+      context.lineTo(e.offsetX, e.offsetY);
+      context.stroke();
+      [drawingState.current.lastX, drawingState.current.lastY] = [e.offsetX, e.offsetY];
+    };
 
-         canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-const startDrawing = (e) => {
-   
-    drawing = true;
-    lastX = e.offsetX;
-    lastY = e.offsetY;
-  }
-  const stopDrawing = () => {
-    drawing=false
-  }
-const draw = (e) => {
-    if(!drawing) return;
-    context.beginPath();
-    context.moveTo(lastX, lastY);
-    context.lineTo(e.offsetX, e.offsetY);
-    context.stroke();
-    lastX = e.offsetX;
-    lastY = e.offsetY;
-  }
-
-  canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseout", stopDrawing);
     canvas.addEventListener("mousemove", draw);
- 
-    },[])
+    window.addEventListener('resize', setCanvasSize);
 
+    return () => {
+      canvas.removeEventListener("mousedown", startDrawing);
+      canvas.removeEventListener("mouseup", stopDrawing);
+      canvas.removeEventListener("mouseout", stopDrawing);
+      canvas.removeEventListener("mousemove", draw);
+      window.removeEventListener('resize', setCanvasSize);
+    };
+  }, []);
 
-
+  const handleClearCanvas = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  };
 
   return (
-    <div className="min-h-screen bg-[#f7c9e3]">
-      {/* Navbar */}
-      <div className="bg-[#1E3A8A] px-8 py-4 flex items-center justify-between">
-        <div className="flex items-center space-x-8">
-          
-          <div className="font-['Orbitron'] text-xl text-white">DoodleQuest</div>
-        </div>
-        <div className="font-['Saira Stencil One'] text-4xl text-white">Paper Doodles</div>
+    <div className="min-h-screen bg-[#EAD6DE] flex flex-col">
+      <nav className="bg-[#2C2A4A] px-6 py-2 flex items-center justify-between shadow-lg text-white">
+        <img src="/src/assets/doodle-quest-logo.png" alt="DoodleQuest Logo" className="h-12" />
+        <h1 className="font-['Roboto_Slab'] text-5xl tracking-wider">Screen Doodles</h1>
         <div className="flex items-center space-x-4">
-          {/* Home icon*/}
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-          
-              <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
-         
-          </div>
-          {/* Back arrow icon */}
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+          <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition">
+            <img src="/src/assets/home-icon.png" alt="Home" />
+          </button>
+          <button className="w-16 h-16 rounded-full flex items-center justify-center p-2.5 hover:bg-orange-500 transition">
+            <img src="/src/assets/click.png" alt="Back" />
+          </button>
+        </div>
+      </nav>
 
-            {/* <div className="w-4 h-4 transform rotate-180"> */}
-              <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
-            {/* </div> */}
+      {/* Main Drawing Area */}
+      <div className="flex-grow flex flex-col bg-center min-h-[100vh] pb-28 p-6 bg-[length:100%_100%]"
+        style={{ backgroundImage: `url(${screenBG})` }}>
+
+        <div className="flex-grow grid grid-cols-1 lg:grid-cols-3 gap-6 items-end">
+          {/* Left Column: Clue Box */}
+          <div className="lg:col-span-1">
+            <div className="flex items-center gap-2 mb-2">
+              <img src="/src/assets/lightbulb.png" alt="Clue Icon" className="w-7 h-7" />
+              <h2 className="text-xl font-['Orbitron'] font-bold text-white">Clue Box</h2>
+            </div>
+            <div className="bg-white h-72 w-full border-4 border-white rounded-2xl shadow-xl"></div>
           </div>
+
+          {/* Right Column: Screen Canvas */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-2 mb-2">
+              <img src="/src/assets/screen.png" alt="Screen Icon" className="w-7 h-7" />
+              <h2 className="text-xl font-['Orbitron'] font-bold text-white">Screen Canvas</h2>
+            </div>
+            <canvas ref={canvasRef} className="bg-white w-full h-[60vh] border-4 border-white rounded-2xl shadow-xl"></canvas>
+          </div>
+        </div>
+
+        <div className="flex justify-end font-['Saira_Stencil_One'] tracking-wide mt-4 mx-6 gap-4">
+          <button
+            onClick={handleClearCanvas}
+            className="bg-[#D0021B] px-8 py-3 rounded-xl text-white text-lg flex items-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-red-700 transition"
+          >
+            <img src="/src/assets/clear-icon.png" alt="" className="w-5 h-5" />
+            Clear
+          </button>
+          <button className="bg-[#4CAF50] px-8 py-3 rounded-xl text-white text-lg flex items-center gap-2 shadow-[4px_4px_0px_#000000] hover:bg-green-700 transition">
+            <img src="/src/assets/submit-icon.png" alt="" className="w-5 h-5" />
+            Submit
+          </button>
         </div>
       </div>
 
-      {/* Main Content Area */}
-      <div className="px-8 py-8 bg-[url(/src/assets/screenbg.png)]  min-h-screen bg-cover bg-left-top ">
-        <div className="flex gap-8 z-10">
-          {/* Left Side - Clue Box */}
-          <div className="flex-2">
-            <div className="flex items-center gap-3 mb-4">
-              <h1 className="text-3xl font-['Orbitron'] font-bold text-black">CLUE BOX</h1>
-              
-            </div>
-            <div className="bg-white h-72 w-full border-2  border-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500">
-              
-            </div>
-            <div className="flex gap-4">
-              {/* Clear button */}
-            <button className=" bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2 absolute bottom-11 right-32 z-10" onClick={()=>{
-              const context = canvasRef.current.getContext('2d');
-              context.clearRect(0,0,canvasRef.current.width,canvasRef.current.height);
-            }}>
-              <div className="w-4 h-4 bg-white rounded-sm"></div>
-              Clear
-            </button>
-            {/* submit button  */}
-            <button className="bg-[#5DC001] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2 absolute bottom-11 right-64 z-10">
-              <div className="w-4 h-4 bg-white rounded-sm"></div>
-              Submit
-            </button>
-            </div>
-          </div>
+     <div className="relative p-6 px-32 bg-[#EAD6DE]">
+  {/* Header */}
+  <div className="flex justify-between items-center mb-4 mx-4">
+    <div className="flex items-center gap-3">
+      <img src="/src/assets/todo.png" alt="To-Do Icon" className="w-8 h-8" />
+      <h2 className="text-4xl font-['Orbitron'] text-gray-800 font-bold">To- Do's</h2>
+    </div>
+    <select className="bg-white border border-gray-400 rounded-lg px-4 py-1 text-sm shadow">
+      <option>Select Date</option>
+    </select>
+  </div>
 
-          {/* Right Side - Screen Canvas */}
-          <div className="flex-1 relative ht-[400px]">
-            <div className="flex items-center gap-3 mb-4">
-              <h1 className=" relative left-8 text-3xl font-['Orbitron'] text-black font-bold">SCREEN CANVAS</h1>
-              {/* Screen icon  */}
-              <div className="w-6 h-6 relative left-8 bg-gray-600 rounded"><img src="/src/assets/screen.png" alt="Screen" className="w-full h-full" /></div>
-            </div>
-            <div className="bg-white border-2 border-gray-300 absolute top-18 right-20 w-11/12 h-[500px] rounded-lg flex items-center justify-center text-gray-500 text-sm">
-             <canvas ref={canvasRef} className="w-full h-full rounded-lg"></canvas>
-            </div>
-            
-            {/* Date Dropdown */}
-            <div className="absolute top-[700px] right-0">
-              <select className="bg-white border border-gray-300 rounded px-3 py-2 text-sm">
-                <option>Select Date</option>
-              </select>
-            </div>
-          </div>
-        </div>
-        <br></br>
-        </div>
-                {/* To-Do Section */}
-        <div>
-        <div className="mt-12 ml-12">
-          <div className="flex items-center gap-3 mb-6">
-            <h1 className="text-3xl font-['Orbitron'] text-gray-800">To-Do's</h1>
-            {/*  To Do icon  */}
-            <div className="w-6 h-6 bg-gray-600 rounded">
-              <img src="/src/assets/todo.png" alt="To Do" className=" rounded w-8 h-8" />
-              </div>
-          </div>
-          
-          <div className="bg-white rounded-lg shadow-lg overflow-hidden w-[90%] ">
-            {/* Sofa Image */}
-            <img src="/src/assets/sofa.png" alt="Sofa" className="absolute top-[800px] right-0 w-1/4 h-auto" />
-            <div className="w-full">
-            <table className="w-full">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b">SR. No.</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b">Assigned Tasks</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b">Status</th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700 border-b">Update</th>
-                </tr>
-              </thead>
-              <tbody className="bg-gray-300">
-                <tr>
-                  <td colSpan="4" className="px-6 py-12 text-center text-gray-500 w-9 h-56">
-                    No tasks assigned yet
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            </div>
-            
-          </div>
-        </div>
-      </div>
+  {/* Table */}
+  <div className="relative mx-4 z-10">
+    <div className="rounded-lg shadow-lg overflow-hidden bg-white/40">
+      <table className="w-full text-left font-['Roboto_Slab'] min-h-[400px]">
+        <thead className="bg-white/70">
+          <tr>
+            <th className="px-6 py-3 text-lg font-semibold text-black tracking-wider">SR. No.</th>
+            <th className="px-6 py-3 text-lg font-semibold text-black tracking-wider">Assigned Tasks</th>
+            <th className="px-6 py-3 text-lg font-semibold text-black tracking-wider">Status</th>
+            <th className="px-6 py-3 text-lg font-semibold text-black tracking-wider">Score</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td colSpan="4" className="h-36"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {/* Sofa image (outside, behind, no extra margin) */}
+  <img
+    src="/src/assets/sofa.png"
+    alt="Family on Sofa"
+    className="absolute -bottom-0 -right-0 w-[45%] max-w-lg h-auto z-0"
+  />
+</div>
+
+
     </div>
   );
 }

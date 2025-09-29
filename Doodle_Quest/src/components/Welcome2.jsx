@@ -154,7 +154,7 @@ const Welcome2 = () => {
               viewBox="0 0 1440 120"
               preserveAspectRatio="none"
               shapeRendering="geometricPrecision"
-              className="relative block w-[calc(100%+2px)] h-[110px] -ml-[1px]" // overhang + shift
+              className="relative block w-[calc(100%+2px)] h-[110px] -ml-[1px]" 
             >
               <path
                 d="M0,64 C 240,112 480,0 720,48 C 960,96 1200,96 1440,64 L1440,120 L0,120 Z"
@@ -164,7 +164,7 @@ const Welcome2 = () => {
           </div>
         </section>
 
-        <div className=" flex justify-center items-center gap-5 px-2 py-2">
+        <div className=" flex bg-[#FDF9F0] justify-center items-center gap-5 px-2 py-2">
           {/* Left: Image */}
           <div className="w-3/4 flex justify-center">
             <img
