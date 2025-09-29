@@ -6,6 +6,7 @@ import QuizReward from "./components/quiz/QuizReward";
 import Child from "./components/dashboards/Child";
 import PaperDrawing from "./components/drawingPages/paperDrawing";
 import ScreenDrawing from "./components/drawingPages/screenDrawing";
+import Storytime  from "./components/story/storytime";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/" element={<Child />} />
         <Route path="/paperdrawing" element={<PaperDrawing />} />
         <Route path="/screendrawing" element={<ScreenDrawing />} />
+        <Route path="/storytime" element={<Storytime />} />
       </Routes>
     </Router>
   );
