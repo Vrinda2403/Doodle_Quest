@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
@@ -9,9 +10,13 @@ export default {
       fontFamily: {
         alexandria: ['"Alexandria"', 'sans-serif'],
         robotoSlab: ['"Roboto Slab"', 'serif'],
-        orbitron:["Orbitron","sans"],
+        orbitron:['"Orbitron"',"sans"],
+        righteous: ['"Righteous"', "sans"],
       },
     },
   },
-  plugins: [],
+  plugins: [
+  
+  ],
 }
+
