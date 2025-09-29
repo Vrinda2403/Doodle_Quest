@@ -12,6 +12,7 @@ import Icon2 from '../../assets/Icon2.png'
 import Icon3 from '../../assets/Icon3.png'
 import Icon4 from '../../assets/Icon4.png'
 import Kiddy from '../../assets/Kiddy.png'
+import Welcome2 from '../Welcome2';
 
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
@@ -68,7 +69,7 @@ const footerLinks = {
 
   return (
     <div>
-
+       <Welcome2/>
       <div
         className="min-h-screen w-full flex items-center justify-center bg-[length:100%_100%] bg-center"
         style={{ backgroundImage: `url(${BlueBG})` }}

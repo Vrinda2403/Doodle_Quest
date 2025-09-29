@@ -6,7 +6,7 @@ import {  BrowserRouter as Router , Routes, Route } from "react-router-dom";
 import Login from './components/Login';
 import Signup from './components/Signup';
 import WelcomePage from './components/WelcomePage';
-import Welcome2 from './components/Welcome2';
+
 import QuizFlash from "./components/quiz/QuizFlash";
 import Quiz from "./components/quiz/Quiz";
 import QuizReward from "./components/quiz/QuizReward";
@@ -36,7 +36,7 @@ function App() {
         <Route path="/signup" element = {<Signup/>}/>
         <Route path="/login" element = {<Login/>}/>
         <Route path="/welcome" element = {<WelcomePage/>}/>
-        <Route path="/wekcome2" element = {<Welcome2/>}/>
+       
       </Routes>
       
     
