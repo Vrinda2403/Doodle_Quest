@@ -21,7 +21,7 @@ import Storytime from "./components/story/storytime";
 function App() {
   // Change: Removed the <Router> wrapper from here
   return (
-
+   
       <Routes>
         <Route path="/quizflash" element={<QuizFlash />} />
         <Route path="/quiz" element={<Quiz />} />
@@ -36,9 +36,9 @@ function App() {
         <Route path="/signup" element = {<Signup/>}/>
         <Route path="/login" element = {<Login/>}/>
         <Route path="/welcome" element = {<WelcomePage/>}/>
-       
-      </Routes>
-      
+       </Routes>
+     
+   
     
   );
 }
