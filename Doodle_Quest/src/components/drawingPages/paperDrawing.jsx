@@ -1,4 +1,26 @@
+import { use, useEffect, useRef } from 'react';
+
 function PaperDrawing() {
+
+const videoRef=useRef(null);
+
+useEffect(()=>{
+   const video = videoRef.current;
+   if(!video) return;
+
+   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ video: true })
+         .then((stream) => {
+            video.srcObject = stream;
+         })
+         .catch((error) => {
+            console.error("Error accessing webcam:", error);
+             alert("Could not access the camera. Please check permissions.");
+         });
+   }
+}, []);
+
+
   return (
     <div className="min-h-screen bg-[#E8FFE8]">
       {/* Navbar */}
@@ -30,8 +52,8 @@ function PaperDrawing() {
               {/* Camera icon  */}
               <img src="/src/assets/camera.png" alt="Camera" className="w-8 h-8" />
             </div>
-            <div className="bg-white h-96 w-[800px] border-2 border-gray-300 rounded-lg mb-4 flex items-center justify-center text-gray-500">
-              
+            <div className="bg-white h-96 w-[800px] border-2 border-black rounded-lg mb-4 flex items-center justify-center text-gray-500">
+              <video ref={videoRef} autoPlay className="w-full h-full object-cover rounded-lg" />
             </div>
             <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2">
               <div className="w-4 h-4 bg-white rounded-sm"></div>
