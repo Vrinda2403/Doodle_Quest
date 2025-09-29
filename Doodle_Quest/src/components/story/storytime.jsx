@@ -1,10 +1,10 @@
 import React from 'react';
 
-// NOTE: It's best practice to put font imports in your main index.html or a global CSS file.
+// NOTE: It is best practice to move font imports to your main index.html file.
 const GlobalStyles = () => (
   <style>
     {`
-      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Orbitron:wght@400..900&family=Roboto+Slab&family=Saira+Stencil+One&family=Spline+Sans:wght@300..700&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Orbitron:wght@400..900&family=Saira+Stencil+One&family=Roboto+Slab&family=Special+Gothic+Condensed+One&family=Spline+Sans:wght@300..700&display=swap');
     `}
   </style>
 );
@@ -14,21 +14,18 @@ function Storytime() {
   return (
     <div>
       <GlobalStyles />
-      <nav className="bg-[#08031B] px-8 py-4 flex items-center justify-between text-white">
+      <nav className="bg-[#081b4f] px-8 py-4 flex items-center justify-between text-white">
         <div className="flex items-center space-x-8">
           <div className="font-['Orbitron'] text-xl">DoodleQuest</div>
         </div>
-        {/* Corrected font name from Roboto_Slab to "Roboto Slab" */}
         <div className="font-['Roboto Slab'] text-4xl">Little Stories</div>
-        <div className="flex items-center space-x-4">
-          {/* Using your placeholder divs for icons */}
-          <div className="w-8 h-8 bg-white rounded-full"></div>
-          <div className="w-8 h-8 bg-white rounded-full"></div>
-        </div>
+        <div className="w-8 h-8 gap-3 rounded-full flex items-center justify-center">
+            <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
+             <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+         </div>
       </nav>
 
-      {/* Main Content Area */}
-      <div className="px-4 bg-[url('/src/assets/storybg.jpg')] min-h-screen flex justify-center items-center bg-cover">
+      <div className="px-4 py-8 bg-[url('/src/assets/storybg.jpg')] min-h-screen flex justify-center items-center bg-cover bg-center">
         
         {/* Story Box */}
         <div className="bg-[#0202028F] p-10 w-full max-w-5xl h-[500px] flex rounded-lg shadow-2xl">
@@ -41,8 +38,8 @@ function Storytime() {
               The wind whispered secrets through the trees,<br />
               As fireflies danced on the evening breeze.
             </p>
-            {/* Buttons positioned at the bottom of this container */}
-            <div className="absolute -bottom-2 left-8 flex gap-4">
+            {/* FIX: Buttons are now positioned reliably at the bottom of the text area */}
+            <div className="absolute -bottom-4 left-8 flex gap-7">
               <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Bookmark</button>
               <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Skip</button>
             </div>
