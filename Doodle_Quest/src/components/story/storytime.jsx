@@ -1,55 +1,59 @@
-function storytime(){
+import React from 'react';
+
+// NOTE: It is best practice to move font imports to your main index.html file.
+const GlobalStyles = () => (
   <style>
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Orbitron:wght@400..900&family=Saira+Stencil+One&family=Special+Gothic+Condensed+One&family=Spline+Sans:wght@300..700&display=swap');
-</style>
-return(
-  
+    {`
+      @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Orbitron:wght@400..900&family=Saira+Stencil+One&family=Roboto+Slab&family=Special+Gothic+Condensed+One&family=Spline+Sans:wght@300..700&display=swap');
+    `}
+  </style>
+);
+
+// Component names in React should be capitalized
+function Storytime() {
+  return (
     <div>
-        <div className="bg-[#08031B] px-8 py-4 flex items-center justify-between">
+      <GlobalStyles />
+      <nav className="bg-[#081b4f] px-8 py-4 flex items-center justify-between text-white">
         <div className="flex items-center space-x-8">
-          
-          <div className="font-['Orbitron'] text-xl text-white">DoodleQuest</div>
+          <div className="font-['Orbitron'] text-xl">DoodleQuest</div>
         </div>
-        <div className="font-['Saira Stencil One'] text-6xl text-white">Little Stories</div>
-        <div className="flex items-center space-x-4">
-          {/* Home icon*/}
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+        <div className="font-['Roboto Slab'] text-4xl">Little Stories</div>
+        <div className="w-8 h-8 gap-3 rounded-full flex items-center justify-center">
             <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
+             <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+         </div>
+      </nav>
+
+      <div className="px-4 py-8 bg-[url('/src/assets/storybg.jpg')] min-h-screen flex justify-center items-center bg-cover bg-center">
+        
+        {/* Story Box */}
+        <div className="bg-[#0202028F] p-10 w-full max-w-5xl h-[500px] flex rounded-lg shadow-2xl">
+          
+          {/* Story Content */}
+          <div className="relative text-white font-['Spline Sans'] text-4xl p-8 w-1/2 flex flex-col justify-center">
+            <p>
+              The little bird sang a joyful tune.<br />
+              A sleepy fox dreamt beneath the moon.<br />
+              The wind whispered secrets through the trees,<br />
+              As fireflies danced on the evening breeze.
+            </p>
+            {/* FIX: Buttons are now positioned reliably at the bottom of the text area */}
+            <div className="absolute -bottom-4 left-8 flex gap-7">
+              <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Bookmark</button>
+              <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Skip</button>
+            </div>
           </div>
-          {/* Back arrow icon */}
-          <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+          
+          {/* Image */}
+          <div className="w-1/2 h-full">
+            <img src="/src/assets/storyimg.jpg" alt="Story Illustration" className="w-full h-full object-cover rounded-r-lg" />
           </div>
+
         </div>
       </div>
-
-        {/* Main Content Area */}
-        <div className="px-40 py-8 bg-[url('/src/assets/storybg.jpg')] min-h-screen bg-cover bg-left-top ">
-         
-         <div className="bg-[#0202028F] w-[1200px] h-[500px] flex" >
-             {/* Story Content */}
-            <div className="text-white font-['Spline Sans'] text-4xl p-8 w-[600px]">
-                The little bird sang a joyful tune.<br></br>
- A sleepy fox dreamt beneath the moon.<br></br>
- The wind whispered secrets through the trees, <br></br>As fireflies danced on the evening breeze.<br></br>
- {/* Book Mark button */}
- <button className=" bg-[#FF5900] text-xl absolute bottom-28 text-white w-[150px] h-[40px] rounded">
-  <img src="/src/assets/arrow1.png" alt="BookMark" className="w-4 h-4 inline-block mr-2" />BookMark</button>
- {/* Skip button */}
-            <button className="bg-[#FF5900] text-xl absolute bottom-28 right-60 text-white w-[150px] h-[40px] rounded">
-              <img src="/src/assets/arrow2.png" alt="Skip" className="w-4 h-4 inline-block mr-2" />
-              Skip</button>
-            </div>
-            {/* Image */}
-            <div>
-                <img src="/src/assets/storyimg.jpg" alt="Story Illustration" className="absolute right-44 bottom-40 w-[400px] h-[400px] object-cover"/>
-            </div>
-            
-         </div>
-
-
-        </div>
     </div>
-)
+  )
 };
-export default storytime;
+
+export default Storytime;
