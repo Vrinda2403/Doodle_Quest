@@ -49,12 +49,12 @@ const draw = (e) => {
   return (
     <div className="min-h-screen bg-[#f7c9e3]">
       {/* Navbar */}
-      <div className="bg-[#1E3A8A] px-8 py-4 flex items-center justify-between">
+      <div className="bg-[#08031B] px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           
           <div className="font-['Orbitron'] text-xl text-white">DoodleQuest</div>
         </div>
-        <div className="font-['Saira Stencil One'] text-4xl text-white">Paper Doodles</div>
+        <div className="font-['Saira Stencil One'] text-4xl text-white">Screen Doodles</div>
         <div className="flex items-center space-x-4">
           {/* Home icon*/}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">

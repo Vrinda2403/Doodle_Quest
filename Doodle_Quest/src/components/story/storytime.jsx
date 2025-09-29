@@ -5,20 +5,20 @@ function storytime(){
 return(
   
     <div>
-        <div className="bg-[#1E3A8A] px-8 py-4 flex items-center justify-between">
+        <div className="bg-[#08031B] px-8 py-4 flex items-center justify-between">
         <div className="flex items-center space-x-8">
           
           <div className="font-['Orbitron'] text-xl text-white">DoodleQuest</div>
         </div>
-        <div className="font-['Saira Stencil One'] text-4xl text-white">Little Stories</div>
+        <div className="font-['Saira Stencil One'] text-6xl text-white">Little Stories</div>
         <div className="flex items-center space-x-4">
           {/* Home icon*/}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 bg-gray-600 rounded-sm"></div>
+            <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
           </div>
           {/* Back arrow icon */}
           <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
-            <div className="w-4 h-4 bg-gray-600 transform rotate-180"></div>
+            <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
           </div>
         </div>
       </div>
@@ -32,8 +32,13 @@ return(
                 The little bird sang a joyful tune.<br></br>
  A sleepy fox dreamt beneath the moon.<br></br>
  The wind whispered secrets through the trees, <br></br>As fireflies danced on the evening breeze.<br></br>
- <button className=" bg-[#FF5900] text-xl absolute bottom-36 text-white w-[100px] h-[40px] rounded">BookMark</button>
-            <button className="bg-[#FF5900] text-xl absolute bottom-36 left-96 text-white w-[100px] h-[40px] rounded">Skip</button>
+ {/* Book Mark button */}
+ <button className=" bg-[#FF5900] text-xl absolute bottom-28 text-white w-[150px] h-[40px] rounded">
+  <img src="/src/assets/arrow1.png" alt="BookMark" className="w-4 h-4 inline-block mr-2" />BookMark</button>
+ {/* Skip button */}
+            <button className="bg-[#FF5900] text-xl absolute bottom-28 right-60 text-white w-[150px] h-[40px] rounded">
+              <img src="/src/assets/arrow2.png" alt="Skip" className="w-4 h-4 inline-block mr-2" />
+              Skip</button>
             </div>
             {/* Image */}
             <div>
