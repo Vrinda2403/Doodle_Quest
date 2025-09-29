@@ -201,8 +201,8 @@ const footerLinks = {
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Column 1: About Company */}
           <div className="space-y-4">
-            <h3 className="font-bold text-lg uppercase">ABOUT COMPANY</h3>
-            <p className="text-sm leading-relaxed">
+            <h3 className="font-righteous text-lg uppercase">ABOUT COMPANY</h3>
+            <p className="text-sm leading-relaxed text-[#373737]">
               Transform your child's drawings into magical learning adventures! Our AI recognizes their doodles and creates personalized stories, games, and STEM challenges.
             </p>
             <div className="flex space-x-3">
@@ -223,8 +223,8 @@ const footerLinks = {
 
           {/* Column 2: Our Services */}
           <div className="space-y-4">
-      <h3 className="font-bold text-lg">Our Services</h3>
-      <ul className="space-y-2">
+      <h3 className="font-righteous text-lg">Our Services</h3>
+      <ul className="space-y-2 text-[#373737]">
         {footerLinks.services.map(link => (
           <li key={link.name}>
             {/* Change: <a> changed to <Link> and href to to */}
@@ -236,8 +236,8 @@ const footerLinks = {
 
           {/* Column 3: Useful Links */}
           <div className="space-y-4">
-            <h3 className="font-bold text-lg">Useful links</h3>
-            <ul className="space-y-2">
+            <h3 className="text-lg font-righteous">Useful links</h3>
+            <ul className="space-y-2 text-[#373737]">
               {footerLinks.useful.map(link => (
                 <li key={link.name}>
                   <a href={link.href} className="text-sm hover:underline">{link.name}</a>
@@ -248,7 +248,7 @@ const footerLinks = {
 
           {/* Column 4: Newsletter */}
           <div className="space-y-4">
-            <h3 className="font-bold text-lg">Newsletter</h3>
+            <h3 className="font-righteous text-lg">Newsletter</h3>
             <p className="text-sm">
               Applications prodize before front end ortals visualize front end.
             </p>
@@ -270,7 +270,7 @@ const footerLinks = {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t border-gray-300 text-center">
+        <div className="mt-12 pt-8 border-t border-gray-500 text-center">
           <p className="text-sm text-gray-500">
             &copy; {new Date().getFullYear()} DoodleQuest. All Rights Reserved.
           </p>
