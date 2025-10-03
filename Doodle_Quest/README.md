@@ -126,13 +126,19 @@ git clone https://github.com/Vrinda2403/Doodle_Quest.git
 ```
 
 Navigate to the project directory:
-```cd Doodle_Quest```
+```bash 
+cd Doodle_Quest
+```
 
 Install NPM packages:
-```npm install```
+```bash
+npm install
+```
 
 Run the development server:
-```npm run dev```
+```bash
+npm run dev
+```
 
 ---
 ## 🧠 Challenges and Strategy
