@@ -33,12 +33,11 @@ This project addresses the problem statement **"Self Learning Revolution: Smart 
 ---
 ### The hardware components that enable this low-screen time interaction are:
 
-```
-A Raspberry Pi 
-A Camera Sensor 
-GPIO buttons 
-A simple speaker 
-```
+-A Raspberry Pi 
+-A Camera Sensor 
+-GPIO buttons 
+-A simple speaker 
+
 This hardware setup allows a child to draw on physical paper. The camera sensor captures the doodle, which is then processed by the system, thus providing an interactive learning experience without requiring the child to be constantly focused on a digital screen.  
 
 ---
