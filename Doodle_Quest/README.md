@@ -28,16 +28,17 @@ This project addresses the problem statement **"Self Learning Revolution: Smart 
 - **AI Doodle Recognition:** It recognizes doodles drawn by the child using Machine Learning.  
 - **Interactive Content:** Based on the recognized doodle, it creates doodle-specific games, customized puzzles, and generates personalized stories to make learning fun, interactive, and creative.  
 - **Reduces Screen Time:** It provides a single platform with multiple games, promoting healthy habits by reducing overall screen time.
-- ** The system is designed to function in a "Dual Mode," which supports both on-screen drawing and, crucially, paper drawings captured via a camera. This dual functionality is central to reducing direct interaction with a screen.
+- **Dual Mode:** The system is designed to function in a "Dual Mode," which supports both on-screen drawing and, crucially, paper drawings captured via a camera. This dual functionality is central to reducing direct interaction with a screen.
 
 ---
 ### The hardware components that enable this low-screen time interaction are:
 
+```
 A Raspberry Pi 
 A Camera Sensor 
 GPIO buttons 
 A simple speaker 
-
+```
 This hardware setup allows a child to draw on physical paper. The camera sensor captures the doodle, which is then processed by the system, thus providing an interactive learning experience without requiring the child to be constantly focused on a digital screen.  
 
 ---
