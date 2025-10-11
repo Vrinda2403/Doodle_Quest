@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
-import grass from '../../assets/grass.png';
+import grass from '../../assets/Grass.png';
 
 const quizQuestions = [
   {
