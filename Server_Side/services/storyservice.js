@@ -1,30 +1,29 @@
-import OpenAI from "openai";
-
+import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
-
 dotenv.config();
-const openai = new OpenAI({
-  apiKey: process.env.OPEN_AI_API_KEY,
-});
+const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY });
+
 
 
 async function storyContent(doodle)
 {
 
 try{
-const response = await openai.responses.create({
- 
-   model: "gpt-4.1",
-    input: `Tell me a 3 sentence educational,innovative,interesting ,meaningful story involving a ${doodle}.`
-  
-});
+const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: `Generate a 5-line children-friendly,interesting and educational story involving ${doodle}`,
+  });
 
-response.then((result) => console.log(result.output[0].content[0].text));
+
+const story = response.text;
+    console.log(story);
+    return story;
 }
 
  catch (error) {
     console.error("Error generating story:", error);
-    throw new Error("Story generation failed");
+    // throw new Error("Story generation failed");
+    throw error;
   }
 
 }
