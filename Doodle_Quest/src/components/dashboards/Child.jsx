@@ -6,7 +6,8 @@ import CloudRainbow from '../../assets/Cloudrainbow.png'
 import CloudSun from '../../assets/CloudSun.png'
 import BlurImg from '../../assets/BlurImg.png'
 import Badges from '../../assets/Badges.png'
-import HowBG from '../../assets/HowBg.png'
+// import HowBG from '../../assets/HowBg.png'
+import HowBg from '../../assets/HowBg.png'
 import Icon1 from '../../assets/Icon1.png'
 import Icon2 from '../../assets/Icon2.png'
 import Icon3 from '../../assets/Icon3.png'
@@ -148,7 +149,7 @@ const footerLinks = {
       {/* How It Works */}
       <div
         className="min-h-[120vh] w-full flex flex-col items-center justify-center bg-[length:100%_100%] bg-center p-8"
-        style={{ backgroundImage: `url(${HowBG})` }}
+        style={{ backgroundImage: `url(${HowBg})` }}
       >
         {/* Section Header */}
         <header className="text-center mt-16">
