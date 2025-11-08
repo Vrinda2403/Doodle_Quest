@@ -1,4 +1,6 @@
 import dotenv from "dotenv";
+import modeRoutes from "./routes/modeRoute.js";
+app.use("/api/mode", modeRoutes);
 
 dotenv.config();
 
