@@ -1,13 +1,7 @@
 {
-  "name": "server_side",
-  "version": "1.0.0",
   "type": "module",
-  "main": "testserver.js",
-  "scripts": {
-    "start": "node testserver.js"
-  },
   "dependencies": {
-    "@google/genai": "^1.27.0",
+    "@huggingface/inference": "^4.13.0",
     "all": "^0.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
