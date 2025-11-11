@@ -44,3 +44,38 @@ export const limit = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+
+// For real-time updates
+export const streamStatus = async (req, res) => {
+  const { userId } = req.params;
+
+  res.set({
+    "Content-Type": "text/event-stream",
+    "Cache-Control": "no-cache",
+    Connection: "keep-alive",
+  });
+
+  res.flushHeaders();
+  res.write(`data: ${JSON.stringify({ message: "Connected", userId })}\n\n`);
+
+  const interval = setInterval(async () => {
+    const user = await ScreenTime.findOne({ userId });
+    if (!user) return;
+
+    res.write(
+      `data: ${JSON.stringify({
+        timeUsed: user.timeUsed,
+        dailyLimit: user.dailyLimit,
+        isActive: user.isActive,
+      })}\n\n`
+    );
+
+    // Stop sending if the user reached their limit
+    if (!user.isActive) {
+      res.write(`data: ${JSON.stringify({ message: "LIMIT_REACHED" })}\n\n`);
+      clearInterval(interval);
+      res.end();
+    }
+  }, 5000); // update every 5 seconds
+};
