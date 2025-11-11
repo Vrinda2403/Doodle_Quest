@@ -1,7 +1,6 @@
-// import React from 'react'
-// import './index.css'
-
-
+// import React, { useState, useEffect } from "react";
+import axios from "axios";
+// import "./index.css";
 
 // const Parent = () => {
 //   return (
@@ -197,17 +196,45 @@ const Parent = () => {
 
 
 
+  const [screenTime, setScreenTime] = useState(0);
+  const [dailyLimit, setDailyLimit] = useState(120);
+  const [newLimit, setNewLimit] = useState("");
+  const userId = "child123"; // temporary (later link dynamically)
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`http://localhost:3000/api/screentime/${userId}`);
+        setScreenTime(res.data.totalTime);
+        setDailyLimit(res.data.dailyLimit);
+      } catch (err) {
+        console.log("Error fetching screen time:", err);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const handleLimitChange = async () => {
+    try {
+      const res = await axios.put(`http://localhost:3000/api/screentime/${userId}`, {
+        dailyLimit: Number(newLimit),
+      });
+      setDailyLimit(res.data.dailyLimit);
+      setNewLimit("");
+      alert("Screen time limit updated successfully!");
+    } catch (err) {
+      console.log("Error updating limit:", err);
+    }
+  };
+
   return (
     <div className="bg-[#F4EDE6]">
       {/* Navbar */}
       <nav className="nav flex bg-opacity-90 h-16 text-white gap-72 top item items-center">
         <div
           className="text-center font-orbitron text-xl ml-7 font-bold 
-           bg-gradient-to-r 
-           from-[#EDFFF5] 
-           to-[rgba(133,213,237,0.74)] 
-           bg-clip-text 
-           text-transparent"
+           bg-gradient-to-r from-[#EDFFF5] to-[rgba(133,213,237,0.74)] 
+           bg-clip-text text-transparent"
         >
           DoodleQuest
         </div>
