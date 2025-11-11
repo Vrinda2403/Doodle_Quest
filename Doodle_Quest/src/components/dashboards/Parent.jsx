@@ -199,31 +199,39 @@ const Parent = () => {
   const [screenTime, setScreenTime] = useState(0);
   const [dailyLimit, setDailyLimit] = useState(120);
   const [newLimit, setNewLimit] = useState("");
-  const userId = "child123"; // temporary (later link dynamically)
+  const userId = "child123"; // temp — later dynamic
 
+  // Fetch current screen time & limit from backend
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/api/screentime/${userId}`);
-        setScreenTime(res.data.totalTime);
+        const res = await axios.get(`http://localhost:3000/api/time/status/${userId}`);
+        setScreenTime(res.data.timeUsed);
         setDailyLimit(res.data.dailyLimit);
       } catch (err) {
         console.log("Error fetching screen time:", err);
       }
     };
     fetchData();
+
+    // Optionally refresh every minute
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
   }, []);
 
+  // Handle limit change by parent
   const handleLimitChange = async () => {
     try {
-      const res = await axios.put(`http://localhost:3000/api/screentime/${userId}`, {
-        dailyLimit: Number(newLimit),
+      const res = await axios.put("http://localhost:3000/api/time/limit", {
+        userId,
+        limitMinutes: Number(newLimit),
       });
-      setDailyLimit(res.data.dailyLimit);
+      setDailyLimit(res.data.timer.dailyLimit);
       setNewLimit("");
-      alert("Screen time limit updated successfully!");
+      alert("✅ Screen time limit updated successfully!");
     } catch (err) {
       console.log("Error updating limit:", err);
+      alert("❌ Failed to update screen time limit");
     }
   };
 
