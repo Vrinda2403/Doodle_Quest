@@ -51,7 +51,7 @@ export const streamStatus = async (req, res) => {
   const { userId } = req.params;
 
   res.set({
-    "Content-Type": "text/event-stream",
+    "Content-Type" : "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
   });
