@@ -43,7 +43,21 @@ This hardware setup allows a child to draw on physical paper. The camera sensor 
 ---
 
 ## ✨ Features
-- **Dual Dashboards:** Separate, insightful dashboards for both parents and children.  
+- **Dual Dashboards:** Separate, insightful dashboards for both parents and children.
+  
+  <div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Parent Dashboard</b></td>
+      <td align="center"><b>Child Dashboard</b></td>
+    </tr>
+    <tr>
+      <td><img width="500" height="600" alt="Parental Dashboard 1" src="https://github.com/user-attachments/assets/73326547-cb50-4a51-ac2d-c6db0518d122" /></td>
+      <td><img width="494" height="600" alt="image" src="https://github.com/user-attachments/assets/aa3242e4-e4e6-4830-be5b-544969bc3268" /></td>
+    </tr>
+  </table>
+</div>
+ 
 - **Smart Doodle Analysis:**  
   - Safe/Unsafe Doodle Detection to ensure a safe creative environment.  
   - Smart Hints to provide guidance during the drawing process.  
@@ -57,15 +71,36 @@ This hardware setup allows a child to draw on physical paper. The camera sensor 
 
 ## ⚙️ Platform Process Flow
 1. **Start:** The child opens the platform.  
-2. **Doodle Creation:** The child draws on a tablet, phone, or whiteboard.  
+2. **Doodle Creation:** The child draws on a tablet, phone, or whiteboard.
+   
+   <div align="center">
+  <table>
+    <tr>
+      <td align="center"><b>Paper Mode</b></td>
+      <td align="center"><b>Screen Mode</b></td>
+    </tr>
+    <tr>
+      <td><img width="400" height="300" alt="Paper Drawing 1" src="https://github.com/user-attachments/assets/18d18bb0-2741-4b40-bc7b-202938303abc" /></td>
+      <td><img width="400" height="300" alt="Screen Drawing 1" src="https://github.com/user-attachments/assets/6a883b00-1c6e-4ec7-8139-e0a95376ed66" /></td>
+    </tr>
+  </table>
+</div>
+
 3. **Doodle Recognition:** The AI model recognizes the doodle.  
-4. **Story Personalization:** A personalized story is generated based on the drawing.  
+4. **Story Personalization:** A personalized story is generated based on the drawing.
+   
+   <img width="400" height="300" alt="Story Time 1" src="https://github.com/user-attachments/assets/7ca20a3c-9257-4912-ad2b-326222b3d714" />
+
 5. **STEM Challenges:** The child engages with educational challenges.  
 6. **Play and Rewards:** The child earns rewards for completing tasks.  
 7. **Dashboard Update:** The child's progress is updated on their dashboard.  
 8. **Exit:** The child exits the platform.  
 
 ---
+
+
+
+
 
 ## 🛠️ Tech Stack
 

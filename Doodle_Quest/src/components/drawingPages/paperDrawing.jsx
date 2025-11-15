@@ -1,25 +1,46 @@
-import { use, useEffect, useRef } from 'react';
+import { useEffect, useRef,useState } from 'react';
 
 function PaperDrawing() {
 
 const videoRef=useRef(null);
-
-useEffect(()=>{
+  const [stream, setStream] = useState(null);
+  const [cameraOn, setCameraOn] = useState(false);
+  const startCamera = async () => {
    const video = videoRef.current;
+   
    if(!video) return;
 
-   if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ video: true })
-         .then((stream) => {
-            video.srcObject = stream;
-         })
-         .catch((error) => {
-            console.error("Error accessing webcam:", error);
-             alert("Could not access the camera. Please check permissions.");
-         });
+   try {
+      const newStream =await navigator.mediaDevices.getUserMedia({ video: true })
+         
+            video.srcObject = newStream;
+             setStream(newStream);
+      setCameraOn(true);
+       
+         
+   }catch(err) {
+      console.error("Error accessing camera: ", err);
+      alert("Could not access the camera. Please check permissions.");
    }
-}, []);
+  };
+    const stopCamera = () => {
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop());
+      setStream(null);
+      setCameraOn(false);
+    }
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+  };
 
+  useEffect(() => {
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
+    };
+  }, [stream]);
 
   return (
     <div className="min-h-screen bg-[#E8FFE8]">
@@ -55,7 +76,7 @@ useEffect(()=>{
             <div className="bg-white h-96 w-[800px] border-2 border-black rounded-lg mb-4 flex items-center justify-center text-gray-500">
               <video ref={videoRef} autoPlay className="w-full h-full object-cover rounded-lg" />
             </div>
-            <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2">
+            <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2"  onClick={cameraOn ? stopCamera : startCamera}>
               <div className="w-4 h-4 bg-white rounded-sm"></div>
               ON/OFF
             </button>
@@ -82,7 +103,7 @@ useEffect(()=>{
 
 
       <div>
-        <div className="mt-12 ml-12">
+        <div className="mt-12 ml-36">
           <div className="flex items-center gap-3 mb-6">
             <h1 className="text-3xl font-['Orbitron'] text-gray-800">To-Do's</h1>
             {/*  To Do icon  */}

@@ -1,6 +1,9 @@
 import React from "react";
 import { ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link , useNavigate  } from "react-router-dom";
+import { useState } from "react";
+import ScreenDrawing from "./drawingPages/screenDrawing";
+
 
 const navItems = [
   { name: "Stories", img: "images/stories.png", to: "/storytime" },
@@ -11,10 +14,37 @@ const navItems = [
   },
   { name: "Doodles", img: "images/sun.PNG", to: "/screendrawing" },
   { name: "Puzzles", img: "images/puzzles.png", to: "/quiz" },
-  { name: "Logout", img: "images/logout.png", to: "/login" },
-];
+  { name: "Logout", img: "images/logout.png", to: "/login" },];
 
 const Welcome2 = () => {
+
+    const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleModeSelection = async (mode) => {
+    setLoading(true);
+    const userId = "child123"; // later replace with logged-in user id
+
+    try {
+      const res = await fetch("http://localhost:3000/api/mode/set-mode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, mode }),
+      });
+
+      const data = await res.json();
+      console.log("Mode set:", data);
+
+      // Navigate to correct screen after successful mode set
+      if (mode === "paper") navigate("/paperdrawing");
+      else navigate("/screendrawing");
+    } catch (err) {
+      console.error("Error setting mode:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       {/* Top Navbar */}
@@ -78,18 +108,25 @@ const Welcome2 = () => {
               Play. Doodle. Grow!
             </h1>
 
-            <div className="flex gap-6 font-['Roboto_Slab'] justify-center">
-              <Link to="/paperdrawing">
-                <button className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]">
-                  PAPER MODE
-                </button>
-              </Link>
-              <Link to="/screendrawing">
-                <button className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]">
-                  SCREEN MODE
-                </button>
-              </Link>
-            </div>
+<div className="flex gap-6 font-['Roboto_Slab'] justify-center">
+  <button
+    onClick={() => handleModeSelection("paper")}
+    disabled={loading}
+    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+  >
+    PAPER MODE
+  </button>
+ <Link to = "/ScreenDrawing" >
+  <button
+    onClick={() => handleModeSelection("screen")}
+    disabled={loading}
+    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+  >
+    SCREEN MODE
+  </button>
+  </Link>
+</div>
+
           </div>
           <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
             <svg

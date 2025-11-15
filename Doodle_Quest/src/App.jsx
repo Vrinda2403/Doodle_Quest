@@ -17,17 +17,18 @@ import Rewards from "./components/rewards/Rewards";
 import PaperDrawing from "./components/drawingPages/paperDrawing";
 import ScreenDrawing from "./components/drawingPages/screenDrawing";
 import Storytime from "./components/story/storytime";
+import ProtectedRoute from "./components/ProtectedRoutes";
 
 function App() {
   // Change: Removed the <Router> wrapper from here
   return (
-
+   
       <Routes>
         <Route path="/quizflash" element={<QuizFlash />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
-        <Route path="/" element={<Child />} />
-        <Route path="/parent"  element= {<Parent/>}/>
+        <Route path="/" element={<ProtectedRoute><Child /></ProtectedRoute>} />
+        <Route path="/parent"  element= {<ProtectedRoute><Parent/></ProtectedRoute>}/>
         <Route path="/doddledeck" element ={<Doddledeck/>}/>
         <Route path="/rewards" element = {<Rewards/>}/>
         <Route path="/screendrawing" element = {<ScreenDrawing/>}/>
@@ -36,9 +37,9 @@ function App() {
         <Route path="/signup" element = {<Signup/>}/>
         <Route path="/login" element = {<Login/>}/>
         <Route path="/welcome" element = {<WelcomePage/>}/>
-       
-      </Routes>
-      
+       </Routes>
+     
+   
     
   );
 }
