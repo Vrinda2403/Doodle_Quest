@@ -4,13 +4,13 @@ dotenv.config();
 const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY });
 
 
-async function  quizContent(doodle) {
+async function  quizContent(doodle,lang) {
     try{
      const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
     contents: `You are a fun and creative quiz generator for kids aged 5–10.
 
-Based on the doodle topic "${doodle}", generate **3 short, fun, educational quiz questions** in **JSON format**.
+Based on the doodle topic "${doodle}", generate **3 short, fun, educational quiz questions** in **JSON format** in "${lang}" language.
 
 Each quiz question should have:
 - "questionText": A simple question for kids

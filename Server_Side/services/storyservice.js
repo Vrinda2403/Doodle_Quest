@@ -5,13 +5,13 @@ const ai = new GoogleGenAI({apiKey: process.env.GEMINI_API_KEY });
 
 
 
-async function storyContent(doodle)
+async function storyContent(doodle,lang)
 {
 
 try{
 const response = await ai.models.generateContent({
     model: "gemini-2.5-flash",
-    contents: `Generate a 5-line children-friendly,interesting and educational story involving ${doodle}`,
+    contents: `Generate a 5-line simple, engaging children-friendly easily understandable ,interactive ,interesting and educational story involving ${doodle} in ${lang}`,
   });
 
 

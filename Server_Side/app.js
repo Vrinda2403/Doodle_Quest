@@ -4,6 +4,9 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 import timeRoute from "./routes/timeRoute.js";
 import storyroute from "./routes/storyroute.js";
+import quizroute from "./routes/quizroute.js";
+import audioroute from "./routes/audioroute.js";
+     
 import quizroute from "./routes/quizroute.js" ;
 
 dotenv.config();
@@ -29,6 +32,7 @@ app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
 app.use("/api",storyroute);
 app.use("/api",quizroute);
+app.use("/api",audioroute);
 // const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
 // Suddenly, they saw a big, bright rainbow in the sky!
 
