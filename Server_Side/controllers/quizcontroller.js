@@ -3,7 +3,7 @@ import audioService from "../services/audioservice.js";
 
 async function generateQuiz(req, res)
 {
-const quiz=await quizContent(req.query.obj)
+const quiz=await quizContent(req.query.obj,req.query.lang)
 audioService(quiz);
 res.status(200).json({ quiz });
 }

@@ -2,8 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import grass from '../../assets/Grass.png';
+import { useEffect } from 'react';
 
-const quizQuestions = [
+
+
+
+
+const Quiz = () => {
+  const [quizQuestions, setQuizQuestions] = useState([
   {
     questionText: 'Which of these animals says "Moo"?',
     answerOptions: [
@@ -34,14 +40,13 @@ const quizQuestions = [
     ],
     funFact: 'The seven colors are Red, Orange, Yellow, Green, Blue, Indigo, and Violet!',
   },
-];
-
-
-const Quiz = () => {
+]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [isCorrect, setIsCorrect] = useState(null);
   const [score, setScore] = useState(0);
+   const [language, setLanguage] = useState("english");
+const [isPlaying, setIsPlaying] = useState(false);
 
   const navigate = useNavigate();
 
@@ -81,8 +86,40 @@ const Quiz = () => {
     }
     return 'bg-gray-400 opacity-70';
   };
+const [doodle,setDoodle]=useState("sun");
+  useEffect(() => {
+  fetch(`http://localhost:3000/api/quiz?obj=${doodle}&lang=${language}`)
+    .then(res => res.json())
+    .then(data => {
+      // data.quiz is a string → convert to array
+      const parsedQuiz = JSON.parse(data.quiz);  
+      setQuizQuestions(parsedQuiz);
+    })
+    .catch(err => console.error("Quiz fetch error:", err));
+}, [doodle]);
+ const textToSpeak = `
+    Question: ${quizQuestions[currentQuestion].questionText}.
+    Options are: 
+    ${quizQuestions[currentQuestion].answerOptions
+      .map(o => o.answerText)
+      .join(", ")}.
+    Fun fact: ${quizQuestions[currentQuestion].funFact}.
+  `;
+useEffect(() => {
+ if (!isPlaying) return;
 
+  fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(textToSpeak)}`)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    })
+    .catch(err => console.error(err))
+    .finally(() => setIsPlaying(false));
+}, [isPlaying]);
   return (
+    
     <div className='relative flex flex-col items-center justify-center bg-gradient-to-b from-[#A9C2E9] to-blue-100 min-h-screen p-4'>
       
       {/* Blurred Quiz Box */}
@@ -93,6 +130,32 @@ const Quiz = () => {
           </h2>
           <p className="text-xl font-semibold text-purple-600 mt-2">Score: {score}</p>
         </div>
+        {/* Language + Audio Controls */}
+<div className="flex justify-center gap-4 mb-6">
+
+  {/* Language Dropdown */}
+  <select
+    className="px-3 py-2 rounded-lg bg-purple-200 text-purple-900 font-semibold shadow"
+    value={language}
+    onChange={(e) => setLanguage(e.target.value)}
+  >
+    <option value="english">English</option>
+    <option value="hindi">Hindi</option>
+    <option value="punjabi">Punjabi</option>
+    <option value="spanish">Spanish</option>
+  </select>
+
+  {/* Audio Button */}
+  <button
+    onClick={() => setIsPlaying(true)}
+    className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
+  >
+    🔊 Narrate
+  </button>
+
+</div>
+
+
 
         <h3 className="text-3xl font-bold text-gray-900 mb-8 min-h-[6rem]">
           {quizQuestions[currentQuestion].questionText}
