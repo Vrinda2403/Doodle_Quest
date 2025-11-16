@@ -28,7 +28,9 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
         <Route path="/" element={<ProtectedRoute><Child /></ProtectedRoute>} />
+        {/* <Route path="/" element={<Child />} /> */}
         <Route path="/parent"  element= {<ProtectedRoute><Parent/></ProtectedRoute>}/>
+        {/* <Route path="/parent" element={<Parent />} /> */}
         <Route path="/doddledeck" element ={<Doddledeck/>}/>
         <Route path="/rewards" element = {<Rewards/>}/>
         <Route path="/screendrawing" element = {<ScreenDrawing/>}/>

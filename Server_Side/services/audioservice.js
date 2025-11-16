@@ -1,13 +1,13 @@
 import { ElevenLabsClient, play } from '@elevenlabs/elevenlabs-js';
 import { Readable } from 'stream';
 import dotenv from "dotenv";
-function audioService(story)
+async function audioService(story)
 {
    
 
 dotenv.config();
 
-async function generateAndPlayAudio() {
+
   // Initialize ElevenLabs client (API key auto-picked from environment if set)
   const elevenlabs = new ElevenLabsClient();
 
@@ -32,10 +32,9 @@ async function generateAndPlayAudio() {
   });
 
   // Play the generated stream
-  await play(stream);
-}
+  return stream;
 
-generateAndPlayAudio().catch(console.error);
+
 }
 
 export default audioService;
