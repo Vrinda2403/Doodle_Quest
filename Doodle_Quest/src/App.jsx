@@ -6,7 +6,6 @@ import {  BrowserRouter as Router , Routes, Route } from "react-router-dom";
 import Login from './components/Login';
 import Signup from './components/Signup';
 import WelcomePage from './components/WelcomePage';
-
 import QuizFlash from "./components/quiz/QuizFlash";
 import Quiz from "./components/quiz/Quiz";
 import QuizReward from "./components/quiz/QuizReward";
