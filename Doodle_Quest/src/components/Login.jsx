@@ -199,7 +199,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      // ✅ Clerk sign-in attempt
+      //  Clerk sign-in attempt
       const result = await signIn.create({
         identifier: formData.email,
         password: formData.password,
@@ -207,7 +207,7 @@ const Login = () => {
 
       if (result.status === "complete") {
         await setActive({ session: result.createdSessionId });
-        navigate("/dashboard"); // Redirect after login
+        navigate("/"); // Redirect after login
       } else {
         setError("Login not completed. Try again.");
       }
