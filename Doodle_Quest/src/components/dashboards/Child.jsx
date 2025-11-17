@@ -386,107 +386,71 @@ const Child = () => {
             )}
 
             {history && (
-              <div className="flex justify-center gap-6 px-6 py-10">
-                
-                {/* --- Box 1: UPDATED ---  */}
-                <div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col">
-                  <h2 className="font-semibold text-lg mb-4 text-gray-800">
-                    Latest Doodle ({history.doodles.length})
-                  </h2>
-                  <div className="flex-grow flex flex-col justify-center items-center">
-                    {/* Show only the latest doodle (the first one in the array) */}
+              <div className="flex flex-col gap-4">
+                {/* Flex Container for the 3 Boxes */}
+                <div className="flex justify-center gap-6 px-6 py-10">
+                  
+                  {/* --- Box 1: Latest Doodle --- */}
+                  <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
                     {history.doodles.length > 0 ? (
-                      <img
-                        key={history.doodles[0]._id} // Get the first item
-                        src={history.doodles[0].imageUrl} // Get the first item
-                        alt={history.doodles[0].prompt}
-                        className="w-full h-48 object-cover rounded-lg border-2 border-white bg-white shadow-md"
-                      />
+                       <>
+                        <img
+                          src={history.doodles[0].imageUrl}
+                          alt="Latest Doodle"
+                          className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md"
+                        />
+                        <p className="mt-4 font-bold text-gray-800">Latest</p>
+                       </>
                     ) : (
-                      <p className="text-center text-gray-700">
-                        No doodles drawn yet. Go draw something!
-                      </p>
+                      <p className="text-gray-700">No doodles yet!</p>
                     )}
                   </div>
-                  <Link
+
+                  {/* --- Box 2: 2nd Latest Doodle --- */}
+                  <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+                    {history.doodles.length > 1 ? (
+                       <>
+                        <img
+                          src={history.doodles[1].imageUrl}
+                          alt="2nd Latest Doodle"
+                          className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md"
+                        />
+                        <p className="mt-4 font-bold text-gray-800">Recent</p>
+                       </>
+                    ) : (
+                      <div className="text-gray-400 border-2 border-dashed border-gray-300 w-full h-64 rounded-lg flex items-center justify-center">
+                        Empty Slot
+                      </div>
+                    )}
+                  </div>
+
+                  {/* --- Box 3: 3rd Latest Doodle --- */}
+                  <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+                    {history.doodles.length > 2 ? (
+                       <>
+                        <img
+                          src={history.doodles[2].imageUrl}
+                          alt="3rd Latest Doodle"
+                          className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md"
+                        />
+                         <p className="mt-4 font-bold text-gray-800">Previous</p>
+                       </>
+                    ) : (
+                      <div className="text-gray-400 border-2 border-dashed border-gray-300 w-full h-64 rounded-lg flex items-center justify-center">
+                        Empty Slot
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+                
+                {/* Show All Link */}
+                <div className="text-right pr-10 pb-4">
+                    <Link
                     to="/doddledeck"
-                    className="text-blue-800 font-bold hover:underline mt-4 block text-right"
+                    className="mt-4 px-4 py-2 rounded-full bg-blue-300 text-black font-medium font-robotoSlab shadow-sm hover:bg-purple-200 transition"
                   >
                     Show All Doodles &gt;
-                  </Link>
-                </div>
-
-                {/* === Box 2: Quiz Attempts === */}
-                <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col">
-                  <h2 className="font-semibold text-lg mb-4 text-gray-800">
-                    Recent Quizzes ({history.quizzes.length})
-                  </h2>
-                  <ul className="space-y-3 flex-grow">
-                    {history.quizzes.slice(0, 4).map((quiz) => (
-                      <li
-                        key={quiz._id}
-                        className="bg-white/50 p-3 rounded shadow"
-                      >
-                        <span className="font-bold text-gray-800">
-                          {quiz.quizName || 'General Quiz'}
-                        </span>
-                        <p className="text-gray-700">
-                          Score: {quiz.score} / {quiz.totalQuestions}
-                        </p>
-                      </li>
-                    ))}
-                    {history.quizzes.length === 0 && (
-                      <p className="text-center text-gray-700">
-                        No quizzes taken yet.
-                      </p>
-                    )}
-                  </ul>
-                  <Link
-                    to="/doddledeck"
-                    className="text-blue-800 font-bold hover:underline mt-4 block text-right"
-                  >
-                    Show All History &gt;
-                  </Link>
-                </div>
-
-                {/* === Box 3: Puzzle Progress=== */}
-                <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col">
-                  <h2 className="font-semibold text-lg mb-4 text-gray-800">
-                    Puzzle Progress ({history.puzzles.length})
-                  </h2>
-                  <ul className="space-y-3 flex-grow">
-                    {history.puzzles.slice(0, 4).map((puzzle) => (
-                      <li
-                        key={puzzle._id}
-                        className="bg-white/50 p-3 rounded shadow"
-                      >
-                        <span className="font-bold text-gray-800">
-                          {puzzle.puzzleName}
-                        </span>
-                        <p
-                          className={`font-semibold ${
-                            puzzle.isCompleted
-                              ? 'text-green-700'
-                              : 'text-gray-700'
-                          }`}
-                        >
-                          {puzzle.isCompleted
-                            ? 'Completed!'
-                            : `Progress: ${puzzle.progress}%`}
-                        </p>
-                      </li>
-                    ))}
-                    {history.puzzles.length === 0 && (
-                      <p className="text-center text-gray-700">
-                        No puzzles started yet.
-                      </p>
-                    )}
-                  </ul>
-                  <Link
-                    to="/doddledeck"
-                    className="text-blue-800 font-bold hover:underline mt-4 block text-right"
-                  >
-                    Show All History &gt;
                   </Link>
                 </div>
               </div>

@@ -14,6 +14,7 @@ import asyncHandler from 'express-async-handler';
 import QuizAttempt from '../models/QuizAttempt.model.js';
 import quizContent from "../services/quizservice.js";    
 import audioService from "../services/audioservice.js";
+import * as rewardsService from '../services/rewards.service.js';
 
 async function generateQuiz(req, res) {
     const quiz=await quizContent(req.query.obj)
@@ -42,6 +43,8 @@ const submitQuiz = asyncHandler(async (req, res) => {
   // 4. Save it to the database
   await newAttempt.save();
   
+  // (it runs in the background)
+  rewardsService.checkQuizAchievements(childId, newAttempt);
   // 5. Send a success response
   res.status(201).json({ message: 'Quiz attempt saved successfully!' });
   

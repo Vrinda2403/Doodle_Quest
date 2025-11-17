@@ -47,6 +47,8 @@ import timeRoute from "./routes/timeRoute.js";
 import storyroute from "./routes/storyroute.js";
 import quizroute from "./routes/quizroute.js" ;
 import storageRoutes from './routes/storage.routes.js';
+import rewardsRoutes from './routes/rewards.routes.js'; 
+import dashboardRoutes from './routes/dashboard.routes.js';
 
 dotenv.config();
 
@@ -68,12 +70,11 @@ mongoose
 // --- API ROUTES ---
 // We group all routes together
 app.use("/api/time", timeRoute);
-app.use("/api/story", storyroute); // Changed from /api to /api/story
-app.use("/api/quiz", quizroute);   // Changed from /api to /api/quiz
-
-// --- NEW STORAGE ROUTE ---
+app.use("/api/story", storyroute);
+app.use("/api/quiz", quizroute);
 app.use('/api/storage', storageRoutes);
-
+app.use('/api/rewards', rewardsRoutes); 
+app.use('/api/dashboard', dashboardRoutes);
 
 // --- CLERK ERROR HANDLER ---
 // It catches any authentication errors from Clerk.

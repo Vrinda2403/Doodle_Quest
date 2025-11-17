@@ -2,10 +2,9 @@ import asyncHandler from 'express-async-handler';
 import Doodle from '../models/Doodle.model.js';
 import PuzzleProgress from '../models/PuzzleProgress.model.js';
 import QuizAttempt from '../models/QuizAttempt.model.js';
+import * as rewardsService from '../services/rewards.service.js'; 
 
-// @desc    Upload a new doodle drawing
-// @route   POST /api/storage/upload-doodle
-// @access  Private (Child only)
+
 const uploadDoodle = asyncHandler(async (req, res) => {
   // 'req.file' is added by the 'upload' (Multer) middleware
   if (!req.file) {
@@ -24,12 +23,13 @@ const uploadDoodle = asyncHandler(async (req, res) => {
   });
 
   const savedDoodle = await newDoodle.save();
+  
+  // (it runs in the background)
+  rewardsService.checkDoodleAchievements(childId);
+
   res.status(201).json(savedDoodle);
 });
 
-// @desc    Save or update puzzle progress
-// @route   POST /api/storage/save-puzzle
-// @access  Private (Child only)
 const savePuzzleProgress = asyncHandler(async (req, res) => {
   const { puzzleName, progress, isCompleted } = req.body;
   const childId = req.auth.userId;
@@ -46,6 +46,9 @@ const savePuzzleProgress = asyncHandler(async (req, res) => {
     { progress, isCompleted },
     { new: true, upsert: true }
   );
+
+  // (it runs in the background)
+  rewardsService.checkPuzzleAchievements(childId, updatedProgress);
 
   res.status(200).json(updatedProgress);
 });
