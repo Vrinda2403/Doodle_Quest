@@ -16,10 +16,11 @@ import quizContent from "../services/quizservice.js";
 import audioService from "../services/audioservice.js";
 import * as rewardsService from '../services/rewards.service.js';
 
-async function generateQuiz(req, res) {
-    const quiz=await quizContent(req.query.obj)
-    audioService(quiz);
-    res.status(200).json({ quiz });
+async function generateQuiz(req, res)
+{
+const quiz=await quizContent(req.query.obj,req.query.lang)
+audioService(quiz);
+res.status(200).json({ quiz });
 }
 
 // --- NEW FUNCTION TO SUBMIT QUIZ RESULTS ---

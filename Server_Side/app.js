@@ -45,10 +45,10 @@ import dotenv from "dotenv";
 // --- ROUTES ---
 import timeRoute from "./routes/timeRoute.js";
 import storyroute from "./routes/storyroute.js";
-import quizroute from "./routes/quizroute.js" ;
-import storageRoutes from './routes/storage.routes.js';
-import rewardsRoutes from './routes/rewards.routes.js'; 
-import dashboardRoutes from './routes/dashboard.routes.js';
+import quizroute from "./routes/quizroute.js";
+import audioroute from "./routes/audioroute.js";
+     
+// import quizroute from "./routes/quizroute.js" ;
 
 dotenv.config();
 
@@ -91,9 +91,13 @@ app.use((err, req, res, next) => {
 });
 
 
-// --- START THE SERVER ---
-// This should be at the end of the file.
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+app.use("/api",storyroute);
+app.use("/api",quizroute);
+app.use("/api",audioroute);
+// const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
+// Suddenly, they saw a big, bright rainbow in the sky!
 
+// “Let’s find the end of the rainbow!” giggled Peppa.
+// But Daddy Pig chuckled — “The rainbow’s end is wherever the fun is!`
+// audioService(story);
 export default app;

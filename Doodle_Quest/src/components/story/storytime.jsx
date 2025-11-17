@@ -1,5 +1,5 @@
-import React from 'react';
-
+import React, { use, useState } from 'react';
+import { useEffect } from 'react';
 // NOTE: It is best practice to move font imports to your main index.html file.
 const GlobalStyles = () => (
   <style>
@@ -11,6 +11,39 @@ const GlobalStyles = () => (
 
 // Component names in React should be capitalized
 function Storytime() {
+ const [story, setStory] = useState(
+`The little bird sang a joyful tune
+A sleepy fox dreamt beneath the moon.
+The wind whispered secrets through the trees,
+As fireflies danced on the evening breeze.
+`
+);
+const [doodle,setDoodle]=useState("sun");
+const [language, setLanguage] = useState("english");
+const [isPlaying, setIsPlaying] = useState(false);
+
+useEffect(() => {
+      fetch(`http://localhost:3000/api/story?obj=${doodle}&lang=${language}`)
+        .then(res => res.json())
+        .then(data => setStory(data.story))
+               .catch(err => console.error(err));
+    }, [doodle, language]);
+
+useEffect(() => {
+ if (!isPlaying) return;
+
+  fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(story)}`)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    })
+    .catch(err => console.error(err))
+    .finally(() => setIsPlaying(false));
+}, [isPlaying]);
+
+
   return (
     <div>
       <GlobalStyles />
@@ -19,10 +52,33 @@ function Storytime() {
           <div className="font-['Orbitron'] text-xl">DoodleQuest</div>
         </div>
         <div className="font-['Roboto Slab'] text-4xl">Little Stories</div>
-        <div className="w-8 h-8 gap-3 rounded-full flex items-center justify-center">
-            <img src="/src/assets/home-icon.png" alt="Home" className="w-full h-full" />
-             <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
-         </div>
+                <div className="flex items-center gap-4">
+
+  {/* Language Selector */}
+  <select
+    className="bg-[#0b245c] text-white px-3 py-2 rounded-lg font-['Spline Sans']"
+    value={language}
+    onChange={(e) => setLanguage(e.target.value)}
+  >
+    <option value="english">English</option>
+    <option value="hindi">Hindi</option>
+    <option value="punjabi">Punjabi</option>
+    <option value="spanish">Spanish</option>
+  </select>
+
+  {/* Audio Button */}
+  <button
+    onClick={() => setIsPlaying(true)}
+    className="bg-[#FF5900] px-4 py-2 rounded-lg hover:bg-orange-700 transition text-white font-['Spline Sans']"
+  >
+    🔊 Audio
+  </button>
+
+  {/* Icons */}
+  <img src="/src/assets/home-icon.png" alt="Home" className="w-8 h-8" />
+  <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+</div>
+
       </nav>
 
       <div className="px-4 py-8 bg-[url('/src/assets/storybg.jpg')] min-h-screen flex justify-center items-center bg-cover bg-center">
@@ -32,14 +88,15 @@ function Storytime() {
           
           {/* Story Content */}
           <div className="relative text-white font-['Spline Sans'] text-4xl p-8 w-1/2 flex flex-col justify-center">
-            <p>
-              The little bird sang a joyful tune.<br />
+            <p className="leading-snug md:leading-normal text-xl md:text-3xl whitespace-pre-line">
+              {/* The little bird sang a joyful tune.<br />
               A sleepy fox dreamt beneath the moon.<br />
               The wind whispered secrets through the trees,<br />
-              As fireflies danced on the evening breeze.
+              As fireflies danced on the evening breeze. */}
+             {story}
             </p>
             {/* FIX: Buttons are now positioned reliably at the bottom of the text area */}
-            <div className="absolute -bottom-4 left-8 flex gap-7">
+            <div className="flex gap-7 mt-auto">
               <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Bookmark</button>
               <button className="bg-[#FF5900] text-xl text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">Skip</button>
             </div>
