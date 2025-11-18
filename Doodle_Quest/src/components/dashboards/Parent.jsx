@@ -103,9 +103,12 @@ import { useNavigate } from 'react-router-dom';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Parent = () => {
+
+  
   const { user } = useUser();
   const { getToken } = useAuth();
 
+  // --- Stats State ---
   const [stats, setStats] = useState({
     totalDoodles: 0,
     puzzlesSolved: 0,
@@ -118,6 +121,128 @@ const Parent = () => {
     weeklyGoalPercent: 0
   });
   
+  const [loading, setLoading] = useState(true);
+
+  // --- Task Management State ---
+  const [taskMode, setTaskMode] = useState('assign'); // 'assign' or 'review'
+  const [taskTitle, setTaskTitle] = useState("");
+  const [taskDesc, setTaskDesc] = useState("");
+  const [assigning, setAssigning] = useState(false);
+  
+  // Review State
+  const [taskList, setTaskList] = useState([]);
+  const [appreciationMsg, setAppreciationMsg] = useState("");
+  const [activeTaskId, setActiveTaskId] = useState(null); // Which task are we appreciating?
+
+  // --- Fetch Analytics & Tasks ---
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = await getToken();
+        if (!token) return;
+        
+        const config = { headers: { Authorization: `Bearer ${token}` } };
+
+        // 1. Get Stats
+        const statsRes = await axios.get('http://localhost:3000/api/dashboard/stats', config);
+        setStats(statsRes.data);
+
+        // 2. Get Tasks (for review)
+        // Note: In dev mode, we act as both parent and child, so this works.
+        // In prod, you'd fetch tasks by childId.
+        const tasksRes = await axios.get('http://localhost:3000/api/tasks/my-tasks', config);
+        setTaskList(tasksRes.data);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [getToken]); // Reload when token is ready
+
+  // --- Handle Task Assignment ---
+  const handleAssignTask = async (e) => {
+    e.preventDefault();
+    if(!taskTitle) return alert("Please enter a task title");
+
+    setAssigning(true);
+    try {
+      const token = await getToken();
+      // Assign to self for testing
+      await axios.post('http://localhost:3000/api/tasks/assign', {
+        childId: user.id, 
+        title: taskTitle,
+        description: taskDesc,
+        dueDate: new Date() 
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert("Task Assigned Successfully!");
+      setTaskTitle("");
+      setTaskDesc("");
+      
+      // Refresh list
+      const res = await axios.get('http://localhost:3000/api/tasks/my-tasks', {
+          headers: { Authorization: `Bearer ${token}` }
+      });
+      setTaskList(res.data);
+
+    } catch (err) {
+      console.error("Error assigning task:", err);
+      alert("Failed to assign task.");
+    } finally {
+      setAssigning(false);
+    }
+  };
+
+  // --- Handle Sending Appreciation ---
+  const handleSendAppreciation = async (taskId) => {
+    if (!appreciationMsg) return alert("Write a message first!");
+    
+    try {
+      const token = await getToken();
+      await axios.put(`http://localhost:3000/api/tasks/appreciate/${taskId}`, {
+        message: appreciationMsg
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      alert("Appreciation Sent! 🌟");
+      setAppreciationMsg("");
+      setActiveTaskId(null);
+
+      // Update local list to show the new message
+      setTaskList(prev => prev.map(t => 
+        t._id === taskId ? { ...t, appreciationMessage: appreciationMsg } : t
+      ));
+
+    } catch (err) {
+      console.error(err);
+      alert("Failed to send message");
+    }
+  };
+
+
+  // --- Chart Data ---
+  const barData = [
+    { name: 'Doodles', count: stats.weeklyDoodles },
+    { name: 'Quizzes', count: stats.weeklyQuizzes },
+    { name: 'Puzzles', count: stats.weeklyPuzzles },
+  ];
+
+  const pieData = [
+    { name: 'Doodles', value: stats.totalDoodles },
+    { name: 'Puzzles', value: stats.puzzlesSolved },
+    { name: 'Quizzes', value: stats.totalQuizzes },
+  ];
+  
+  const hasData = stats.totalDoodles > 0 || stats.puzzlesSolved > 0 || stats.totalQuizzes > 0;
+  const displayPieData = hasData ? pieData : [{ name: 'No Data', value: 1 }];
+  const COLORS = hasData ? ['#8884d8', '#82ca9d', '#ffc658'] : ['#e0e0e0'];
+
   const menuItems = [
     { label: "DRAWINGS", active: true },
     { label: "STORY LISTENED", active: false },
@@ -125,46 +250,6 @@ const Parent = () => {
     { label: "SCREEN TIME", active: false },
     { label: "PAPER TIME", active: false },
   ];
-
-
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAnalytics = async () => {
-      try {
-        const token = await getToken();
-        if (!token) return;
-
-        const response = await axios.get('http://localhost:3000/api/dashboard/stats', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-
-        setStats(response.data);
-      } catch (err) {
-        console.error("Error fetching stats:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAnalytics();
-  }, [getToken]);
-
-  // --- Data for Charts ---
-  
-  // 1. Bar Chart Data (Weekly Activity)
-  const barData = [
-    { name: 'Doodles', count: stats.weeklyDoodles },
-    { name: 'Quizzes', count: stats.weeklyQuizzes },
-    { name: 'Puzzles', count: stats.weeklyPuzzles },
-  ];
-
-  // 2. Pie Chart Data (Total Distribution)
-  const pieData = [
-    { name: 'Doodles', value: stats.totalDoodles },
-    { name: 'Puzzles', value: stats.puzzlesSolved },
-    { name: 'Quizzes', value: stats.totalQuizzes },
-  ];
-  const COLORS = ['#8884d8', '#82ca9d', '#ffc658'];
 
   return (
     <div className="bg-[#F4EDE6] min-h-screen pb-10 flex flex-col">
@@ -380,7 +465,150 @@ const Parent = () => {
         <p className="text-lg mb-2"><span className="text-red-600 font-bold">⚠️ Warning:</span> Encourage regular breaks for movement, outdoor play, and face-to-face interaction.</p>
         <p className="text-lg"><span className="text-green-600 font-bold">🌟 Good News:</span> Your child is doing amazing! Their creativity is growing.</p>
       </div>
+      
 
+
+      {/* ✅ === TASK MANAGEMENT SECTION (UPDATED WITH TOGGLE) === */}
+      <div className="w-full max-w-6xl mx-auto mt-10 px-6">
+          <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
+              
+              {/* Header with Toggle */}
+              <div className="bg-[#2C2A4A] px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                  <div className="flex items-center gap-3">
+                      <img src="/src/assets/post.png" alt="Task" className="w-6 invert" />
+                      <h2 className="text-xl font-bold text-white font-orbitron">Task Management</h2>
+                  </div>
+                  
+                  {/* SLIDER / TOGGLE BUTTONS */}
+                  <div className="bg-[#0F172A] p-1 rounded-full flex gap-1">
+                      <button 
+                        onClick={() => setTaskMode('assign')}
+                        className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${taskMode === 'assign' ? 'bg-white text-[#2C2A4A]' : 'text-white hover:bg-white/10'}`}
+                      >
+                        Assign New
+                      </button>
+                      <button 
+                        onClick={() => setTaskMode('review')}
+                        className={`px-4 py-1.5 rounded-full text-sm font-bold transition-all ${taskMode === 'review' ? 'bg-white text-[#2C2A4A]' : 'text-white hover:bg-white/10'}`}
+                      >
+                        Review & Appreciate
+                      </button>
+                  </div>
+              </div>
+
+              {/* Content Area */}
+              <div className="p-8">
+                  
+                  {/* === VIEW 1: ASSIGN TASKS === */}
+                  {taskMode === 'assign' && (
+                    <div className="flex flex-col md:flex-row gap-8 animate-fade-in">
+                        <div className="flex-1">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4">Create New Task</h3>
+                            <form onSubmit={handleAssignTask} className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-600 mb-1">Task Title</label>
+                                    <input 
+                                      type="text" 
+                                      className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-[#3B17AB] outline-none transition"
+                                      placeholder="e.g. Draw a Sunny Beach"
+                                      value={taskTitle}
+                                      onChange={(e) => setTaskTitle(e.target.value)}
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-bold text-gray-600 mb-1">Instructions</label>
+                                    <textarea 
+                                      className="w-full border-2 border-gray-300 rounded-lg p-3 focus:border-[#3B17AB] outline-none transition h-24 resize-none"
+                                      placeholder="e.g. Use yellow for sand and blue for water..."
+                                      value={taskDesc}
+                                      onChange={(e) => setTaskDesc(e.target.value)}
+                                    ></textarea>
+                                </div>
+                                <button 
+                                  type="submit" 
+                                  disabled={assigning}
+                                  className="bg-[#3B17AB] text-white px-8 py-3 rounded-full font-bold hover:bg-[#2a0f80] transition shadow-lg w-full md:w-auto disabled:opacity-50"
+                                >
+                                  {assigning ? "Assigning..." : "Assign Task to Child"}
+                                </button>
+                            </form>
+                        </div>
+                        <div className="flex-1 bg-blue-50 rounded-xl p-6 flex flex-col justify-center items-center text-center border border-blue-100">
+                             <img src="https://cdn-icons-png.flaticon.com/512/4205/4205906.png" alt="Tasks" className="w-32 mb-4 opacity-80" />
+                             <h4 className="font-bold text-blue-900">Encourage Creativity!</h4>
+                             <p className="text-sm text-blue-700 mt-2 max-w-xs">
+                                 Assigning specific themes helps focus your child's imagination. Try topics like "Animals", "Space", or "Family".
+                             </p>
+                        </div>
+                    </div>
+                  )}
+
+                  {/* === VIEW 2: REVIEW TASKS === */}
+                  {taskMode === 'review' && (
+                    <div className="animate-fade-in">
+                       <h3 className="text-lg font-bold text-gray-800 mb-4">Child's Progress</h3>
+                       <div className="grid grid-cols-1 gap-4">
+                          {taskList.length === 0 ? (
+                            <p className="text-center text-gray-500 py-8 italic">No tasks assigned yet.</p>
+                          ) : (
+                            taskList.map(task => (
+                              <div key={task._id} className="border border-gray-200 rounded-xl p-4 flex flex-col md:flex-row justify-between items-center gap-4 hover:shadow-md transition bg-gray-50">
+                                  <div className="flex-1">
+                                      <div className="flex items-center gap-3">
+                                          <h4 className="font-bold text-gray-800">{task.title}</h4>
+                                          <span className={`text-xs px-2 py-0.5 rounded-full font-bold ${task.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                                              {task.status === 'completed' ? 'COMPLETED' : 'PENDING'}
+                                          </span>
+                                      </div>
+                                      <p className="text-sm text-gray-600 mt-1">{task.description}</p>
+                                      {task.appreciationMessage && (
+                                        <p className="text-xs text-purple-600 mt-2 font-medium">✨ Your Message: "{task.appreciationMessage}"</p>
+                                      )}
+                                  </div>
+                                  
+                                  {/* Action Area */}
+                                  <div className="flex-shrink-0">
+                                      {task.status === 'completed' && !task.appreciationMessage ? (
+                                          activeTaskId === task._id ? (
+                                              <div className="flex gap-2">
+                                                  <input 
+                                                    type="text" 
+                                                    placeholder="Write something nice..." 
+                                                    className="border rounded px-2 py-1 text-sm outline-none focus:border-purple-500"
+                                                    value={appreciationMsg}
+                                                    onChange={(e) => setAppreciationMsg(e.target.value)}
+                                                  />
+                                                  <button 
+                                                    onClick={() => handleSendAppreciation(task._id)}
+                                                    className="bg-purple-600 text-white px-3 py-1 rounded text-sm font-bold hover:bg-purple-700"
+                                                  >
+                                                    Send
+                                                  </button>
+                                              </div>
+                                          ) : (
+                                              <button 
+                                                onClick={() => setActiveTaskId(task._id)}
+                                                className="bg-white border-2 border-purple-600 text-purple-600 px-4 py-1.5 rounded-full text-sm font-bold hover:bg-purple-50 transition"
+                                              >
+                                                Send Appreciation 💖
+                                              </button>
+                                          )
+                                      ) : (
+                                         <div className="text-xs text-gray-400 font-medium italic w-32 text-center">
+                                            {task.status === 'pending' ? 'Waiting for child...' : 'Message Sent ✅'}
+                                         </div>
+                                      )}
+                                  </div>
+                              </div>
+                            ))
+                          )}
+                       </div>
+                    </div>
+                  )}
+
+              </div>
+          </div>
+      </div>
     </div>
   );
 };
