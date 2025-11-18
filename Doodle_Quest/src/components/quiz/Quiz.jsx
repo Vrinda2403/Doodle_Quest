@@ -142,8 +142,8 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '@clerk/clerk-react'; // ✅ ADDED
-import axios from 'axios'; // ✅ ADDED
+import { useAuth } from '@clerk/clerk-react'; 
+import axios from 'axios'; 
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import grass from '../../assets/Grass.png';
 import { useEffect } from 'react';

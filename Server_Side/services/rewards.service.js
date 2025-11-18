@@ -1,83 +1,71 @@
 import Reward from '../models/Reward.model.js';
 import UserReward from '../models/UserReward.model.js';
-import Doodle from '../models/Doodle.model.js';
-import PuzzleProgress from '../models/PuzzleProgress.model.js';
+import UserStats from '../models/UserStats.model.js';
+
+// Define the Point Thresholds mapping
+const BADGE_THRESHOLDS = {
+  10: "Level 1 Badge",   // Badge1.png
+  100: "Level 2 Badge",  // Badge2.png
+  500: "Level 3 Badge",  // Badge3.png
+  1000: "Level 4 Badge", // Badge4.png
+  2000: "Level 5 Badge", // Badge5.png
+};
 
 /**
- * A private helper function to give a badge to a child.
- * It automatically checks if the child already has it.
+ * Adds points to a user and checks for new badges
  */
-const awardBadge = async (childId, reward) => {
+export const addPoints = async (childId, amount) => {
   try {
-    // Check if the user already has this badge
-    const existingReward = await UserReward.findOne({
-      childId: childId,
-      rewardId: reward._id,
-    });
-
-    // If they don't have it, create it
-    if (!existingReward) {
-      await UserReward.create({
-        childId: childId,
-        rewardId: reward._id,
-      });
-      console.log(`Awarded badge "${reward.name}" to child ${childId}`);
+    // 1. Find or Create Stats
+    let stats = await UserStats.findOne({ childId });
+    if (!stats) {
+      stats = await UserStats.create({ childId, totalPoints: 0 });
     }
+
+    // 2. Update Points
+    stats.totalPoints += amount;
+    await stats.save();
+    
+    console.log(`User ${childId} gained ${amount} points. Total: ${stats.totalPoints}`);
+
+    // 3. Check for Badges
+    // We check if the new total crosses any threshold
+    for (const [threshold, badgeName] of Object.entries(BADGE_THRESHOLDS)) {
+      const limit = parseInt(threshold);
+      
+      if (stats.totalPoints >= limit) {
+        // Find the badge definition in DB
+        const rewardDef = await Reward.findOne({ name: badgeName });
+        
+        if (rewardDef) {
+          // Check if they already have it
+          const alreadyEarned = await UserReward.findOne({ 
+            childId, 
+            rewardId: rewardDef._id 
+          });
+
+          if (!alreadyEarned) {
+            await UserReward.create({ childId, rewardId: rewardDef._id });
+            console.log(`🎉 Awarded ${badgeName} to ${childId}!`);
+          }
+        }
+      }
+    }
+
   } catch (error) {
-    // This might fail if two requests try to award the same badge
-    // at the same time. The unique index will catch it.
-    console.error('Error in awardBadge:', error.message);
+    console.error("Error adding points:", error);
   }
 };
 
 /**
- * Checks all DOODLE_COUNT badges after a child saves a new doodle.
+ * Get total points for a user
  */
-export const checkDoodleAchievements = async (childId) => {
-  // 1. Get the child's total doodle count
-  const doodleCount = await Doodle.countDocuments({ childId: childId });
-
-  // 2. Find all badges related to doodle counts
-  const doodleBadges = await Reward.find({ criteriaType: 'DOODLE_COUNT' });
-
-  // 3. Loop and check
-  for (const badge of doodleBadges) {
-    if (doodleCount >= badge.criteriaValue) {
-      await awardBadge(childId, badge);
-    }
-  }
+export const getUserPoints = async (childId) => {
+  const stats = await UserStats.findOne({ childId });
+  return stats ? stats.totalPoints : 0;
 };
 
-/**
- * Checks all QUIZ_SCORE badges after a child submits a quiz.
- */
-export const checkQuizAchievements = async (childId, quizAttempt) => {
-  // 1. Find all badges related to quiz scores
-  const quizBadges = await Reward.find({ criteriaType: 'QUIZ_SCORE' });
-
-  // 2. Loop and check
-  for (const badge of quizBadges) {
-    if (quizAttempt.score >= badge.criteriaValue) {
-      await awardBadge(childId, badge);
-    }
-  }
-};
-
-/**
- * Checks all PUZZLE_COMPLETE badges after a child saves puzzle progress.
- */
-export const checkPuzzleAchievements = async (childId, puzzleProgress) => {
-  // We only care about completed puzzles
-  if (!puzzleProgress.isCompleted) {
-    return;
-  }
-
-  // 1. Find all badges related to puzzle completion
-  const puzzleBadges = await Reward.find({ criteriaType: 'PUZZLE_COMPLETE' });
-
-  // 2. Loop and check
-  for (const badge of puzzleBadges) {
-    // This logic is simple: if the puzzle is complete, award any puzzle badge.
-    await awardBadge(childId, badge);
-  }
-};
+// Keep these empty functions to prevent errors if other files still import them
+export const checkDoodleAchievements = async () => {};
+export const checkQuizAchievements = async () => {};
+export const checkPuzzleAchievements = async () => {};

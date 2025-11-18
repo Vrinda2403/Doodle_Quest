@@ -10,7 +10,7 @@ const rewardSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // A string for the frontend icon, e.g., 'badge-first-doodle.png'
+  // A string for the frontend icon, e.g., 'Badge1.png'
   icon: {
     type: String,
     required: true,
@@ -18,12 +18,11 @@ const rewardSchema = new mongoose.Schema({
   // This tells our service what logic to use
   criteriaType: {
     type: String,
-    enum: ['DOODLE_COUNT', 'QUIZ_SCORE', 'PUZZLE_COMPLETE'],
+    // ✅ UPDATE: ADD 'POINTS' TO THIS LIST
+    enum: ['DOODLE_COUNT', 'QUIZ_SCORE', 'PUZZLE_COMPLETE', 'POINTS'],
     required: true,
   },
-  // The value needed to earn the badge
-  // e.g., for 'DOODLE_COUNT', this could be 1 (for "First Doodle")
-  // e.g., for 'QUIZ_SCORE', this could be 90 (for "Quiz Whiz")
+  // The value needed to earn the badge (e.g., 100)
   criteriaValue: {
     type: Number,
     required: true,
