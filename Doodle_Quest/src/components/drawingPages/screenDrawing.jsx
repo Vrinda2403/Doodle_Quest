@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import screenBG from "../../assets/screenBG.png";
+import axios from "axios";
 
 function ScreenDrawing() {
   const canvasRef = useRef(null);
@@ -7,6 +8,33 @@ function ScreenDrawing() {
 
   // ✅ Replace with actual logged-in userId or dummy one for now
   const userId = "child123";
+
+
+  // Send canvas image to backend every 4 seconds
+useEffect(() => {
+  const interval = setInterval(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const image = canvas.toDataURL("image/png");
+
+    try {
+      const res = await axios.post("http://localhost:3000/api/doodle/analyze", {
+        userId,
+        image
+      });
+
+      if (!res.data.isSafe) {
+        alert("Unsafe doodle detected! Clearing canvas.");
+        handleClearCanvas(); // auto clear
+      }
+    } catch (err) {
+      console.log("Doodle analysis failed:", err);
+    }
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
 
   // ✅ Automatically start and stop timer when entering/leaving screen mode
   useEffect(() => {

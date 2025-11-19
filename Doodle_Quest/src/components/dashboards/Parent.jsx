@@ -189,6 +189,22 @@ import React, { useEffect } from 'react';
 import './index.css';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '@clerk/clerk-react'; // ✅ Clerk import
+import { io } from "socket.io-client";
+
+
+
+useEffect(() => {
+  const socket = io("http://localhost:3000");
+
+  socket.on("unsafe-doodle", (data) => {
+    if (data.userId === userId) {
+      alert("⚠️ ALERT: " + data.message);
+    }
+  });
+
+  return () => socket.disconnect();
+}, []);
+
 
 const Parent = () => {
   const navigate = useNavigate();
