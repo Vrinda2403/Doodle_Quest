@@ -193,6 +193,16 @@ import { io } from "socket.io-client";
 
 
 
+
+const Parent = () => {
+  const navigate = useNavigate();
+  const [screenTime, setScreenTime] = useState(0);
+  const [dailyLimit, setDailyLimit] = useState(120);
+  const [newLimit, setNewLimit] = useState("");
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const userId = "child123"; // temp — later dynamic
+  const { user } = useUser();
+  
 useEffect(() => {
   const socket = io("http://localhost:3000");
 
@@ -205,18 +215,6 @@ useEffect(() => {
   return () => socket.disconnect();
 }, []);
 
-
-const Parent = () => {
-  const navigate = useNavigate();
-  const { user } = useUser(); // ✅ get Clerk user state
-
-
-
-  const [screenTime, setScreenTime] = useState(0);
-  const [dailyLimit, setDailyLimit] = useState(120);
-  const [newLimit, setNewLimit] = useState("");
-  const [cameraAllowed, setCameraAllowed] = useState(false);
-  const userId = "child123"; // temp — later dynamic
 
   // Fetch current screen time & limit from backend
   useEffect(() => {
