@@ -174,7 +174,27 @@ function PaperDrawing() {
     }
   };
 
-  const stopCamera = () => {
+  const checkPermissionAndStart = async () => {
+  try {
+    const res = await fetch(`http://localhost:3000/api/camera/${userId}`);
+    const { cameraAllowed } = await res.json();
+
+    if (!cameraAllowed) {
+      alert("Camera access disabled by your parent.");
+      return; 
+    }
+
+    startCamera();  // only run if allowed
+  } catch (err) {
+    console.error(err);
+  }
+};
+useEffect(() => {
+  checkPermissionAndStart() ;
+})
+
+
+    const stopCamera = () => {
     if (stream) {
       stream.getTracks().forEach((track) => track.stop());
       setStream(null);
@@ -267,7 +287,7 @@ function PaperDrawing() {
             <div className="bg-white h-96 w-[800px] border-2 border-black rounded-lg mb-4 flex items-center justify-center text-gray-500">
               <video ref={videoRef} autoPlay className="w-full h-full object-cover rounded-lg" />
             </div>
-            <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2" onClick={cameraOn ? stopCamera : startCamera}>
+            <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2"  onClick={cameraOn ? stopCamera : checkPermissionAndStart}>
               <div className="w-4 h-4 bg-white rounded-sm"></div>
               ON/OFF
             </button>

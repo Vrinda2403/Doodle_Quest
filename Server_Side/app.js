@@ -71,7 +71,9 @@ import dotenv from "dotenv";
 // --- ROUTES ---
 import timeRoute from "./routes/timeRoute.js";
 import storyroute from "./routes/storyroute.js";
-import quizroute from "./routes/quizroute.js";
+import quizroute from "./routes/quizroute.js" ;
+import cameraRoutes from "./routes/cameraRoute.js";
+
 import storageRoutes from './routes/storage.routes.js'; 
 import rewardsRoutes from './routes/rewards.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
@@ -83,7 +85,10 @@ const app = express();
 
 // --- MIDDLEWARE ---
 app.use(cors());
-app.use(express.json()); // For parsing application/json
+app.use(express.json());
+import doodleRoute from "./routes/doodleRoute.js";
+
+
 app.use(express.urlencoded({ extended: true })); // For parsing multipart/form-data
 
 // --- CONNECT TO MONGODB ---
@@ -106,6 +111,17 @@ app.use('/api/storage', storageRoutes);
 // Rewards (Badges)
 app.use('/api/rewards', rewardsRoutes);
 
+app.use("/api/doodle", doodleRoute);
+app.use("/api",storyroute);
+app.use("/api",quizroute);
+app.use("/api/camera", cameraRoutes);
+
+const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
+Suddenly, they saw a big, bright rainbow in the sky!
+“Let’s find the end of the rainbow!” giggled Peppa.
+But Daddy Pig chuckled — “The rainbow’s end is wherever the fun is!`
+// audioService(story);
+export default app;
 // Parental Dashboard (Analytics)
 app.use('/api/dashboard', dashboardRoutes);
 
