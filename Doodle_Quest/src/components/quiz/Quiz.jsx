@@ -273,8 +273,12 @@ const [doodle,setDoodle]=useState("sun");
     .then(res => res.json())
     .then(data => {
       // data.quiz is a string → convert to array
-      const parsedQuiz = JSON.parse(data.quiz);  
-      setQuizQuestions(parsedQuiz);
+      // const parsedQuiz = JSON.parse(data.quiz);  
+      // setQuizQuestions(data);
+      setQuizQuestions(data.quiz);
+
+      //  const parsedQuiz = JSON.parse(data.quiz);
+      // setQuizQuestions(parsedQuiz);
     })
     .catch(err => console.error("Quiz fetch error:", err));
 }, [doodle]);
