@@ -33,8 +33,11 @@ Example format:
 ]`,
   });
    console.log(response.text);
-const quiz=response.text;
-return(quiz);
+let quizText=response.text;
+quizText = quizText.replace(/```json/g, "").replace(/```/g, "").trim();
+   const quiz = JSON.parse(quizText);
+    return quiz;
+// return(quiz);
   
     }
     catch(error)

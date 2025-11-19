@@ -21,11 +21,12 @@ As fireflies danced on the evening breeze.
 const [doodle,setDoodle]=useState("sun");
 const [language, setLanguage] = useState("english");
 const [isPlaying, setIsPlaying] = useState(false);
-
+const [imgurl,setimgurl]=useState("src/assets/storyimg.png");
 useEffect(() => {
       fetch(`http://localhost:3000/api/story?obj=${doodle}&lang=${language}`)
-        .then(res => res.json())
-        .then(data => setStory(data.story))
+        .then(res => {
+          console.log(res); return res.json()})
+        .then(data => {setStory(data.story); setimgurl(data.imageurl);})
                .catch(err => console.error(err));
     }, [doodle, language]);
 
@@ -104,7 +105,7 @@ useEffect(() => {
           
           {/* Image */}
           <div className="w-1/2 h-full">
-            <img src="/src/assets/storyimg.jpg" alt="Story Illustration" className="w-full h-full object-cover rounded-r-lg" />
+            <img src={`${imgurl}`} alt="Story Illustration" className="w-full h-full object-cover rounded-r-lg" />
           </div>
 
         </div>
