@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
 import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import axios from 'axios';
+
 import BlueBG from '../../assets/BlueBG.png'
 import CloudRainbow from '../../assets/Cloudrainbow.png'
 import CloudSun from '../../assets/CloudSun.png'
 import BlurImg from '../../assets/BlurImg.png'
 import Badges from '../../assets/Badges.png'
-// import HowBG from '../../assets/HowBg.png'
 import HowBg from '../../assets/HowBg.png'
 import Icon1 from '../../assets/Icon1.png'
 import Icon2 from '../../assets/Icon2.png'
@@ -18,7 +19,68 @@ import Welcome2 from '../Welcome2';
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
   const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
+  const [cameraAllowed, setCameraAllowed] = useState(false);
 
+
+  // ✅ New: screen time state
+  const [timeUsed, setTimeUsed] = useState(0);
+  const userId = localStorage.getItem('userId'); // assumed stored after login
+
+  useEffect(() => {
+  const fetchCamera = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/camera/${userId}`);
+      setCameraAllowed(res.data.cameraAllowed);
+    } catch (err) {
+      console.log("Camera fetch error:", err);
+    }
+  };
+  fetchCamera();
+}, []);
+
+  // ✅ Start/pause timer automatically
+  useEffect(() => {
+    const startScreenTimer = async () => {
+      try {
+        await axios.post('http://localhost:5000/api/screentime/start', { userId });
+        console.log("Timer started for", userId);
+      } catch (error) {
+        console.error("Error starting timer:", error);
+      }
+    };
+
+    if (userId) {
+      startScreenTimer();
+    }
+
+    // Pause when component unmounts
+    return async () => {
+      try {
+        await axios.post('http://localhost:5000/api/screentime/pause', { userId });
+        console.log("Timer paused for", userId);
+      } catch (error) {
+        console.error("Error pausing timer:", error);
+      }
+    };
+  }, [userId]);
+
+  // ✅ Fetch live time used every minute
+  useEffect(() => {
+    if (!userId) return;
+
+    const fetchTime = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/screentime/${userId}`);
+        setTimeUsed(res.data.timeUsed || 0);
+      } catch (error) {
+        console.error("Error fetching screen time:", error);
+      }
+    };
+
+    fetchTime(); // initial load
+    const interval = setInterval(fetchTime, 60000); // refresh every minute
+    return () => clearInterval(interval);
+  }, [userId]);
 
   const howItWorksSteps = [
     {
@@ -51,26 +113,25 @@ const Child = () => {
     },
   ];
 
-
-const footerLinks = {
-  services: [
-    { name: 'Screen Drawing', href: '/screendrawing' },
-    { name: 'Paper Drawing', href: '/paperdrawing' },
-    { name: 'Personalized Stories', href: '/storytime' },
-    { name: 'Quizzes', href: '/quizflash' },
-  ],
-  useful: [
-    { name: 'About us', href: '/' },
-    { name: 'Our team', href: '/' },
-    { name: 'Privacy policy', href: '/' },
-    { name: 'Contact us', href: '/' },
-    { name: 'Terms of service', href: '/' },
-  ]
-};
+  const footerLinks = {
+    services: [
+      { name: 'Screen Drawing', href: '/screendrawing' },
+      { name: 'Paper Drawing', href: '/paperdrawing' },
+      { name: 'Personalized Stories', href: '/storytime' },
+      { name: 'Quizzes', href: '/quizflash' },
+    ],
+    useful: [
+      { name: 'About us', href: '/' },
+      { name: 'Our team', href: '/' },
+      { name: 'Privacy policy', href: '/' },
+      { name: 'Contact us', href: '/' },
+      { name: 'Terms of service', href: '/' },
+    ]
+  };
 
   return (
     <div>
-       <Welcome2/>
+      <Welcome2 />
       <div
         className="min-h-screen w-full flex items-center justify-center bg-[length:100%_100%] bg-center"
         style={{ backgroundImage: `url(${BlueBG})` }}
@@ -113,19 +174,20 @@ const footerLinks = {
             ))}
           </nav>
 
-          {/* Main Content Area with Blurred Image */}
+          {/* Main Content Area */}
           <main className="z-10 bg-white/20 max-w-6xl backdrop-blur-sm p-3 bg-cover bg-center rounded-2xl shadow-lg mb-52 w-full px-4"
             style={{ backgroundImage: `url(${BlurImg})` }}>
-            <div className='flex hustify-center gap-6 px-6 py-10'>
-              {/*BOX 1 */}
+            <div className='flex justify-center gap-6 px-6 py-10'>
+              {/* BOX 1 */}
               <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md">
-                <h2 className="font-semibold text-lg">Box 1</h2>
+                <h2 className="font-semibold text-lg mb-4">Screen Time</h2>
+                <p className="text-2xl font-bold">{timeUsed} mins used today</p>
               </div>
-              {/*BOX 2 */}
+              {/* BOX 2 */}
               <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md">
                 <h2 className="font-semibold text-lg">Box 2</h2>
               </div>
-              {/*BOX 3 */}
+              {/* BOX 3 */}
               <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md">
                 <h2 className="font-semibold text-lg">Box 3</h2>
               </div>
@@ -151,7 +213,6 @@ const footerLinks = {
         className="min-h-[120vh] w-full flex flex-col items-center justify-center bg-[length:100%_100%] bg-center p-8"
         style={{ backgroundImage: `url(${HowBg})` }}
       >
-        {/* Section Header */}
         <header className="text-center mt-16">
           <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-wider font-semibold">
             HOW <span className="text-[#F9FD00]">DoodleQuest</span> WORKS?
@@ -161,39 +222,28 @@ const footerLinks = {
           </p>
         </header>
 
-        {/* Steps Container */}
         <main className="flex flex-wrap justify-center mt-10 items-stretch gap-12 pt-8">
           {howItWorksSteps.map((step) => (
             <div
               key={step.number}
               className={`relative w-80 border-[3px] border-black rounded-2xl p-8 text-center flex flex-col items-center shadow-md ${step.bgColor}`}
             >
-              {/* Numbers */}
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 font-robotoSlab bg-[#D9D9D9] rounded-full border-2 border-black flex items-center justify-center z-10">
-                <span className="text-black font-medium text-4xl">
-                  {step.number}
-                </span>
+                <span className="text-black font-medium text-4xl">{step.number}</span>
               </div>
 
-              {/* ICON DISPLAY */}
               <img
                 src={step.icon}
                 alt={`${step.title} icon`}
                 className="w-28 h-28 mt-8 mb-4 object-contain bg-white rounded-full"
               />
 
-              {/* Card Content */}
-              <h3 className="text-5xl text-black mb-6 tracking-wider font-robotoSlab">
-                {step.title}
-              </h3>
-              <p className="text-black text-2xl font-robotoSlab leading-snug">
-                {step.description}
-              </p>
+              <h3 className="text-5xl text-black mb-6 tracking-wider font-robotoSlab">{step.title}</h3>
+              <p className="text-black text-2xl font-robotoSlab leading-snug">{step.description}</p>
             </div>
           ))}
         </main>
       </div>
-
 
       {/*Footer */}
       <footer className="bg-[#FDF9F0] text-gray-800 font-sans p-2 md:px-16 md:pt-40">
@@ -201,42 +251,30 @@ const footerLinks = {
           <img src={Kiddy} alt="Kiddy Logo" className="w-24" />
         </div>
         <div className="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Column 1: About Company */}
           <div className="space-y-4">
             <h3 className="font-righteous text-lg uppercase">ABOUT COMPANY</h3>
             <p className="text-sm leading-relaxed text-[#373737]">
               Transform your child's drawings into magical learning adventures! Our AI recognizes their doodles and creates personalized stories, games, and STEM challenges.
             </p>
             <div className="flex space-x-3">
-              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
-                <FaTwitter />
-              </a>
-              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
-                <FaFacebookF />
-              </a>
-              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
-                <FaInstagram />
-              </a>
-              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700">
-                <FaLinkedinIn />
-              </a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700"><FaTwitter /></a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700"><FaFacebookF /></a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700"><FaInstagram /></a>
+              <a href="#" className="w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-700"><FaLinkedinIn /></a>
             </div>
           </div>
 
-          {/* Column 2: Our Services */}
           <div className="space-y-4">
-      <h3 className="font-righteous text-lg">Our Services</h3>
-      <ul className="space-y-2 text-[#373737]">
-        {footerLinks.services.map(link => (
-          <li key={link.name}>
-            {/* Change: <a> changed to <Link> and href to to */}
-            <Link to={link.href} className="text-sm hover:underline">{link.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <h3 className="font-righteous text-lg">Our Services</h3>
+            <ul className="space-y-2 text-[#373737]">
+              {footerLinks.services.map(link => (
+                <li key={link.name}>
+                  <Link to={link.href} className="text-sm hover:underline">{link.name}</Link>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-          {/* Column 3: Useful Links */}
           <div className="space-y-4">
             <h3 className="text-lg font-righteous">Useful links</h3>
             <ul className="space-y-2 text-[#373737]">
@@ -248,37 +286,22 @@ const footerLinks = {
             </ul>
           </div>
 
-          {/* Column 4: Newsletter */}
           <div className="space-y-4">
             <h3 className="font-righteous text-lg">Newsletter</h3>
-            <p className="text-sm">
-              Applications prodize before front end ortals visualize front end.
-            </p>
+            <p className="text-sm">Applications prodize before front end ortals visualize front end.</p>
             <form>
-              <input
-                type="email"
-                placeholder="Your email"
-                className="w-full p-3 bg-gray-800 text-white placeholder-gray-400 rounded-md mb-3 focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="w-full bg-[#F5A623] text-black font-bold p-3 rounded-md hover:bg-orange-500 transition-colors"
-              >
-                Subscribe
-              </button>
+              <input type="email" placeholder="Your email" className="w-full p-3 bg-gray-800 text-white placeholder-gray-400 rounded-md mb-3 focus:outline-none" />
+              <button type="submit" className="w-full bg-[#F5A623] text-black font-bold p-3 rounded-md hover:bg-orange-500 transition-colors">Subscribe</button>
             </form>
           </div>
-
         </div>
 
-        {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-500 text-center">
-          <p className="text-sm text-gray-500">
-            &copy; {new Date().getFullYear()} DoodleQuest. All Rights Reserved.
-          </p>
+          <p className="text-sm text-gray-500">&copy; {new Date().getFullYear()} DoodleQuest. All Rights Reserved.</p>
         </div>
       </footer>
     </div>
   )
 }
+
 export default Child

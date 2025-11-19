@@ -3,6 +3,8 @@ import { ChevronDown } from "lucide-react";
 import { Link , useNavigate  } from "react-router-dom";
 import { useState } from "react";
 import ScreenDrawing from "./drawingPages/screenDrawing";
+import PaperDrawing from "./drawingPages/paperDrawing";
+
 
 
 const navItems = [
@@ -109,6 +111,7 @@ const Welcome2 = () => {
             </h1>
 
 <div className="flex gap-6 font-['Roboto_Slab'] justify-center">
+  <Link to= "/paperdrawing">
   <button
     onClick={() => handleModeSelection("paper")}
     disabled={loading}
@@ -116,7 +119,8 @@ const Welcome2 = () => {
   >
     PAPER MODE
   </button>
- <Link to = "/ScreenDrawing" >
+  </Link>
+ <Link to = "/screendrawing" >
   <button
     onClick={() => handleModeSelection("screen")}
     disabled={loading}

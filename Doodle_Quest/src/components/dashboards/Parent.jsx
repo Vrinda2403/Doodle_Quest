@@ -6,6 +6,7 @@ const Parent = () => {
   const [screenTime, setScreenTime] = useState(0);
   const [dailyLimit, setDailyLimit] = useState(120);
   const [newLimit, setNewLimit] = useState("");
+  const [cameraAllowed, setCameraAllowed] = useState(false);
   const userId = "child123"; // temp — later dynamic
 
   // Fetch current screen time & limit from backend
@@ -101,25 +102,53 @@ const Parent = () => {
 
             {/* Screen Time Card */}
             <div className="w-96 h-40 bg-[#85DCE4] rounded-lg border border-black relative p-2">
-              <p className="text-lg font-semibold">Screen Time</p>
-              <p className="text-3xl font-bold">{screenTime} min</p>
-              <p className="mt-2 text-sm text-gray-700">Limit: {dailyLimit} min/day</p>
-              <div className="mt-4">
-                <input
-                  type="number"
-                  value={newLimit}
-                  placeholder="Set new limit (in min)"
-                  onChange={(e) => setNewLimit(e.target.value)}
-                  className="border border-gray-400 rounded-md p-1 mr-2"
-                />
-                <button
-                  onClick={handleLimitChange}
-                  className="bg-[#203851] text-white px-4 py-1 rounded-md hover:bg-[#142536]"
-                >
-                  Update Limit
-                </button>
-              </div>
-            </div>
+  <p className="text-lg font-semibold">Screen Time</p>
+  <p className="text-3xl font-bold">{screenTime} min</p>
+  <p className="mt-2 text-sm text-gray-700">Limit: {dailyLimit} min/day</p>
+
+  <div className="mt-4">
+    <input
+      type="number"
+      value={newLimit}
+      placeholder="Set new limit (in min)"
+      onChange={(e) => setNewLimit(e.target.value)}
+      className="border border-gray-400 rounded-md p-1 mr-2"
+    />
+    <button
+      onClick={handleLimitChange}
+      className="bg-[#203851] text-white px-4 py-1 rounded-md hover:bg-[#142536]"
+    >
+      Update Limit
+    </button>
+  </div>
+
+  {/* ⬇️ CAMERA PERMISSION HERE */}
+  <div className="mt-4">
+    <p className="text-sm font-semibold mb-1">Camera Permission:</p>
+
+    <button
+      onClick={async () => {
+        const newState = !cameraAllowed;
+        try {
+          await axios.put("http://localhost:3000/api/camera/update", {
+            userId,
+            allow: newState,
+          });
+          setCameraAllowed(newState);
+          alert(`Camera ${newState ? "Enabled" : "Disabled"}`);
+        } catch (err) {
+          alert("Error changing camera permission");
+        }
+      }}
+      className={`px-4 py-2 rounded-md text-white ${
+        cameraAllowed ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
+      {cameraAllowed ? "Disable Camera" : "Enable Camera"}
+    </button>
+  </div>
+</div>
+
           </div>
 
           {/* Right Column */}

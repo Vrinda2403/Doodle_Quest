@@ -5,12 +5,17 @@ import dotenv from "dotenv";
 import timeRoute from "./routes/timeRoute.js";
 import storyroute from "./routes/storyroute.js";
 import quizroute from "./routes/quizroute.js" ;
+import cameraRoutes from "./routes/cameraRoute.js";
+
 
 dotenv.config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+import doodleRoute from "./routes/doodleRoute.js";
+
+
 
 // Connect to MongoDB
 mongoose
@@ -26,9 +31,11 @@ app.use("/api/time", timeRoute);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
 
-
+app.use("/api/doodle", doodleRoute);
 app.use("/api",storyroute);
 app.use("/api",quizroute);
+app.use("/api/camera", cameraRoutes);
+
 const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
 Suddenly, they saw a big, bright rainbow in the sky!
 
