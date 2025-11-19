@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
+import { useUser} from '@clerk/clerk-react'; // ✅ NEW
 import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -15,11 +16,15 @@ import Icon3 from '../../assets/Icon3.png'
 import Icon4 from '../../assets/Icon4.png'
 import Kiddy from '../../assets/Kiddy.png'
 import Welcome2 from '../Welcome2';
+import { useNavigate } from 'react-router-dom';
 
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
   const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
   const [cameraAllowed, setCameraAllowed] = useState(false);
+
+  const navigate=useNavigate()
+  const {  user } = useUser(); // ✅ Clerk hook to check user login status
 
 
   // ✅ New: screen time state
@@ -93,21 +98,24 @@ const Child = () => {
     {
       number: '02',
       title: 'AI Recognition',
-      description: 'Our smart AI instantly recognizes their creation and understands what they\'ve drawn.',
+      description:
+        "Our smart AI instantly recognizes their creation and understands what they've drawn.",
       bgColor: 'bg-[#F2674A]',
       icon: Icon2,
     },
     {
       number: '03',
       title: 'Story Generation',
-      description: 'A personalized story unfolds featuring their drawing as the main character.',
+      description:
+        'A personalized story unfolds featuring their drawing as the main character.',
       bgColor: 'bg-[#FEC6DF]',
       icon: Icon3,
     },
     {
       number: '04',
       title: 'Learn & Play',
-      description: 'Interactive STEM challenges and games make learning an adventure!',
+      description:
+        'Interactive STEM challenges and games make learning an adventure!',
       bgColor: 'bg-[#91E268]',
       icon: Icon4,
     },
@@ -137,36 +145,35 @@ const Child = () => {
         style={{ backgroundImage: `url(${BlueBG})` }}
       >
         <div className="relative w-full flex flex-col items-center gap-y-8">
-
-          {/* Decorative Cloud*/}
           <img
             src={CloudRainbow}
             alt="cloud with rainbow"
             className="absolute -top-14 -left-14 w-[28%] z-0"
           />
 
-          {/*Cloud with Sun (Bottom Left) */}
           <img
             src={CloudSun}
             alt="cloud with sun"
             className="absolute -bottom-32 -left-3 w-[30%] z-0"
           />
 
-          {/* Header Text */}
           <header className="z-10 mt-28 text-center px-4">
             <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">
               CHILD DASHBOARD
             </h1>
           </header>
 
-          {/* Navigation Tabs */}
           <nav className="z-10 bg-white/40 backdrop-blur-md rounded-2xl flex items-center font-alexandria space-x-2 flex-wrap justify-center mb-6">
-            {tabs.map(tab => (
+            {tabs.map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
                 className={`py-7 px-8 rounded-2xl text-2xl font-semibold transition-all
-                ${activeTab === tab ? 'bg-white text-gray-800' : 'text-gray-800 hover:bg-white/20'}
+                ${
+                  activeTab === tab
+                    ? 'bg-white text-gray-800'
+                    : 'text-gray-800 hover:bg-white/20'
+                }
                 xs:px-4 xs:text-base`}
               >
                 {tab}
@@ -174,11 +181,11 @@ const Child = () => {
             ))}
           </nav>
 
-          {/* Main Content Area */}
-          <main className="z-10 bg-white/20 max-w-6xl backdrop-blur-sm p-3 bg-cover bg-center rounded-2xl shadow-lg mb-52 w-full px-4"
-            style={{ backgroundImage: `url(${BlurImg})` }}>
-            <div className='flex justify-center gap-6 px-6 py-10'>
-              {/* BOX 1 */}
+          <main
+            className="z-10 bg-white/20 max-w-6xl backdrop-blur-sm p-3 bg-cover bg-center rounded-2xl shadow-lg mb-52 w-full px-4"
+            style={{ backgroundImage: `url(${BlurImg})` }}
+          >
+            <div className="flex justify-center gap-6 px-6 py-10">
               <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md">
                 <h2 className="font-semibold text-lg mb-4">Screen Time</h2>
                 <p className="text-2xl font-bold">{timeUsed} mins used today</p>
@@ -196,15 +203,15 @@ const Child = () => {
         </div>
       </div>
 
-      {/*Badges Section */}
-      <div className='flex flex-col justify-center items-center mb-10'>
+      {/* Badges Section */}
+      <div className="flex flex-col justify-center items-center mb-10">
         <header className="z-10 mt-20 text-center px-4">
           <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">
             EARNED BADGES
           </h1>
         </header>
-        <div className='mt-14 max-w-6xl '>
-          <img src={Badges} alt="Earned Badges" className='' />
+        <div className="mt-14 max-w-6xl">
+          <img src={Badges} alt="Earned Badges" />
         </div>
       </div>
 

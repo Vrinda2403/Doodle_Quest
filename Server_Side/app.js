@@ -38,7 +38,6 @@ app.use("/api/camera", cameraRoutes);
 
 const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
 Suddenly, they saw a big, bright rainbow in the sky!
-
 “Let’s find the end of the rainbow!” giggled Peppa.
 But Daddy Pig chuckled — “The rainbow’s end is wherever the fun is!`
 // audioService(story);
