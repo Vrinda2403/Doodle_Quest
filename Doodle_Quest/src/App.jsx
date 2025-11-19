@@ -6,7 +6,6 @@ import {  BrowserRouter as Router , Routes, Route } from "react-router-dom";
 import Login from './components/Login';
 import Signup from './components/Signup';
 import WelcomePage from './components/WelcomePage';
-
 import QuizFlash from "./components/quiz/QuizFlash";
 import Quiz from "./components/quiz/Quiz";
 import QuizReward from "./components/quiz/QuizReward";
@@ -28,7 +27,9 @@ function App() {
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/quizreward" element={<QuizReward />} />
         <Route path="/" element={<ProtectedRoute><Child /></ProtectedRoute>} />
+        {/* <Route path="/" element={<Child />} /> */}
         <Route path="/parent"  element= {<ProtectedRoute><Parent/></ProtectedRoute>}/>
+        {/* <Route path="/parent" element={<Parent />} /> */}
         <Route path="/doddledeck" element ={<Doddledeck/>}/>
         <Route path="/rewards" element = {<Rewards/>}/>
         <Route path="/screendrawing" element = {<ScreenDrawing/>}/>
