@@ -180,6 +180,9 @@ import { ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ScreenDrawing from "./drawingPages/screenDrawing";
+import PaperDrawing from "./drawingPages/paperDrawing";
+
+
 import { useClerk } from "@clerk/clerk-react";
 
 const navItems = [
@@ -312,25 +315,26 @@ const Welcome2 = () => {
               Play. Doodle. Grow!
             </h1>
 
-            <div className="flex gap-6 font-['Roboto_Slab'] justify-center">
-              <button
-                onClick={() => handleModeSelection("paper")}
-                disabled={loading}
-                className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
-              >
-                PAPER MODE
-              </button>
-
-              <Link to="/ScreenDrawing">
-                <button
-                  onClick={() => handleModeSelection("screen")}
-                  disabled={loading}
-                  className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
-                >
-                  SCREEN MODE
-                </button>
-              </Link>
-            </div>
+<div className="flex gap-6 font-['Roboto_Slab'] justify-center">
+  <Link to= "/paperdrawing">
+  <button
+    onClick={() => handleModeSelection("paper")}
+    disabled={loading}
+    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+  >
+    PAPER MODE
+  </button>
+  </Link>
+ <Link to = "/screendrawing" >
+  <button
+    onClick={() => handleModeSelection("screen")}
+    disabled={loading}
+    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+  >
+    SCREEN MODE
+  </button>
+  </Link>
+</div>
           </div>
 
           <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">

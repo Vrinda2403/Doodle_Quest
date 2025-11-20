@@ -100,6 +100,23 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '@clerk/clerk-react'; // ✅ Clerk import
+import { io } from "socket.io-client";
+
+
+
+useEffect(() => {
+  const socket = io("http://localhost:3000");
+
+  socket.on("unsafe-doodle", (data) => {
+    if (data.userId === userId) {
+      alert("⚠️ ALERT: " + data.message);
+    }
+  });
+
+  return () => socket.disconnect();
+}, []);
+
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Parent = () => {
@@ -123,6 +140,11 @@ const Parent = () => {
   
   const [loading, setLoading] = useState(true);
 
+  const [screenTime, setScreenTime] = useState(0);
+  const [dailyLimit, setDailyLimit] = useState(120);
+  const [newLimit, setNewLimit] = useState("");
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const userId = "child123"; // temp — later dynamic
   // --- Task Management State ---
   const [taskMode, setTaskMode] = useState('assign'); // 'assign' or 'review'
   const [taskTitle, setTaskTitle] = useState("");
