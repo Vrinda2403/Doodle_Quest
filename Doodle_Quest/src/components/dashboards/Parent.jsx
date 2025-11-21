@@ -105,6 +105,16 @@ import { io } from "socket.io-client";
 
 
 
+
+const Parent = () => {
+  const navigate = useNavigate();
+  const [screenTime, setScreenTime] = useState(0);
+  const [dailyLimit, setDailyLimit] = useState(120);
+  const [newLimit, setNewLimit] = useState("");
+  const [cameraAllowed, setCameraAllowed] = useState(false);
+  const userId = "child123"; // temp — later dynamic
+  const { user } = useUser();
+  
 useEffect(() => {
   const socket = io("http://localhost:3000");
 
@@ -119,6 +129,9 @@ useEffect(() => {
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
+<<<<<<< HEAD
+  // Fetch current screen time & limit from backend
+=======
 const Parent = () => {
 
   
@@ -157,6 +170,7 @@ const Parent = () => {
   const [activeTaskId, setActiveTaskId] = useState(null); // Which task are we appreciating?
 
   // --- Fetch Analytics & Tasks ---
+>>>>>>> 7fa5cb6eca9ca2e1b14eab8fa98ca1df942bb644
   useEffect(() => {
     const fetchData = async () => {
       try {
