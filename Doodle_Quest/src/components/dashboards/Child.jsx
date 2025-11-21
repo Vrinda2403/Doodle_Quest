@@ -16,7 +16,6 @@ import Icon3 from '../../assets/Icon3.png'
 import Icon4 from '../../assets/Icon4.png'
 import Kiddy from '../../assets/Kiddy.png'
 import Welcome2 from '../Welcome2';
-import { useNavigate } from 'react-router-dom';
 
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
@@ -88,37 +87,10 @@ const Child = () => {
   }, [userId]);
 
   const howItWorksSteps = [
-    {
-      number: '01',
-      title: 'Draw & Doodle',
-      description: 'Your child draws anything they imagine - on screen or paper!',
-      bgColor: 'bg-[#FACF71]',
-      icon: Icon1,
-    },
-    {
-      number: '02',
-      title: 'AI Recognition',
-      description:
-        "Our smart AI instantly recognizes their creation and understands what they've drawn.",
-      bgColor: 'bg-[#F2674A]',
-      icon: Icon2,
-    },
-    {
-      number: '03',
-      title: 'Story Generation',
-      description:
-        'A personalized story unfolds featuring their drawing as the main character.',
-      bgColor: 'bg-[#FEC6DF]',
-      icon: Icon3,
-    },
-    {
-      number: '04',
-      title: 'Learn & Play',
-      description:
-        'Interactive STEM challenges and games make learning an adventure!',
-      bgColor: 'bg-[#91E268]',
-      icon: Icon4,
-    },
+    { number: '01', title: 'Draw & Doodle', description: 'Your child draws anything they imagine - on screen or paper!', bgColor: 'bg-[#FACF71]', icon: Icon1 },
+    { number: '02', title: 'AI Recognition', description: "Our smart AI instantly recognizes their creation and understands what they've drawn.", bgColor: 'bg-[#F2674A]', icon: Icon2 },
+    { number: '03', title: 'Story Generation', description: 'A personalized story unfolds featuring their drawing as the main character.', bgColor: 'bg-[#FEC6DF]', icon: Icon3 },
+    { number: '04', title: 'Learn & Play', description: 'Interactive STEM challenges and games make learning an adventure!', bgColor: 'bg-[#91E268]', icon: Icon4 },
   ];
 
   const footerLinks = {
@@ -145,39 +117,16 @@ const Child = () => {
         style={{ backgroundImage: `url(${BlueBG})` }}
       >
         <div className="relative w-full flex flex-col items-center gap-y-8">
-          <img
-            src={CloudRainbow}
-            alt="cloud with rainbow"
-            className="absolute -top-14 -left-14 w-[28%] z-0"
-          />
-
-          <img
-            src={CloudSun}
-            alt="cloud with sun"
-            className="absolute -bottom-32 -left-3 w-[30%] z-0"
-          />
+          <img src={CloudRainbow} alt="cloud" className="absolute -top-14 -left-14 w-[28%] z-0" />
+          <img src={CloudSun} alt="cloud" className="absolute -bottom-32 -left-3 w-[30%] z-0" />
 
           <header className="z-10 mt-28 text-center px-4">
-            <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">
-              CHILD DASHBOARD
-            </h1>
+            <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">CHILD DASHBOARD</h1>
           </header>
 
           <nav className="z-10 bg-white/40 backdrop-blur-md rounded-2xl flex items-center font-alexandria space-x-2 flex-wrap justify-center mb-6">
             {tabs.map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-7 px-8 rounded-2xl text-2xl font-semibold transition-all
-                ${
-                  activeTab === tab
-                    ? 'bg-white text-gray-800'
-                    : 'text-gray-800 hover:bg-white/20'
-                }
-                xs:px-4 xs:text-base`}
-              >
-                {tab}
-              </button>
+              <button key={tab} onClick={() => setActiveTab(tab)} className={`py-7 px-8 rounded-2xl text-2xl font-semibold transition-all ${activeTab === tab ? 'bg-white text-gray-800' : 'text-gray-800 hover:bg-white/20'} xs:px-4 xs:text-base`}>{tab}</button>
             ))}
           </nav>
 
@@ -203,23 +152,42 @@ const Child = () => {
         </div>
       </div>
 
-      {/* Badges Section */}
+      {/*  EARNED BADGES SECTION */}
+      {/* ✅ EARNED BADGES SECTION (Updated Sizes) */}
       <div className="flex flex-col justify-center items-center mb-10">
         <header className="z-10 mt-20 text-center px-4">
-          <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">
-            EARNED BADGES
-          </h1>
+          <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-widest xs:text-3xl">EARNED BADGES</h1>
         </header>
-        <div className="mt-14 max-w-6xl">
-          <img src={Badges} alt="Earned Badges" />
+        
+        <div className="mt-14 max-w-6xl w-full px-4">
+           {badges.length > 0 ? (
+             <div className="flex flex-wrap justify-center gap-8">
+               {badges.map((badgeObj) => {
+                 const badge = badgeObj.rewardId;
+                 const imageSrc = badgeImageMap[badge.icon] || Badge1;
+                 
+                 return (
+                   <div key={badgeObj._id} className="flex flex-col items-center bg-gray-700/60 backdrop-blur-sm p-3 rounded-xl shadow-lg max-w-6xl transition transform hover:scale-110">
+                     {/* Increased Image Size (w-48 h-48) */}
+                     <img src={imageSrc} alt={badge.name} className="w-64 h-64 object-contain drop-shadow-md" />
+                     
+                     {/* Increased Text Size (text-xl) */}
+                     <h3 className="font-bold text-center font-robotoSlab text-xl text-gray-800">{badge.name}</h3>
+                   </div>
+                 );
+               })}
+             </div>
+           ) : (
+             <div className="text-center bg-white/50 p-8 rounded-xl backdrop-blur-sm">
+                <p className="text-2xl font-robotoSlab text-gray-600">No badges earned yet. 🏆</p>
+                <p className="text-gray-500 mt-2">Keep doodling and taking quizzes to unlock them!</p>
+             </div>
+           )}
         </div>
       </div>
 
       {/* How It Works */}
-      <div
-        className="min-h-[120vh] w-full flex flex-col items-center justify-center bg-[length:100%_100%] bg-center p-8"
-        style={{ backgroundImage: `url(${HowBg})` }}
-      >
+      <div className="min-h-[120vh] w-full flex flex-col items-center justify-center bg-[length:100%_100%] bg-center p-8" style={{ backgroundImage: `url(${HowBg})` }}>
         <header className="text-center mt-16">
           <h1 className="text-4xl md:text-7xl font-robotoSlab text-black tracking-wider font-semibold">
             HOW <span className="text-[#F9FD00]">DoodleQuest</span> WORKS?
@@ -231,10 +199,7 @@ const Child = () => {
 
         <main className="flex flex-wrap justify-center mt-10 items-stretch gap-12 pt-8">
           {howItWorksSteps.map((step) => (
-            <div
-              key={step.number}
-              className={`relative w-80 border-[3px] border-black rounded-2xl p-8 text-center flex flex-col items-center shadow-md ${step.bgColor}`}
-            >
+            <div key={step.number} className={`relative w-80 border-[3px] border-black rounded-2xl p-8 text-center flex flex-col items-center shadow-md ${step.bgColor}`}>
               <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 font-robotoSlab bg-[#D9D9D9] rounded-full border-2 border-black flex items-center justify-center z-10">
                 <span className="text-black font-medium text-4xl">{step.number}</span>
               </div>
@@ -309,6 +274,6 @@ const Child = () => {
       </footer>
     </div>
   )
-}
+};
 
 export default Child
