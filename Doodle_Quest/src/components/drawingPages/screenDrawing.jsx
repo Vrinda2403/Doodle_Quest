@@ -250,7 +250,6 @@ function ScreenDrawing() {
   const [loadingTasks, setLoadingTasks] = useState(true);
 
   // ✅ Replace with actual logged-in userId or dummy one for now
-  const userId = "child123";
 
 
   // Send canvas image to backend every 4 seconds
