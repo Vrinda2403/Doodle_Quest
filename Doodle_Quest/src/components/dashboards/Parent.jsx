@@ -1,121 +1,10 @@
-// import React, { useEffect } from 'react';
-// import './index.css';
-// import { useNavigate } from 'react-router-dom';
-// import { useUser } from '@clerk/clerk-react'; // ✅ Clerk import
-
-// const Parent = () => {
-//   const navigate = useNavigate();
-//   const { user } = useUser(); // ✅ get Clerk user state
-
-
-
-//   const [screenTime, setScreenTime] = useState(0);
-//   const [dailyLimit, setDailyLimit] = useState(120);
-//   const [newLimit, setNewLimit] = useState("");
-//   const userId = "child123"; // temp — later dynamic
-
-//   // Fetch current screen time & limit from backend
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       try {
-//         const res = await axios.get(`http://localhost:3000/api/time/status/${userId}`);
-//         setScreenTime(res.data.timeUsed);
-//         setDailyLimit(res.data.dailyLimit);
-//       } catch (err) {
-//         console.log("Error fetching screen time:", err);
-//       }
-//     };
-//     fetchData();
-
-//     // Optionally refresh every minute
-//     const interval = setInterval(fetchData, 60000);
-//     return () => clearInterval(interval);
-//   }, []);
-
-//   // Handle limit change by parent
-//   const handleLimitChange = async () => {
-//     try {
-//       const res = await axios.put("http://localhost:3000/api/time/limit", {
-//         userId,
-//         limitMinutes: Number(newLimit),
-//       });
-//       setDailyLimit(res.data.timer.dailyLimit);
-//       setNewLimit("");
-//       alert("✅ Screen time limit updated successfully!");
-//     } catch (err) {
-//       console.log("Error updating limit:", err);
-//       alert("❌ Failed to update screen time limit");
-//     }
-//   };
-
-//   return (
-//     <div className="bg-[#F4EDE6]">
-//       {/* Navbar */}
-//       <nav className="nav flex bg-opacity-90 h-16 text-white gap-72 top item items-center">
-//         <div
-//           className="text-center font-orbitron text-xl ml-7 font-bold 
-//            bg-gradient-to-r from-[#EDFFF5] to-[rgba(133,213,237,0.74)] 
-//            bg-clip-text text-transparent"
-//         >
-//           DoodleQuest
-//         </div>
-//         <div className="text-5xl font-robotoSlab">Guardian's Hub</div>
-
-//         {/* ✅ Optional: show logged-in user */}
-//         <div className="flex items-center gap-4 ml-6">
-//           <div className="text-sm text-white">
-//             Welcome, <span className="font-semibold text-[#C9F2FF]">{user?.firstName || 'Parent'}</span>
-//           </div>
-//           <div className="home">
-//             <img src="/src/assets/home.png" alt="home" width="40" />
-//           </div>
-//           <div className="post">
-//             <img src="/src/assets/post.png" alt="post" width="40" />
-//           </div>
-//         </div>
-//       </nav>
-
-//       {/* Rest of your existing dashboard UI */}
-//       <div className="images flex justify-around mt-5">
-//         <div className="img1">
-//           <img src="/src/assets/image3.png" alt="" width="250" className="ml-11 mt-10" />
-//         </div>
-//         <div className="img2">
-//           <img src="src/assets/image1.png" alt="" width="250" className="mt-0" />
-//         </div>
-//         <div>
-//           <img src="src/assets/image2.png" alt="" width="250" className="mr-11 mt-10" />
-//         </div>
-//       </div>
-
-//       {/* ... all the rest of your progress, cards, and footer code stays exactly the same ... */}
-//     </div>
-//   );
-// };
-
-// export default Parent;
-
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useUser, useAuth } from '@clerk/clerk-react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '@clerk/clerk-react'; // ✅ Clerk import
+import { useNavigate } from 'react-router-dom';// ✅ Clerk import
 import { io } from "socket.io-client";
 
-
-
-useEffect(() => {
-  const socket = io("http://localhost:3000");
-
-  socket.on("unsafe-doodle", (data) => {
-    if (data.userId === userId) {
-      alert("⚠️ ALERT: " + data.message);
-    }
-  });
-
-  return () => socket.disconnect();
-}, []);
 
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
@@ -154,7 +43,19 @@ const Parent = () => {
   // Review State
   const [taskList, setTaskList] = useState([]);
   const [appreciationMsg, setAppreciationMsg] = useState("");
-  const [activeTaskId, setActiveTaskId] = useState(null); // Which task are we appreciating?
+  const [activeTaskId, setActiveTaskId] = useState(null);// Which task are we appreciating?
+
+  useEffect(() => {
+  const socket = io("http://localhost:3000");
+
+  socket.on("unsafe-doodle", (data) => {
+    if (data.userId === userId) {
+      alert("⚠️ ALERT: " + data.message);
+    }
+  });
+
+  return () => socket.disconnect();
+}, []);
 
   // --- Fetch Analytics & Tasks ---
   useEffect(() => {

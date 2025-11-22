@@ -1,6 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import DoodleLog from "../models/DoodleLog.js";
-import { io } from "../server.js";
+import {io } from '../testserver.js'
 
 const unsafeObjects = ["weapon", "gun", "knife", "blood", "bomb"];
 
