@@ -283,7 +283,7 @@ useEffect(() => {
     if (!userId) return;
     const startTimer = async () => {
       try {
-        await fetch("http://localhost:3000/api/timer/start", {
+        await fetch("http://localhost:3000/api/time/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),
@@ -292,7 +292,7 @@ useEffect(() => {
     };
     const stopTimer = async () => {
       try {
-        await fetch("http://localhost:3000/api/timer/stop", {
+        await fetch("http://localhost:3000/api/time/stop", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),

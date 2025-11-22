@@ -9,6 +9,11 @@ import { io } from "socket.io-client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, Legend } from 'recharts';
 
 const Parent = () => {
+  // Screen-time states
+const [screenTime, setScreenTime] = useState(0);
+const [dailyLimit, setDailyLimit] = useState(0);
+const [newLimit, setNewLimit] = useState("");
+
 
   
   const { user } = useUser();
@@ -28,10 +33,6 @@ const Parent = () => {
   });
   
   const [loading, setLoading] = useState(true);
-
-  const [screenTime, setScreenTime] = useState(0);
-  const [dailyLimit, setDailyLimit] = useState(120);
-  const [newLimit, setNewLimit] = useState("");
   const [cameraAllowed, setCameraAllowed] = useState(false);
   const userId = "child123"; // temp — later dynamic
   // --- Task Management State ---
@@ -147,6 +148,37 @@ const Parent = () => {
       alert("Failed to send message");
     }
   };
+
+  useEffect(() => {
+  const fetchScreenTime = async () => {
+    try {
+      const res = await axios.get(`http://localhost:3000/api/time/status/${userId}`);
+      setScreenTime(res.data.timeUsed);
+      setDailyLimit(res.data.dailyLimit);
+    } catch (err) {
+      console.log("Error fetching screen time:", err);
+    }
+  };
+
+  fetchScreenTime();
+}, []);
+const updateLimit = async () => {
+  if (!newLimit) return alert("Enter limit in minutes");
+
+  try {
+    await axios.put("http://localhost:3000/api/time/limit", {
+      userId,
+      limitMinutes: Number(newLimit),
+    });
+
+    alert("Screen-time limit updated!");
+    setDailyLimit(Number(newLimit));
+    setNewLimit("");
+  } catch (err) {
+    console.log("Error updating limit:", err);
+    alert("Failed to update limit");
+  }
+};
 
 
   // --- Chart Data ---
@@ -338,12 +370,39 @@ const Parent = () => {
                         <div className="absolute top-2 right-2"><img src="/src/assets/puzzle.png" w="20" /></div>
                      </div>
                      {/* Card D */}
-                     <div className="bg-[#85DCE4] p-4 rounded-xl border border-black/20 shadow-sm relative">
-                        <div className="text-xs font-bold text-gray-600">Screen Time</div>
-                        <div className="text-3xl font-bold mt-1">{stats.screenTimeMinutes} <span className="text-sm">min</span></div>
-                        <div className="text-[10px] text-green-700 font-bold mt-1">+12% from last week</div>
-                        <div className="absolute top-2 right-2"><img src="/src/assets/laptop.png" w="20" /></div>
-                     </div>
+<div className="bg-[#85DCE4] p-4 rounded-xl border border-black/20 shadow-sm relative">
+
+  <h2 className="text-lg font-bold mb-1">Screen Time Control</h2>
+
+  <p className="text-xl">
+    <b>Used Today:</b> {screenTime} min
+  </p>
+
+  <p className="text-xl mt-1">
+    <b>Daily Limit:</b> {dailyLimit} min
+  </p>
+
+  <div className="mt-4">
+    <label className="block text-sm font-semibold mb-1">Set New Limit (minutes)</label>
+
+    <input
+      type="number"
+      value={newLimit}
+      onChange={(e) => setNewLimit(e.target.value)}
+      className="border p-2 rounded w-full"
+      placeholder="e.g., 90"
+    />
+
+    <button
+      onClick={updateLimit}
+      className="bg-blue-600 text-white px-4 py-2 rounded mt-3 hover:bg-blue-700 w-full"
+    >
+      Update Limit
+    </button>
+  </div>
+</div>
+
+
                 </div>
 
                 {/* 4. Pie Chart (Total Doodles) */}
