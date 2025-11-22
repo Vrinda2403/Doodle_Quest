@@ -121,7 +121,6 @@ Suddenly, they saw a big, bright rainbow in the sky!
 “Let’s find the end of the rainbow!” giggled Peppa.
 But Daddy Pig chuckled — “The rainbow’s end is wherever the fun is!`
 // audioService(story);
-export default app;
 // Parental Dashboard (Analytics)
 app.use('/api/dashboard', dashboardRoutes);
 

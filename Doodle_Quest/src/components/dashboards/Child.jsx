@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom';
-import { useUser} from '@clerk/clerk-react'; // ✅ NEW
+import { useUser} from '@clerk/clerk-react'; 
+import { useNavigate } from 'react-router-dom';// ✅ NEW
 import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
 import axios from 'axios';
 
@@ -70,7 +71,7 @@ const Child = () => {
 
   // ✅ Fetch live time used every minute
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) return;  
 
     const fetchTime = async () => {
       try {
@@ -276,4 +277,4 @@ const Child = () => {
   )
 };
 
-export default Child
+export default Child;
