@@ -24,7 +24,7 @@ io.on("connection", (socket) => {
 
 
 app.use("/api/mode", modeRoutes);
-app.use("/api/time", timeRoutes); // 👈 ADD THIS LINE
+app.use("/api/time", timeRoutes); //  ADD THIS LINE
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
