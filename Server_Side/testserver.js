@@ -1,12 +1,29 @@
+// server.js
 import dotenv from "dotenv";
-import modeRoutes from "./routes/modeRoute.js";
-import timeRoutes from "./routes/timeRoute.js";
+import http from "http";
+import { Server } from "socket.io";
 import app from "./app.js";
 
 dotenv.config();
 
-app.use("/api/mode", modeRoutes);
-app.use("/api/time", timeRoutes); // 👈 ADD THIS LINE
+const PORT = process.env.PORT || 3000;
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Create HTTP server
+const server = http.createServer(app);
+
+// SOCKET.IO setup
+export const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
+});
+
+// START SERVER
+server.listen(PORT, () => {
+  console.log(`🚀 Server + Socket.io running on port ${PORT}`);
+});

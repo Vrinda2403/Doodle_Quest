@@ -249,14 +249,73 @@ function ScreenDrawing() {
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
-  // =========================================
-  // 1. TIMER LOGIC (Runs in background)
-  // =========================================
+  // ✅ Replace with actual logged-in userId or dummy one for now
+
+
+  // Send canvas image to backend every 4 seconds
+useEffect(() => {
+  const interval = setInterval(async () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const image = canvas.toDataURL("image/png");
+
+    try {
+      const res = await axios.post("http://localhost:3000/api/doodle/analyze", {
+        userId,
+        image
+      });
+
+      if (!res.data.isSafe) {
+        alert("Unsafe doodle detected! Clearing canvas.");
+        handleClearCanvas(); // auto clear
+      }
+    } catch (err) {
+      console.log("Doodle analysis failed:", err);
+    }
+  }, 4000);
+
+  return () => clearInterval(interval);
+}, []);
+
+  // ✅ Automatically start and stop timer when entering/leaving screen mode
+  // AUTO REDIRECT WHEN LIMIT REACHED
+useEffect(() => {
+  if (!userId) return;
+
+  const eventSource = new EventSource(`http://localhost:3000/api/time/stream/${userId}`);
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    console.log("SSE:", data);
+
+    // Update displayed time (optional)
+    if (data.timeUsed !== undefined) {
+      console.log("Time Used:", data.timeUsed);
+    }
+
+    // Redirect when limit reached
+    if (data.message === "LIMIT_REACHED") {
+      alert("Daily limit reached! Redirecting home.");
+      window.location.href = "/"; // go home page
+      eventSource.close();
+    }
+  };
+
+  eventSource.onerror = () => {
+    console.log("SSE connection error");
+    eventSource.close();
+  };
+
+  return () => eventSource.close();
+}, [userId]);
+
   useEffect(() => {
     if (!userId) return;
     const startTimer = async () => {
       try {
-        await fetch("http://localhost:3000/api/timer/start", {
+        await fetch("http://localhost:3000/api/time/start", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),
@@ -265,7 +324,7 @@ function ScreenDrawing() {
     };
     const stopTimer = async () => {
       try {
-        await fetch("http://localhost:3000/api/timer/stop", {
+        await fetch("http://localhost:3000/api/time/stop", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),
@@ -370,29 +429,96 @@ function ScreenDrawing() {
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  const handleSubmitDoodle = async () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const token = await getToken();
+  // const handleSubmitDoodle = async () => {
+  //   const canvas = canvasRef.current;
+  //   if (!canvas) return;
+  //   const token = await getToken();
 
+  //   canvas.toBlob(async (blob) => {
+  //     if (!blob) return;
+  //     const formData = new FormData();
+  //     formData.append("doodleImage", blob, "doodle.png");
+  //     formData.append("prompt", "Screen Drawing"); 
+
+  //     try {
+  //       await axios.post("http://localhost:3000/api/storage/upload-doodle", formData, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       });
+  //       alert("Your doodle was saved!");
+  //       handleClearCanvas();
+  //     } catch (error) {
+  //       console.error("Error uploading doodle:", error);
+  //       alert("Upload failed.");
+  //     }
+  //   }, "image/png");
+  // };
+
+  const handleSubmitDoodle = async () => {
+    console.log("🔵 Submit button clicked");
+    
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      console.error("❌ Canvas ref is missing");
+      return;
+    }
+
+    // 1. Get Token
+    const token = await getToken();
+    if (!token) {
+      alert("❌ Error: You are not logged in (No Token)");
+      return;
+    }
+
+    // 2. Create Blob
     canvas.toBlob(async (blob) => {
-      if (!blob) return;
+      if (!blob) {
+        alert("❌ Error: Canvas is empty");
+        return;
+      }
+      console.log("🟢 Image Blob created size:", blob.size);
+
+      // 3. Create FormData
       const formData = new FormData();
       formData.append("doodleImage", blob, "doodle.png");
-      formData.append("prompt", "Screen Drawing"); 
+      formData.append("prompt", "Screen Drawing");
 
       try {
-        await axios.post("http://localhost:3000/api/storage/upload-doodle", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        console.log("🟡 Sending request to http://localhost:3000/api/storage/upload-doodle...");
+        
+        // 4. Send Request
+        const response = await axios.post(
+          "http://localhost:3000/api/storage/upload-doodle", 
+          formData, 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        console.log(" Upload Success:", response.data);
         alert("Your doodle was saved!");
         handleClearCanvas();
+
       } catch (error) {
-        console.error("Error uploading doodle:", error);
-        alert("Upload failed.");
+        console.error(" Upload Failed Details:", error);
+        
+        if (error.response) {
+          // Server responded with a status code (e.g., 400, 401, 500)
+          console.error("Server Status:", error.response.status);
+          console.error("Server Data:", error.response.data);
+          alert(`Upload Failed: Server Error ${error.response.status} - ${JSON.stringify(error.response.data)}`);
+        } else if (error.request) {
+          // Request was made but no response received (Network Error)
+          console.error("No response from server. Is Backend running?");
+          alert("Upload Failed: Backend not responding. Is 'node app.js' running on port 3000?");
+        } else {
+          alert(`Upload Failed: ${error.message}`);
+        }
       }
     }, "image/png");
   };
