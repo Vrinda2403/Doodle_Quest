@@ -76,7 +76,7 @@ import storageRoutes from './routes/storage.routes.js';
 import rewardsRoutes from './routes/rewards.routes.js';
 import dashboardRoutes from './routes/dashboard.routes.js';
 import taskRoutes from './routes/task.routes.js';
-
+import audioroute from './routes/audioroute.js';
 dotenv.config();
 
 const app = express();
@@ -99,7 +99,7 @@ mongoose
 app.use("/api/time", timeRoute);
 app.use("/api/story", storyroute);
 app.use("/api/quiz", quizroute);
-
+app.use("/api",audioroute);
 // Storage (Doodles & History)
 app.use('/api/storage', storageRoutes);
 
