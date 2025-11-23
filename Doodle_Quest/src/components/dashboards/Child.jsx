@@ -333,12 +333,14 @@ const badgeImageMap = {
   "Level 4 Badge": Badge4,
   "Level 5 Badge": Badge5,
 };
+ const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
 
 const Child = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('COMPLETE');
   const { user } = useUser();
   const { getToken } = useAuth();
+ 
 
   // --- STATE ---
   const [history, setHistory] = useState(null);
@@ -388,71 +390,37 @@ const Child = () => {
   //       console.error("Error starting timer:", error);
   //     }
   //   };
-  //   startScreenTimer();
 
-    // const fetchTime = async () => {
-    //   try {
-    //     const res = await axios.get(`http://localhost:3000/api/screentime/${userId}`);
-    //     setTimeUsed(res.data.timeUsed || 0);
-    //   } catch (error) {
-    //     console.error("Error fetching time:", error);
-    //   }
-    // };
-  //   fetchTime();
-
-  //   // Update every minute
-  //   const interval = setInterval(fetchTime, 60000);
+  //   if (userId) {
+  //     startScreenTimer();
+  //   }
 
   //   return async () => {
-  //     clearInterval(interval);
   //     try {
-  //       await axios.post('http://localhost:3000/api/screentime/pause', { userId });
-  //     } catch (error) { console.error(error); }
+  //       await axios.post('http://localhost:3000/api/time/pause', { userId });
+  //       console.log("Timer paused for", userId);
+  //     } catch (error) {
+  //       console.error("Error pausing timer:", error);
+  //     }
   //   };
   // }, [userId]);
 
+  // useEffect(() => {
+  //   if (!userId) return;
 
-  // --- 2. SCREEN TIME LOGIC (Fixed Routes) ---
-  useEffect(() => {
-    if (!userId) return;
+  //   const fetchTime = async () => {
+  //     try {
+  //       const res = await axios.get(`http://localhost:3000/api/time/${userId}`);
+  //       setTimeUsed(res.data.timeUsed || 0);
+  //     } catch (error) {
+  //       console.error("Error fetching screen time:", error);
+  //     }
+  //   };
 
-    const startScreenTimer = async () => {
-      try {
-        // ✅ FIXED: Changed /api/screentime to /api/time
-        await axios.post('http://localhost:3000/api/time/start', { userId });
-        console.log("Timer started for", userId);
-      } catch (error) {
-        console.error("Error starting timer:", error);
-      }
-    };
-    
-    // Start timer on mount
-    startScreenTimer();
-
-    const fetchTime = async () => {
-      try {
-        // ✅ FIXED: Added /status/ and changed base URL
-        const res = await axios.get(`http://localhost:3000/api/time/status/${userId}`);
-        setTimeUsed(res.data.timeUsed || 0);
-      } catch (error) {
-        console.error("Error fetching time:", error);
-      }
-    };
-    
-    fetchTime();
-    
-    // Update every minute
-    const interval = setInterval(fetchTime, 60000);
-
-    return async () => {
-      clearInterval(interval);
-      try {
-        // ✅ FIXED: Changed /pause to /stop and fixed base URL
-        await axios.post('http://localhost:3000/api/time/stop', { userId });
-        console.log("Timer stopped for", userId);
-      } catch (error) { console.error(error); }
-    };
-  }, [userId]);
+  //   fetchTime();
+  //   const interval = setInterval(fetchTime, 60000);
+  //   return () => clearInterval(interval);
+  // }, [userId]);
 
   
   const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS'];

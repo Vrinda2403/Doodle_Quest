@@ -5,14 +5,17 @@ import {io } from '../testserver.js'
 const unsafeObjects = ["weapon", "gun", "knife", "blood", "bomb"];
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
 
 export async function analyzeDoodle(imageBase64, userId) {
   const prompt = "Recognize this child's doodle and respond with only object name.";
 
   const image = {
     inlineData: {
-      data: imageBase64.split(",")[1],
+      data: imageBase64.includes(",")
+  ? imageBase64.split(",")[1]
+  : imageBase64,
       mimeType: "image/png",
     },
   };

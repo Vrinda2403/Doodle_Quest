@@ -12,8 +12,8 @@ export async function fetchPermission(req, res) {
 
 export async function updatePermission(req, res) {
   try {
-    const { userId, allow } = req.body;
-    const record = await setCameraPermission(userId, allow);
+    const { userId, allowed } = req.body;
+    const record = await setCameraPermission(userId, allowed);
     res.json({ success: true, record });
   } catch (err) {
     res.status(500).json({ error: err.message });

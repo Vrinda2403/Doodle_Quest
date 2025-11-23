@@ -4,6 +4,7 @@ import {
   getStatus,
   setLimit,
 } from "../services/timeService.js";
+import ScreenTime from "../models/ScreenTime.js";
 
 export const start = async (req, res) => {
   try {
