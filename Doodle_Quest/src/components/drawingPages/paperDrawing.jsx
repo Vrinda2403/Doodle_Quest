@@ -158,6 +158,7 @@ function PaperDrawing() {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const userId = "child123";
   // --- Camera Logic (Unchanged) ---
   const startCamera = async () => {
     const video = videoRef.current;
@@ -189,9 +190,9 @@ function PaperDrawing() {
     console.error(err);
   }
 };
-useEffect(() => {
-  checkPermissionAndStart() ;
-})
+// useEffect(() => {
+//   checkPermissionAndStart() ;
+// })
 
 
     const stopCamera = () => {
@@ -288,7 +289,7 @@ useEffect(() => {
               <video ref={videoRef} autoPlay className="w-full h-full object-cover rounded-lg" />
             </div>
             <button className="bg-[#E41111] px-6 py-2 rounded-full text-white font-semibold flex items-center gap-2"  onClick={cameraOn ? stopCamera : checkPermissionAndStart}>
-              <div className="w-4 h-4 bg-white rounded-sm"></div>
+              <div className="w-4 h-4 bg-white rounded-sm"></div> 
               ON/OFF
             </button>
           </div>

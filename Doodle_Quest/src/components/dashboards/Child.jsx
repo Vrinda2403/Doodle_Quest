@@ -21,66 +21,55 @@ import Welcome2 from '../Welcome2';
 const Child = () => {
   const [activeTab, setActiveTab] = useState('COMPLETE')
   const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
-  const [cameraAllowed, setCameraAllowed] = useState(false);
 
   const navigate = useNavigate()
   const { user } = useUser();
 
   const [timeUsed, setTimeUsed] = useState(0);
-  const userId = localStorage.getItem('userId');
+  // const userId = localStorage.getItem('userId');
+  const userId = "child123" ;
 
-  useEffect(() => {
-    const fetchCamera = async () => {
-      try {
-        const res = await axios.get(`http://localhost:3000/api/camera/${userId}`);
-        setCameraAllowed(res.data.cameraAllowed);
-      } catch (err) {
-        console.log("Camera fetch error:", err);
-      }
-    };
-    fetchCamera();
-  }, []);
 
-  useEffect(() => {
-    const startScreenTimer = async () => {
-      try {
-        await axios.post('http://localhost:5000/api/screentime/start', { userId });
-        console.log("Timer started for", userId);
-      } catch (error) {
-        console.error("Error starting timer:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const startScreenTimer = async () => {
+  //     try {
+  //       await axios.post('http://localhost:3000/api/time/start', { userId });
+  //       console.log("Timer started for", userId);
+  //     } catch (error) {
+  //       console.error("Error starting timer:", error);
+  //     }
+  //   };
 
-    if (userId) {
-      startScreenTimer();
-    }
+  //   if (userId) {
+  //     startScreenTimer();
+  //   }
 
-    return async () => {
-      try {
-        await axios.post('http://localhost:5000/api/screentime/pause', { userId });
-        console.log("Timer paused for", userId);
-      } catch (error) {
-        console.error("Error pausing timer:", error);
-      }
-    };
-  }, [userId]);
+  //   return async () => {
+  //     try {
+  //       await axios.post('http://localhost:3000/api/time/pause', { userId });
+  //       console.log("Timer paused for", userId);
+  //     } catch (error) {
+  //       console.error("Error pausing timer:", error);
+  //     }
+  //   };
+  // }, [userId]);
 
-  useEffect(() => {
-    if (!userId) return;
+  // useEffect(() => {
+  //   if (!userId) return;
 
-    const fetchTime = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/screentime/${userId}`);
-        setTimeUsed(res.data.timeUsed || 0);
-      } catch (error) {
-        console.error("Error fetching screen time:", error);
-      }
-    };
+  //   const fetchTime = async () => {
+  //     try {
+  //       const res = await axios.get(`http://localhost:3000/api/time/${userId}`);
+  //       setTimeUsed(res.data.timeUsed || 0);
+  //     } catch (error) {
+  //       console.error("Error fetching screen time:", error);
+  //     }
+  //   };
 
-    fetchTime();
-    const interval = setInterval(fetchTime, 60000);
-    return () => clearInterval(interval);
-  }, [userId]);
+  //   fetchTime();
+  //   const interval = setInterval(fetchTime, 60000);
+  //   return () => clearInterval(interval);
+  // }, [userId]);
 
   const howItWorksSteps = [
     { number: '01', title: 'Draw & Doodle', description: 'Your child draws anything they imagine - on screen or paper!', bgColor: 'bg-[#FACF71]', icon: Icon1 },

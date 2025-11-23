@@ -6,36 +6,50 @@ export const startTimer = async (userId) => {
   let record = await ScreenTime.findOne({ userId });
   if (!record) record = await ScreenTime.create({ userId });
 
-  if (record.isActive) return record; // already running
+  // Prevent multiple intervals
+  if (record.isActive) {
+    console.log("⛔ Timer already active — NOT starting again");
+    return record;
+  }
 
+  if (activeTimers[userId]) {
+    console.log("⛔ Interval already running — NOT creating again");
+    return record;
+  }
+
+  // Activate user
   record.isActive = true;
   record.lastStartTime = new Date();
   await record.save();
 
-  // Start in-memory timer (simulates running)
+  // Create ONE interval
   activeTimers[userId] = setInterval(async () => {
     const updated = await ScreenTime.findOne({ userId });
 
+    // Stop if inactive
     if (!updated.isActive) {
       clearInterval(activeTimers[userId]);
       delete activeTimers[userId];
       return;
     }
 
-    updated.timeUsed += 1; // increment 1 min every minute
+    updated.timeUsed += 1;
     console.log(`${userId} used ${updated.timeUsed} mins`);
 
-    // Auto stop if limit reached
+    // Stop at limit
     if (updated.timeUsed >= updated.dailyLimit) {
       updated.isActive = false;
       await updated.save();
+
       clearInterval(activeTimers[userId]);
       delete activeTimers[userId];
-      console.log(`User ${userId} reached the daily limit!`);
+
+      console.log(`⛔ User ${userId} reached DAILY LIMIT`);
     } else {
       await updated.save();
     }
-  }, 60000); // 1 minute interval
+
+  }, 60000);
 
   return record;
 };
@@ -56,8 +70,17 @@ export const stopTimer = async (userId) => {
 };
 
 export const getStatus = async (userId) => {
-  const record = await ScreenTime.findOne({ userId });
-  if (!record) throw new Error("No record found");
+  let record = await ScreenTime.findOne({ userId });
+
+  if (!record) {
+    record = await ScreenTime.create({
+      userId,
+      timeUsed: 0,
+      dailyLimit: 60,
+      isActive: false
+    });
+  }
+
   return record;
 };
 

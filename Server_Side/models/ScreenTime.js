@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const screenTimeSchema = new mongoose.Schema({
   userId: {
-    type: String,
+    type: String, 
     required: true,
     unique: true,
   },

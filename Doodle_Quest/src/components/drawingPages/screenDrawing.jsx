@@ -279,6 +279,38 @@ useEffect(() => {
 }, []);
 
   // ✅ Automatically start and stop timer when entering/leaving screen mode
+  // AUTO REDIRECT WHEN LIMIT REACHED
+useEffect(() => {
+  if (!userId) return;
+
+  const eventSource = new EventSource(`http://localhost:3000/api/time/stream/${userId}`);
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    console.log("SSE:", data);
+
+    // Update displayed time (optional)
+    if (data.timeUsed !== undefined) {
+      console.log("Time Used:", data.timeUsed);
+    }
+
+    // Redirect when limit reached
+    if (data.message === "LIMIT_REACHED") {
+      alert("Daily limit reached! Redirecting home.");
+      window.location.href = "/"; // go home page
+      eventSource.close();
+    }
+  };
+
+  eventSource.onerror = () => {
+    console.log("SSE connection error");
+    eventSource.close();
+  };
+
+  return () => eventSource.close();
+}, [userId]);
+
   useEffect(() => {
     if (!userId) return;
     const startTimer = async () => {
