@@ -350,7 +350,18 @@ const Child = () => {
   const [error, setError] = useState(null);
 
   const userId = user?.id; // Use Clerk ID safely
-
+  const textToSpeak = "Hello kids!Welcome to DoodleQuest!";
+  useEffect(() => {
+fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(textToSpeak)}`)
+    .then(res => res.blob())
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    })
+    .catch(err => console.error(err))
+    
+}, []);
   // --- 1. FETCH HISTORY & BADGES ---
   useEffect(() => {
     const fetchData = async () => {

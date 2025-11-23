@@ -194,7 +194,7 @@ const [isPlaying, setIsPlaying] = useState(false);
 
   const navigate = useNavigate();
   const { getToken } = useAuth(); // ✅ Get token
-
+const [isSubmitting, setIsSubmitting] = useState(false); // ✅ New state
   const handleAnswerClick = (answer, index) => {
     if (selectedAnswer !== null) return;
 
@@ -281,7 +281,7 @@ const [doodle,setDoodle]=useState("sun");
       // setQuizQuestions(parsedQuiz);
     })
     .catch(err => console.error("Quiz fetch error:", err));
-}, [doodle]);
+}, [doodle,language]);
  const textToSpeak = `
     Question: ${quizQuestions[currentQuestion].questionText}.
     Options are: 
