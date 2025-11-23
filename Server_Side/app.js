@@ -13,7 +13,7 @@ import rewardsRoutes from "./routes/rewards.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 import doodleRoute from "./routes/doodleRoute.js";
-
+import modeRoutes from "./routes/modeRoute.js";
 dotenv.config();
 
 const app = express();

@@ -8,7 +8,7 @@
     "@huggingface/inference": "^4.13.3",
     "all": "^0.0.0",
     "axios": "^1.13.2",
-    "cloudinary": "^1.41.3",
+    "cloudinary": "^1.37.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",

@@ -269,7 +269,7 @@ const [isPlaying, setIsPlaying] = useState(false);
   };
 const [doodle,setDoodle]=useState("sun");
   useEffect(() => {
-  fetch(`http://localhost:3000/api/quiz?obj=${doodle}&lang=${language}`)
+  fetch(`http://localhost:3000/api/quiz/quiz?obj=${doodle}&lang=${language}`)
     .then(res => res.json())
     .then(data => {
       // data.quiz is a string → convert to array

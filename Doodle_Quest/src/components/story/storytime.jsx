@@ -23,7 +23,7 @@ const [language, setLanguage] = useState("english");
 const [isPlaying, setIsPlaying] = useState(false);
 const [imgurl,setimgurl]=useState("src/assets/storyimg.png");
 useEffect(() => {
-      fetch(`http://localhost:3000/api/story?obj=${doodle}&lang=${language}`)
+      fetch(`http://localhost:3000/api/story/story?obj=${doodle}&lang=${language}`)
         .then(res => {
           console.log(res); return res.json()})
         .then(data => {setStory(data.story); setimgurl(data.imageurl);})
