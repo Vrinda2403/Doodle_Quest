@@ -1,5 +1,7 @@
 import React, { use, useState } from 'react';
 import { useEffect } from 'react';
+import { useAuth } from "@clerk/clerk-react";
+// import { set } from 'mongoose';
 // NOTE: It is best practice to move font imports to your main index.html file.
 const GlobalStyles = () => (
   <style>
@@ -22,27 +24,59 @@ const [doodle,setDoodle]=useState("sun");
 const [language, setLanguage] = useState("english");
 const [isPlaying, setIsPlaying] = useState(false);
 const [imgurl,setimgurl]=useState("src/assets/storyimg.png");
+
+const { getToken, userId } = useAuth();
+
+const [audioUrl, setAudioUrl] = useState(null);
+// useEffect(() => {
+//       fetch(`http://localhost:3000/api/story/story?obj=${doodle}&lang=${language}`)
+//         .then(res => {
+//           console.log(res); return res.json()})
+//         .then(data => {setStory(data.story); setimgurl(data.imageurl);})
+//                .catch(err => console.error(err));
+//     }, [doodle, language]);
+// useEffect( ()=>async()=>{
+//     const token = await getToken();
+//   fetch(`http://localhost:3000/api/story/story`, {
+//   headers: {
+//     Authorization: `Bearer ${token}`
+//   }})
+//   .then(res=>res.json()).
+//   then(data=>{setStory(data.storyText); setimgurl(data.storyImage);}).catch(err=>console.error(err));
+// },[userId]);
 useEffect(() => {
-      fetch(`http://localhost:3000/api/story/story?obj=${doodle}&lang=${language}`)
-        .then(res => {
-          console.log(res); return res.json()})
-        .then(data => {setStory(data.story); setimgurl(data.imageurl);})
-               .catch(err => console.error(err));
-    }, [doodle, language]);
+  async function fetchStory() {
+    const token = await getToken();
+    fetch(`http://localhost:3000/api/story/story`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setStory(data.storyText);
+        setimgurl(data.storyImage);
+      })
+      .catch(err => console.error(err));
+  }
+
+  fetchStory();
+}, [userId]);
 
 useEffect(() => {
  if (!isPlaying) return;
-
-  fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(story)}`)
+   fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(story)}`)
     .then(res => res.blob())
     .then(blob => {
+      console.log("audio fetching")
       const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
       const audio = new Audio(url);
       audio.play();
     })
     .catch(err => console.error(err))
     .finally(() => setIsPlaying(false));
-}, [isPlaying]);
+},[]);
+
+
 
 
   return (
@@ -74,6 +108,10 @@ useEffect(() => {
   >
     🔊 Audio
   </button>
+
+{/* {audioUrl && (
+  <audio controls src={audioUrl} className="w-full" />
+)} */}
 
   {/* Icons */}
   <img src="/src/assets/home-icon.png" alt="Home" className="w-8 h-8" />

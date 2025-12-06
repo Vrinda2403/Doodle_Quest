@@ -18,6 +18,7 @@ const doodleSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    
   },
   { timestamps: true } // Adds 'createdAt' and 'updatedAt'
 );

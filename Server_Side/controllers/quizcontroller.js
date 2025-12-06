@@ -48,14 +48,24 @@ import QuizAttempt from '../models/QuizAttempt.model.js';
 import quizContent from "../services/quizservice.js";    
 import audioService from "../services/audioservice.js";
 import * as rewardsService from '../services/rewards.service.js';
-
+import Quiz from '../models/quizmodel.js';
 async function generateQuiz(req, res)
 {
-const quiz=await quizContent(req.query.obj,req.query.lang)
-// audioService(quiz);
-res.status(200).json({ quiz });
-}
+// const quiz=await quizContent(req.query.obj,req.query.lang)
+// // audioService(quiz);
+// res.status(200).json({ quiz });
 
+ const childId = req.auth.userId;
+
+ const quiz = await Quiz.findOne({ childId })
+       .sort({ createdAt: -1 });  // latest
+ 
+     if (!quiz) {
+       return res.status(404).json({ message: "No quizzes found" });}
+ 
+         res.status(200).json(quiz);
+
+}
 const submitQuiz = asyncHandler(async (req, res) => {
   const { quizName, score, accuracy, totalQuestions, correctAnswers } = req.body;
   const childId = req.auth.userId;
