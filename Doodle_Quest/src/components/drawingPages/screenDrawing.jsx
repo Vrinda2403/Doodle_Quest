@@ -238,7 +238,7 @@ import React, { useRef, useEffect, useState } from "react";
 import screenBG from "../../assets/screenBG.png";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
-
+import saveaudio from "../../assets/audio/save.wav";
 function ScreenDrawing() {
   // --- Canvas Refs & State ---
   const canvasRef = useRef(null);
@@ -249,10 +249,14 @@ function ScreenDrawing() {
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
+  const [doodle,setDoodle]=useState("sun");
+  const [language, setLanguage] = useState("english");
+
   // ✅ Replace with actual logged-in userId or dummy one for now
 
 
   // Send canvas image to backend every 4 seconds
+const audioRef=useRef(null);
 useEffect(() => {
   const interval = setInterval(async () => {
     const canvas = canvasRef.current;
@@ -458,7 +462,7 @@ useEffect(() => {
 
   const handleSubmitDoodle = async () => {
     console.log("🔵 Submit button clicked");
-    
+    audioRef.current.play();
     const canvas = canvasRef.current;
     if (!canvas) {
       console.error("❌ Canvas ref is missing");
@@ -490,7 +494,7 @@ useEffect(() => {
         
         // 4. Send Request
         const response = await axios.post(
-          "http://localhost:3000/api/storage/upload-doodle", 
+          `http://localhost:3000/api/storage/upload-doodle?doodle=${encodeURIComponent(doodle)}&language=${encodeURIComponent(language)}`, 
           formData, 
           {
             headers: {
@@ -577,6 +581,12 @@ useEffect(() => {
           <button onClick={handleSubmitDoodle} className="bg-[#4CAF50] px-8 py-3 rounded-xl text-white text-lg shadow-[4px_4px_0px_#000000] hover:bg-green-700 transition">
             Submit
           </button>
+          <audio
+            src={saveaudio}
+                       hidden
+           ref={audioRef}
+           preload="auto"
+          />
         </div>
       </div>
 

@@ -320,6 +320,9 @@ import Badge3 from '../../assets/Badges/Badge3.png';
 import Badge4 from '../../assets/Badges/Badge4.png';
 import Badge5 from '../../assets/Badges/Badge5.png';
 
+
+// import mainaudio from '../../../public/audio/welcome.wav';
+import mainaudio from '../../assets/audio/welcome.wav';
 // ✅ Badge Mapping
 const badgeImageMap = {
   "Badge1.png": Badge1,
@@ -350,18 +353,21 @@ const Child = () => {
   const [error, setError] = useState(null);
 
   const userId = user?.id; // Use Clerk ID safely
-  const textToSpeak = "Hello kids!Welcome to DoodleQuest!";
-  useEffect(() => {
-fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(textToSpeak)}`)
-    .then(res => res.blob())
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audio.play();
-    })
-    .catch(err => console.error(err))
+  // const textToSpeak = "Hello kids!Welcome to DoodleQuest!";
+  // useEffect(() => {
+// fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(textToSpeak)}`)
+//     .then(res => res.blob())
+//     .then(blob => {
+//       const url = URL.createObjectURL(blob);
+//       const audio = new Audio(url);
+//       audio.play();
+//     })
+//     .catch(err => console.error(err))
     
-}, []);
+// }, []);
+  // const audioUrl = "http://localhost:3000/public/audio/welcome.mp3";
+
+
   // --- 1. FETCH HISTORY & BADGES ---
   useEffect(() => {
     const fetchData = async () => {
@@ -449,6 +455,16 @@ fetch(`http://localhost:3000/api/audio?story=${encodeURIComponent(textToSpeak)}`
   return (
     <div>
       <Welcome2 />
+    <audio
+  src={mainaudio}
+ autoPlay
+  muted
+  hidden
+  onCanPlay={(e) => {
+    e.target.muted = false;
+  }}
+/>
+
 
       <div className="text-center mt-6 text-xl font-semibold text-gray-800">
         Welcome, <span className="text-[#3B17AB]">{user?.firstName || 'Explorer'}</span>!
