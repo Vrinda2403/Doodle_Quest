@@ -13,6 +13,7 @@ import rewardsRoutes from "./routes/rewards.routes.js";
 import dashboardRoutes from "./routes/dashboard.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 import doodleRoute from "./routes/doodleRoute.js";
+import modeRoutes  from  "./routes/modeRoute.js";
 
 dotenv.config();
 
@@ -39,6 +40,8 @@ app.use("/api/camera", cameraRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/tasks", taskRoutes);
 app.use("/api/mode", modeRoutes);
+app.get("/parent-data", protect, (req, res) => {});
+
 
 const story=`After the rain stopped, Peppa and George ran outside to jump in muddy puddles.
 Suddenly, they saw a big, bright rainbow in the sky!
