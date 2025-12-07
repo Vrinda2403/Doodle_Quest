@@ -99,7 +99,7 @@ async function audioService(story) {
   // Return readable stream like ElevenLabs
   const stream = Readable.from(wavBuffer);
 
-  const outputPath = path.join(process.cwd(), "welcome.wav");
+  const outputPath = path.join(process.cwd(), "intro1.wav");
 fs.writeFileSync(outputPath, wavBuffer);
   return stream;
 }

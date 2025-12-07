@@ -249,7 +249,7 @@ function ScreenDrawing() {
   const [tasks, setTasks] = useState([]);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
-  const [doodle,setDoodle]=useState("sun");
+  const [doodle,setDoodle]=useState("moon");
   const [language, setLanguage] = useState("english");
 
   // ✅ Replace with actual logged-in userId or dummy one for now

@@ -299,6 +299,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import axios from 'axios';
 import { FaTwitter, FaFacebookF, FaInstagram, FaLinkedinIn } from 'react-icons/fa';
+import { useRef } from "react";
+
 
 // --- ASSET IMPORTS ---
 import BlueBG from '../../assets/BlueBG.png';
@@ -323,6 +325,7 @@ import Badge5 from '../../assets/Badges/Badge5.png';
 
 // import mainaudio from '../../../public/audio/welcome.wav';
 import mainaudio from '../../assets/audio/welcome.wav';
+import introaudio from '../../assets/audio/intro1.wav';
 // ✅ Badge Mapping
 const badgeImageMap = {
   "Badge1.png": Badge1,
@@ -336,7 +339,7 @@ const badgeImageMap = {
   "Level 4 Badge": Badge4,
   "Level 5 Badge": Badge5,
 };
- const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
+//  const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS']
 
 const Child = () => {
   const navigate = useNavigate();
@@ -384,7 +387,7 @@ const Child = () => {
 
         setHistory(historyRes.data);
         setBadges(rewardsRes.data);
-
+       console.log("History Set");
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError('Failed to load progress.');
@@ -394,6 +397,22 @@ const Child = () => {
     };
     fetchData();
   }, [getToken]);
+  let incompleteDoodles = [];
+let total = 0;
+let completed = 0;
+let percentage = 0;
+if (history && history.doodles) {
+ incompleteDoodles = history.doodles.filter(d => 
+  !d.hasReadStory || !d.hasReadQuiz
+);
+console.log("incompleteDoodles:", incompleteDoodles);
+ total = history.doodles.length;
+completed = history.doodles.filter(d => d.hasReadStory && d.hasReadQuiz).length;
+
+percentage = total === 0 ? 0 : Math.round((completed / total) * 100);
+}
+// const pendingPercentage = 100 - percentage;
+
 
   // --- 2. SCREEN TIME LOGIC ---
   // useEffect(() => {
@@ -439,6 +458,60 @@ const Child = () => {
   //   return () => clearInterval(interval);
   // }, [userId]);
 
+    // AUDIO: Play mainaudio only once per user
+  const mainRef = useRef(null);
+  const introRef = useRef(null);
+
+  // useEffect(() => {
+  //   const isFirstVisit = !sessionStorage.getItem("child_session_seen");
+
+  //   if (isFirstVisit) {
+  //     // First time → play welcome.wav
+  //     const mainA = mainRef.current;
+  //     mainA.muted = false;
+  //     mainA.play().catch(() => {});
+
+  //     // After welcome.wav finishes → play intro.wav
+  //     mainA.onended = () => {
+  //       const introA = introRef.current;
+  //       introA.muted = false;
+  //       introA.play();
+  //       // Save flag so mainaudio never plays again
+  //       localStorage.setItem("child_visited_before", "true");
+  //     };
+  //   } else {
+  //     // Not first time → directly play intro.wav
+  //     const introA = introRef.current;
+  //     introA.muted = false;
+  //     introA.play().catch(() => {});
+  //   }
+  // }, []);
+
+  useEffect(() => {
+  const isFirstVisit = !sessionStorage.getItem("child_session_seen");
+
+  if (isFirstVisit) {
+    // First load of this session → play main audio once
+    const mainA = mainRef.current;
+    mainA.muted = false;
+    mainA.play().catch(() => {});
+
+    mainA.onended = () => {
+      const introA = introRef.current;
+      introA.muted = false;
+      introA.play();
+
+      // Mark as seen for this session
+      sessionStorage.setItem("child_session_seen", "true");
+    };
+  } else {
+    // Already visited in this session → do not play anything
+    // (Or directly play intro if you want)
+  }
+}, []);
+
+
+
   
   const tabs = ['COMPLETE', 'LEARN', 'EXCELL', 'RANKINGS'];
   const howItWorksSteps = [
@@ -455,15 +528,29 @@ const Child = () => {
   return (
     <div>
       <Welcome2 />
-    <audio
+        {/* <audio
   src={mainaudio}
+ autoPlay
+  muted
+  hidden
+  // onCanPlay={(e) => {
+  //   e.target.muted = false;
+  // }}
+  
+/>
+  <audio
+  src={introaudio}
  autoPlay
   muted
   hidden
   onCanPlay={(e) => {
     e.target.muted = false;
   }}
-/>
+  
+/> */}
+<audio ref={mainRef} src={mainaudio} hidden />
+<audio ref={introRef} src={introaudio} hidden />
+
 
 
       <div className="text-center mt-6 text-xl font-semibold text-gray-800">
@@ -495,34 +582,84 @@ const Child = () => {
                 ⏱️ Screen Time Today: {timeUsed} mins
               </span>
             </div>
+            <div className="w-full bg-gray-300 rounded-full h-4 mt-2">
+  <div
+    className="bg-green-500 h-4 rounded-full"
+    style={{ width: `${percentage}%` }}
+  ></div>
+</div>
+<div className='flex justify-center gap-6 px-6 py-10'>
+<div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+  {incompleteDoodles[0] ? (
+    <>
+      <img src={incompleteDoodles[0].imageUrl} className="w-full h-64 object-cover" />
+
+           <p className="mt-2 font-semibold text-red-600">
+        {!incompleteDoodles[0].hasReadStory && "Story Unread • "}
+        {!incompleteDoodles[0].hasReadQuiz && "Quiz Unattempted"}
+      </p>
+    </>
+  ) : (
+    <p>No pending doodles!</p>
+  )}
+</div>
+<div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+  {incompleteDoodles[1] ? (
+    <>
+      <img src={incompleteDoodles[1].imageUrl} className="w-full h-64 object-cover" />
+
+      <p className="mt-2 font-semibold text-red-600">
+        {!incompleteDoodles[1].hasReadStory && "Story Unread • "}
+        {!incompleteDoodles[1].hasReadQuiz && "Quiz Unattempted"}
+      </p>
+    </>
+  ) : (
+    <div className="empty-slot">Empty Slot</div>
+  )}
+</div>
+<div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+  {incompleteDoodles[2] ? (
+    <>
+      <img src={incompleteDoodles[2].imageUrl} className="w-full h-64 object-cover" />
+
+      <p className="mt-2 font-semibold text-red-600">
+        {!incompleteDoodles[2].hasReadStory && "Story Unread • "}
+        {!incompleteDoodles[2].hasReadQuiz && "Quiz Unattempted"}
+      </p>
+    </>
+  ) : (
+    <div className="empty-slot">Empty Slot</div>
+  )}
+</div>
+</div>
 
             {/*  3-CARD DOODLE LAYOUT */}
-            {history && (
+            {/* {history && (
               <div className="flex flex-col gap-4">
-                <div className="flex justify-center gap-6 px-6 py-10">
+                <div className="flex justify-center gap-6 px-6 py-10"> */}
 
                   {/* Card 1: Latest */}
-                  <div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+                  {/* <div className="min-h-[50vh] bg-white/50 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
                     {history.doodles.length > 0 ? (
                       <>
                         <img src={history.doodles[0].imageUrl} alt="Latest" className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md" />
                         <p className="mt-4 font-bold text-gray-800">Latest</p>
                       </>
                     ) : <p className="text-gray-700">No doodles yet!</p>}
-                  </div>
+                  </div> */}
 
                   {/* Card 2: Recent */}
-                  <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+                  {/* <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
                     {history.doodles.length > 1 ? (
                       <>
                         <img src={history.doodles[1].imageUrl} alt="Recent" className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md" />
                         <p className="mt-4 font-bold text-gray-800">Recent</p>
                       </>
                     ) : <div className="text-gray-400 border-2 border-dashed border-gray-300 w-full h-64 rounded-lg flex items-center justify-center">Empty Slot</div>}
-                  </div>
+                  </div> */}
 
                   {/* Card 3: Previous */}
-                  <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
+                  {/* <div className="min-h-[50vh] bg-white/30 min-w-[22vw] backdrop-blur-md p-6 rounded-xl shadow-md flex flex-col items-center justify-center">
                     {history.doodles.length > 2 ? (
                       <>
                         <img src={history.doodles[2].imageUrl} alt="Previous" className="w-full h-64 object-cover rounded-lg border-2 border-white bg-white shadow-md" />
@@ -537,7 +674,7 @@ const Child = () => {
                   <Link to="/doddledeck" className="inline-block text-black font-robotoSlab p-2 border rounded-full bg-blue-200 text-xl transform transition-transform duration-300 hover:scale-105 active:scale-95 ">Show All Doodles & History &gt;</Link>
                 </div>
               </div>
-            )}
+            )} */}
           </main>
         </div>
       </div>
