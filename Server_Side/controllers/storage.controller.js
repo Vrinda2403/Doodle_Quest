@@ -220,17 +220,52 @@ const savePuzzleProgress = asyncHandler(async (req, res) => {
   res.status(200).json(updatedProgress);
 });
 
+// const getStorageHistory = asyncHandler(async (req, res) => {
+//   const childId = req.auth.userId;
+
+//   const [doodles, puzzles, quizzes,stories] = await Promise.all([
+//     Doodle.find({ childId: childId }).sort({ createdAt: -1 }),
+//     PuzzleProgress.find({ childId: childId }).sort({ updatedAt: -1 }),
+//     QuizAttempt.find({ childId: childId }).sort({ createdAt: -1 }),
+//      Story.find({ childId }).sort({ createdAt: -1 }),
+//   ]);
+
+//   res.status(200).json({ doodles, puzzles, quizzes,stories });
+// });
+
 const getStorageHistory = asyncHandler(async (req, res) => {
   const childId = req.auth.userId;
 
-  const [doodles, puzzles, quizzes] = await Promise.all([
-    Doodle.find({ childId: childId }).sort({ createdAt: -1 }),
-    PuzzleProgress.find({ childId: childId }).sort({ updatedAt: -1 }),
-    QuizAttempt.find({ childId: childId }).sort({ createdAt: -1 }),
-    Story.find({ childId }).sort({ createdAt: -1 }),
+  const [
+    doodles,
+    puzzles,
+    quizAttempts,
+    stories,
+    quizzes
+  ] = await Promise.all([
+
+    // 1. DOODLES
+    Doodle.find({ childId }).sort({ createdAt: -1 }).lean(),
+
+    // 2. PUZZLES
+    PuzzleProgress.find({ childId }).sort({ updatedAt: -1 }).lean(),
+
+    // 3. QUIZ ATTEMPTS
+    QuizAttempt.find({ childId }).sort({ createdAt: -1 }).lean(),
+
+    // 4. STORIES
+    Story.find({ childId }).sort({ createdAt: -1 }).lean(),
+
+    // 5. REAL QUIZZES
+    Quiz.find({ childId }).sort({ createdAt: -1 }).lean(),
   ]);
-
-  res.status(200).json({ doodles, puzzles, quizzes });
+console.log(stories,quizAttempts)
+  return res.status(200).json({
+    doodles,
+    puzzles,
+    stories,
+    quizzes,        
+    quizAttempts,   
+  });
 });
-
 export { uploadDoodle, savePuzzleProgress, getStorageHistory };

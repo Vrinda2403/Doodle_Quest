@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-
+import Quiz from "./quizmodel.js";
+import Doodle from "./Doodle.model.js";
 const quizAttemptSchema = new mongoose.Schema(
   {
     // Store the Clerk User ID as a string
@@ -7,11 +8,17 @@ const quizAttemptSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    quizName: {
-      type: String,
-      required: true,
-      trim: true,
+    doodleId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Doodle",
+          required:true,
     },
+     quizId: { type: mongoose.Schema.Types.ObjectId, ref: "Quiz", required: true },
+    // quizName: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
     score: {
       type: Number,
       required: true,
