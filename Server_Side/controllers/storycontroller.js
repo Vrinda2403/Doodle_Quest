@@ -20,13 +20,21 @@ async function generateStory(req, res)
 
 
  const childId = req.auth.userId;
+const storyId=req.query.Id;
+if(storyId)
+{
+  const story = await Story.findById(storyId);
+   return res.status(200).json(story);
 
+}
+else
+{
   const story = await Story.findOne({ childId })
       .sort({ createdAt: -1 });  // latest
-
     if (!story) {
       return res.status(404).json({ message: "No stories found" });}
 
-        res.status(200).json(story);
+      res.status(200).json(story);
+}
 }
 export default generateStory;

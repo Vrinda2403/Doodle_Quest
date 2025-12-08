@@ -206,13 +206,17 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const Doddledeck = () => {
   const { getToken } = useAuth();
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -308,8 +312,8 @@ const rows = Array.from({ length: maxRows });
                 // const quiz = history.quizzes[index];
                   const story = history.stories.find(s => s.doodleId === doodle._id);
                  const quiz = history.quizzes.find(q => q.doodleId === doodle._id);
-                const quizAttempt = history.quizAttempts.find(a => a.doodleId === doodle._id);
-
+                const quizAttempts = history.quizAttempts.find(a => a.doodleId === doodle._id);
+                
                 // Calculate points for THIS SPECIFIC row
                 const rowPoints = (doodle ? 20 : 0) + (quiz ? 10 : 0);
 
@@ -336,7 +340,7 @@ const rows = Array.from({ length: maxRows });
                     <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
                         <div className="font-bold mb-2">Story {index + 1}</div>
                         {story ? (
-                            <button className="px-4 py-1 bg-green-500 text-white text-sm rounded shadow hover:bg-green-600 transition">
+                            <button onClick={() => navigate(`/storytime?storyId=${story._id}`)}  className="px-4 py-1 bg-green-500 text-white text-sm rounded shadow hover:bg-green-600 transition">
                                 Read Now
                             </button>
                         ) : (
@@ -345,19 +349,25 @@ const rows = Array.from({ length: maxRows });
                     </div>
 
                     {/* Col 4: QUIZ */}
-                    {/* <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
-                        {quiz ? (
+                    <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
+                      {/* <div className="text-3xl font-bold mb-2">
+                        <button className="px-4 py-1 bg-green-400 text-sm rounded shadow hover:bg-yellow-500 transition">View Quiz</button>
+                      </div> */}
+                        <div >
+                        {quizAttempts ? (
                             <>
-                                <div className="text-3xl font-bold mb-2">{quiz.score}/{quiz.totalQuestions}</div>
-                                <button className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">
+                                <div className="text-3xl font-bold mb-2">{quizAttempts.score}/{quizAttempts.totalQuestions}</div>
+                                <button onClick={() => navigate(`/quiz?quizId=${quiz._id}`)} className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">
                                     Retake
                                 </button>
                             </>
                         ) : (
-                            <span className="text-gray-400 italic">No Quiz</span>
+                          <button onClick={() => navigate(`/quiz?quizId=${quiz._id}`)} className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">Attempt Quiz</button>
+                            // <span className="text-gray-400 italic">Attempt the Quiz first!</span>
                         )}
-                    </div> */}
-                    {quizAttempt ? (
+                        </div>
+                    </div>
+                    {/* {quizAttempt ? (
   <>
     <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
       {quizAttempt.score}/{quizAttempt.totalQuestions}
@@ -366,11 +376,11 @@ const rows = Array.from({ length: maxRows });
   </>
 ) : (
   <span>No Quiz</span>
-)}
+)} */}
 
 
                     {/* Col 5: POINTS */}
-                    <div className="flex flex-col items-center justify-center h-64 bg-white">
+                    <div className="border-black flex flex-col items-center justify-center h-64 bg-white">
                         <div className="text-4xl font-extrabold text-purple-700">
                             +{rowPoints}
                         </div>

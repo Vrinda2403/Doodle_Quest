@@ -1,6 +1,8 @@
 import React, { use, useState } from 'react';
 import { useEffect } from 'react';
 import { useAuth } from "@clerk/clerk-react";
+import { useSearchParams } from "react-router-dom";
+
 // import { set } from 'mongoose';
 // NOTE: It is best practice to move font imports to your main index.html file.
 const GlobalStyles = () => (
@@ -13,6 +15,8 @@ const GlobalStyles = () => (
 
 // Component names in React should be capitalized
 function Storytime() {
+   const [searchParams] = useSearchParams();
+  const storyId = searchParams.get("storyId");
  const [story, setStory] = useState(
 `The little bird sang a joyful tune
 A sleepy fox dreamt beneath the moon.
@@ -47,7 +51,11 @@ const [audioUrl, setAudioUrl] = useState(null);
 useEffect(() => {
   async function fetchStory() {
     const token = await getToken();
-    fetch(`http://localhost:3000/api/story/story`, {
+    
+    const url = storyId
+      ? `http://localhost:3000/api/story/story?Id=${storyId}`
+      : `http://localhost:3000/api/story/story`; // latest story
+    fetch(url, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => res.json())

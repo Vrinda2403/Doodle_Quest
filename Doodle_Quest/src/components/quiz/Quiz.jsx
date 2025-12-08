@@ -147,12 +147,15 @@ import axios from 'axios';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import grass from '../../assets/Grass.png';
 import { useEffect } from 'react';
-
+import { useSearchParams } from "react-router-dom";
 
 
 
 
 const Quiz = () => {
+  const [doodleId,setDoodleId]=useState("");
+  const [searchParams] = useSearchParams();
+const[quizId,setQuizId]=useState(searchParams.get("quizId")||"");
   const [quizQuestions, setQuizQuestions] = useState([
   {
     questionText: 'Which of these animals says "Moo"?',
@@ -226,7 +229,9 @@ const [isSubmitting, setIsSubmitting] = useState(false); // ✅ New state
           score: score,
           accuracy: accuracy,
           totalQuestions: totalQuestions,
-          correctAnswers: score
+          correctAnswers: score,
+          doodleId:doodleId,
+          quizId:quizId,
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -269,6 +274,9 @@ const [isSubmitting, setIsSubmitting] = useState(false); // ✅ New state
     return 'bg-gray-400 opacity-70';
   };
 const [doodle,setDoodle]=useState("sun");
+
+
+  // const quizId = searchParams.get("quizId");
 //   useEffect(() => {
 //   fetch(`http://localhost:3000/api/quiz/quiz?obj=${doodle}&lang=${language}`)
 //     .then(res => res.json())
@@ -286,12 +294,15 @@ const [doodle,setDoodle]=useState("sun");
 
 useEffect( ()=>async()=>{
     const token = await getToken();
-  fetch(`http://localhost:3000/api/quiz/quiz`, {
+    const url = quizId
+      ? `http://localhost:3000/api/quiz/quiz?Id=${quizId}`
+      : `http://localhost:3000/api/quiz/quiz`;
+  fetch(url, {
   headers: {
     Authorization: `Bearer ${token}`
   }})
   .then(res=>res.json()).
-  then(data=>{console.log(data.questions);
+  then(data=>{setQuizId(data.quizId); setDoodleId(data.doodleId);
     setQuizQuestions(data.questions);}).catch(err=>console.error(err));
 },[userId])
 

@@ -56,27 +56,44 @@ async function generateQuiz(req, res)
 // res.status(200).json({ quiz });
 
  const childId = req.auth.userId;
+const quizId=req.query.Id;
+if(quizId)
+{
+  const quiz = await Quiz.findById(quizId);
+   res.status(200).json({
+    quizId: quiz._id,
+    doodleId: quiz.doodleId?._id,
+    questions: quiz.questions
+  });
+  // return res.status(200).json(quiz);
 
+}
  const quiz = await Quiz.findOne({ childId })
        .sort({ createdAt: -1 });  // latest
  
      if (!quiz) {
        return res.status(404).json({ message: "No quizzes found" });}
- 
-         res.status(200).json(quiz);
+   res.status(200).json({
+    quizId: quiz._id,
+    doodleId: quiz.doodleId?._id,
+    questions: quiz.questions
+  });
+        //  res.status(200).json(quiz);
 
 }
 const submitQuiz = asyncHandler(async (req, res) => {
-  const { quizName, score, accuracy, totalQuestions, correctAnswers } = req.body;
+  const { score, accuracy, totalQuestions, correctAnswers,doodleId,quizId } = req.body;
   const childId = req.auth.userId;
 
   const newAttempt = new QuizAttempt({
     childId,
-    quizName,
+    doodleId,
+    quizId,
     score,
     accuracy,
     totalQuestions,
     correctAnswers,
+
   });
 
   await newAttempt.save();

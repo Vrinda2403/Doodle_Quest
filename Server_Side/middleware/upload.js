@@ -51,7 +51,7 @@ const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
     folder: "doodlequest", // Use your preferred folder name
-    allowed_formats: ["jpg"],
+    allowed_formats: ["png"],
     // Ensure unique filenames to avoid overwriting
     public_id: (req, file) => {
       const userId = req.auth ? req.auth.userId : 'guest';
