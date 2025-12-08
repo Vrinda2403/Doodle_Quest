@@ -5,13 +5,14 @@ import {
   createReward, 
   setupBadges // ✅ Import the new function
 } from '../controllers/rewards.controller.js';
-import { protect } from '../middleware/clerk.js';
+
+import { childAuth } from '../middleware/childAuth.js';
 
 const router = express.Router();
 
-router.get('/my-rewards', protect, getMyRewards);
-router.get('/my-points', protect, getMyPoints);
-router.post('/create', protect, createReward);
+router.get('/my-rewards', childAuth, getMyRewards);
+router.get('/my-points', childAuth, getMyPoints);
+router.post('/create', childAuth, createReward);
 
 // ✅ ADD THIS ROUTE (No protect needed for this setup tool)
 router.get('/setup', setupBadges);

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const rewardSchema = new mongoose.Schema({
-  name: {
+  childId: {
     type: String,
     required: true,
     trim: true,
