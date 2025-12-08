@@ -4,22 +4,23 @@ import {
   savePuzzleProgress,
   getStorageHistory,
 } from '../controllers/storage.controller.js';
-import { protect } from '../middleware/clerk.js';
+
 import upload from '../middleware/upload.js';
+import { childAuth } from '../middleware/childAuth.js';
 
 const router = express.Router();
 
 router.post(
   '/upload-doodle',
-  protect,
+  childAuth,
   upload.single('doodleImage'), // 'doodleImage' must match the form field name
   uploadDoodle
 );
 
 // This route is for POST /api/storage/save-puzzle
-router.post('/save-puzzle', protect, savePuzzleProgress);
+router.post('/save-puzzle', childAuth, savePuzzleProgress);
 
 // This route is for GET /api/storage/history
-router.get('/history', protect, getStorageHistory);
+router.get('/history', childAuth, getStorageHistory);
 
 export default router;

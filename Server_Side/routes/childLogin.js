@@ -1,36 +1,34 @@
+// routes/childLogin.js
+// Child authentication: verify child password from Child collection, issue JWT.
+// Reason: child accounts are simple DB-backed users (no Clerk), return a JWT.
+
 import express from "express";
-import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
-import { clerkClient } from "@clerk/clerk-sdk-node";
+import jwt from "jsonwebtoken";
+import ChildSchema from "../models/ChildSchema.js";
 
 const router = express.Router();
 
-router.post("/child-login", async (req, res) => {
-  const { childId, password } = req.body;
+router.post("/", async (req, res) => {
+  try {
+    const { childId, password } = req.body;
+    if (!childId || !password) return res.status(400).json({ error: "childId and password required" });
 
-  const allUsers = await clerkClient.users.getUserList({ limit: 200 });
+    const child = await ChildSchema.findOne({ childId });
+    if (!child) return res.status(400).json({ error: "Invalid childId or password" });
 
-  const user = allUsers.find(
-    (u) => u.publicMetadata.childId === childId
-  );
+    const match = await bcrypt.compare(password, child.childPassword);
+    if (!match) return res.status(400).json({ error: "Invalid childId or password" });
 
-  if (!user) return res.status(400).json({ error: "Invalid child ID" });
+    // Issue JWT containing child's id and parentClerkId for relationship checks later
+    const payload = { role: "child", childId: child.childId, parentClerkId: child.parentClerkId };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
 
-  const match = await bcrypt.compare(password, user.publicMetadata.childPassword);
-
-  if (!match) return res.status(400).json({ error: "Invalid password" });
-
-  const token = jwt.sign(
-    {
-      mode: "child",
-      parentClerkId: user.id,
-      childId: childId
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "1d" }
-  );
-
-  res.json({ childToken: token });
+    return res.json({ childToken: token });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Login failed" });
+  }
 });
 
 export default router;

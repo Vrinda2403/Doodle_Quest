@@ -9,7 +9,7 @@
 
 // In routes/quizroute.js
 import { generateQuiz, submitQuiz } from "../controllers/quizcontroller.js";
-import { protect } from '../middleware/clerk.js'; 
+import { childAuth } from "../middleware/childAuth.js";
 import express from "express";
 
 const router = express.Router();
@@ -18,6 +18,8 @@ const router = express.Router();
 router.get("/quiz", generateQuiz);
 
 // This route saves the score. It is protected.
-router.post("/submit", protect, submitQuiz);
+
+router.post("/submit", childAuth, submitQuiz);
+
 
 export default router;
