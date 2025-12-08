@@ -42,6 +42,8 @@ import { GoogleGenAI } from "@google/genai";
 import { Readable } from "stream";
 import wav from "wav";
 import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
 
 dotenv.config();
 
@@ -86,11 +88,19 @@ async function audioService(story) {
   const data = response.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
   const pcmBuffer = Buffer.from(data, "base64");
 
+
+  //To save audio file
+  // const outputPath = path.join(process.cwd(), "welcome.mp3");
+  // fs.writeFileSync(outputPath, pcmBuffer);
+
   // Convert PCM → WAV buffer
   const wavBuffer = await saveWaveBuffer(pcmBuffer);
 
   // Return readable stream like ElevenLabs
   const stream = Readable.from(wavBuffer);
+
+  const outputPath = path.join(process.cwd(), "intro1.wav");
+fs.writeFileSync(outputPath, wavBuffer);
   return stream;
 }
 

@@ -18,7 +18,18 @@ const doodleSchema = new mongoose.Schema(
       required: false,
       trim: true,
     },
+    hasReadStory:{
+      type:Boolean,
+      required:true,
+      default: false,
+    },
+    hasReadQuiz:{
+    type:Boolean,
+    required:true,
+    default: false,
+    }
   },
+
   { timestamps: true } // Adds 'createdAt' and 'updatedAt'
 );
 

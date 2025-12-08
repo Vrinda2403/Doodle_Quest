@@ -206,13 +206,17 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const Doddledeck = () => {
   const { getToken } = useAuth();
   const [history, setHistory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -223,7 +227,7 @@ const Doddledeck = () => {
 
         const historyRes = await axios.get('http://localhost:3000/api/storage/history', config);
         setHistory(historyRes.data);
-        
+        console.log(history);
       } catch (err) {
         setError('Failed to fetch data.');
         console.error(err);
@@ -242,13 +246,23 @@ const Doddledeck = () => {
 
   // ✅ CALCULATE SCORE INSTANTLY (Frontend Logic)
   // 20 pts per doodle, 10 pts per quiz
-  const totalScore = history 
-    ? (history.doodles.length * 20) + (history.quizzes.length * 10) 
-    : 0;
+  // const totalScore = history 
+  //   ? (history.doodles.length * 20) + (history.quizAttempts.length * 10) 
+  //   : 0;
 
-  // We need to determine how many rows to show based on which list is longer
-  const maxRows = history ? Math.max(history.doodles.length, history.quizzes.length) : 0;
-  const rows = Array.from({ length: maxRows });
+  // // We need to determine how many rows to show based on which list is longer
+  // const maxRows = history ? Math.max(history.doodles.length, history.quizAttempts.length) : 0;
+  // const rows = Array.from({ length: maxRows });
+const totalScore = history 
+  ? ((history.doodles?.length || 0) * 20) + ((history.quizAttempts?.length || 0) * 10)
+  : 0;
+
+const maxRows = Math.max(
+  history?.doodles?.length || 0,
+  history?.quizAttempts?.length || 0
+);
+
+const rows = Array.from({ length: maxRows });
 
   return (
     <div className="bg-[#F4EDE6] min-h-screen pb-10">
@@ -292,26 +306,30 @@ const Doddledeck = () => {
             </div>
 
             {/* ✅ DYNAMIC ROWS LOOP */}
-            {rows.map((_, index) => {
-                const doodle = history.doodles[index];
-                const quiz = history.quizzes[index];
+            {history?.doodles && history.stories && history.quizAttempts && (
+            history.doodles.map((doodle, index) => {
+                // const doodle = history.doodles[index];
+                // const quiz = history.quizzes[index];
+                  const story = history.stories.find(s => s.doodleId === doodle._id);
+                 const quiz = history.quizzes.find(q => q.doodleId === doodle._id);
+                const quizAttempts = history.quizAttempts.find(a => a.doodleId === doodle._id);
                 
                 // Calculate points for THIS SPECIFIC row
                 const rowPoints = (doodle ? 20 : 0) + (quiz ? 10 : 0);
 
                 return (
-                  <div key={index} className="grid grid-cols-5 text-center border-b border-gray-300 last:border-0">
+                  <div key={doodle._id} className="grid grid-cols-5 text-center border-b border-gray-300 last:border-0">
                     
                     {/* Col 1: DATE */}
                     <div className="border-r border-black flex items-center justify-center h-64 bg-white">
                         <span className="text-lg font-bold">
-                            {formatDate(doodle?.createdAt || quiz?.createdAt)}
+                            {formatDate(doodle.createdAt)}
                         </span>
                     </div>
 
                     {/* Col 2: DOODLES */}
                     <div className="border-r border-black flex items-center justify-center h-64 bg-white p-4">
-                        {doodle ? (
+                        {doodle.imageUrl ? (
                             <img src={doodle.imageUrl} alt="Doodle" className="w-full h-full object-contain"/>
                         ) : (
                             <span className="text-gray-400 italic">No Doodle</span>
@@ -321,27 +339,48 @@ const Doddledeck = () => {
                     {/* Col 3: STORY (Static) */}
                     <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
                         <div className="font-bold mb-2">Story {index + 1}</div>
-                        <button className="px-4 py-1 bg-green-500 text-white text-sm rounded shadow hover:bg-green-600 transition">
-                            Read Now
-                        </button>
+                        {story ? (
+                            <button onClick={() => navigate(`/storytime?storyId=${story._id}`)}  className="px-4 py-1 bg-green-500 text-white text-sm rounded shadow hover:bg-green-600 transition">
+                                Read Now
+                            </button>
+                        ) : (
+                            <span className="text-gray-400 italic">No Story</span>
+                        )}  
                     </div>
 
                     {/* Col 4: QUIZ */}
                     <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
-                        {quiz ? (
+                      {/* <div className="text-3xl font-bold mb-2">
+                        <button className="px-4 py-1 bg-green-400 text-sm rounded shadow hover:bg-yellow-500 transition">View Quiz</button>
+                      </div> */}
+                        <div >
+                        {quizAttempts ? (
                             <>
-                                <div className="text-3xl font-bold mb-2">{quiz.score}/{quiz.totalQuestions}</div>
-                                <button className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">
+                                <div className="text-3xl font-bold mb-2">{quizAttempts.score}/{quizAttempts.totalQuestions}</div>
+                                <button onClick={() => navigate(`/quiz?quizId=${quiz._id}`)} className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">
                                     Retake
                                 </button>
                             </>
                         ) : (
-                            <span className="text-gray-400 italic">No Quiz</span>
+                          <button onClick={() => navigate(`/quiz?quizId=${quiz._id}`)} className="px-4 py-1 bg-yellow-400 text-sm rounded shadow hover:bg-yellow-500 transition">Attempt Quiz</button>
+                            // <span className="text-gray-400 italic">Attempt the Quiz first!</span>
                         )}
+                        </div>
                     </div>
+                    {/* {quizAttempt ? (
+  <>
+    <div className="border-r border-black flex flex-col items-center justify-center h-64 bg-white p-2">
+      {quizAttempt.score}/{quizAttempt.totalQuestions}
+    </div>
+    <button>Retake</button>
+  </>
+) : (
+  <span>No Quiz</span>
+)} */}
+
 
                     {/* Col 5: POINTS */}
-                    <div className="flex flex-col items-center justify-center h-64 bg-white">
+                    <div className="border-black flex flex-col items-center justify-center h-64 bg-white">
                         <div className="text-4xl font-extrabold text-purple-700">
                             +{rowPoints}
                         </div>
@@ -350,8 +389,9 @@ const Doddledeck = () => {
 
                   </div>
                 );
-            })}
-            
+            })
+            )}
+        
             {/* Empty State if no data */}
             {rows.length === 0 && (
                 <div className="p-10 text-center text-xl text-gray-500">

@@ -147,12 +147,15 @@ import axios from 'axios';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import grass from '../../assets/Grass.png';
 import { useEffect } from 'react';
-
+import { useSearchParams } from "react-router-dom";
 
 
 
 
 const Quiz = () => {
+  const [doodleId,setDoodleId]=useState("");
+  const [searchParams] = useSearchParams();
+const[quizId,setQuizId]=useState(searchParams.get("quizId")||"");
   const [quizQuestions, setQuizQuestions] = useState([
   {
     questionText: 'Which of these animals says "Moo"?',
@@ -191,10 +194,11 @@ const Quiz = () => {
   const [score, setScore] = useState(0);
    const [language, setLanguage] = useState("english");
 const [isPlaying, setIsPlaying] = useState(false);
+const { getToken, userId } = useAuth();
 
   const navigate = useNavigate();
-  const { getToken } = useAuth(); // ✅ Get token
-
+  // const { getToken } = useAuth(); // ✅ Get token
+const [isSubmitting, setIsSubmitting] = useState(false); // ✅ New state
   const handleAnswerClick = (answer, index) => {
     if (selectedAnswer !== null) return;
 
@@ -225,7 +229,9 @@ const [isPlaying, setIsPlaying] = useState(false);
           score: score,
           accuracy: accuracy,
           totalQuestions: totalQuestions,
-          correctAnswers: score
+          correctAnswers: score,
+          doodleId:doodleId,
+          quizId:quizId,
         },
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -268,20 +274,38 @@ const [isPlaying, setIsPlaying] = useState(false);
     return 'bg-gray-400 opacity-70';
   };
 const [doodle,setDoodle]=useState("sun");
-  useEffect(() => {
-  fetch(`http://localhost:3000/api/quiz?obj=${doodle}&lang=${language}`)
-    .then(res => res.json())
-    .then(data => {
-      // data.quiz is a string → convert to array
-      // const parsedQuiz = JSON.parse(data.quiz);  
-      // setQuizQuestions(data);
-      setQuizQuestions(data.quiz);
 
-      //  const parsedQuiz = JSON.parse(data.quiz);
-      // setQuizQuestions(parsedQuiz);
-    })
-    .catch(err => console.error("Quiz fetch error:", err));
-}, [doodle]);
+
+  // const quizId = searchParams.get("quizId");
+//   useEffect(() => {
+//   fetch(`http://localhost:3000/api/quiz/quiz?obj=${doodle}&lang=${language}`)
+//     .then(res => res.json())
+//     .then(data => {
+//       // data.quiz is a string → convert to array
+//       // const parsedQuiz = JSON.parse(data.quiz);  
+//       // setQuizQuestions(data);
+//       setQuizQuestions(data.quiz);
+
+//       //  const parsedQuiz = JSON.parse(data.quiz);
+//       // setQuizQuestions(parsedQuiz);
+//     })
+//     .catch(err => console.error("Quiz fetch error:", err));
+// }, [doodle,language]);
+
+useEffect( ()=>async()=>{
+    const token = await getToken();
+    const url = quizId
+      ? `http://localhost:3000/api/quiz/quiz?Id=${quizId}`
+      : `http://localhost:3000/api/quiz/quiz`;
+  fetch(url, {
+  headers: {
+    Authorization: `Bearer ${token}`
+  }})
+  .then(res=>res.json()).
+  then(data=>{setQuizId(data.quizId); setDoodleId(data.doodleId);
+    setQuizQuestions(data.questions);}).catch(err=>console.error(err));
+},[userId])
+
  const textToSpeak = `
     Question: ${quizQuestions[currentQuestion].questionText}.
     Options are: 
@@ -339,6 +363,15 @@ useEffect(() => {
   </button>
 
 </div>
+
+  {/* {audioUrl && (
+    <audio
+      controls
+      src={audioUrl}
+      className="mt-4 w-full max-w-md mx-auto border-2 border-purple-400 rounded-xl shadow-lg"
+    />
+  )} */}
+
 
 
 

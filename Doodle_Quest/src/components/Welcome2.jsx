@@ -195,7 +195,7 @@ const navItems = [
     to: "/",
     special: "border-4 border-yellow-400",
   },
-  { name: "Doodles", img: "images/sun.PNG", to: "/screendrawing" },
+  { name: "Doodles", img: "images/sun.PNG", to: "/doddledeck" },
   { name: "Puzzles", img: "images/puzzles.png", to: "/quiz" },
   { name: "Logout", img: "images/logout.png", to: "/login" },
 ];

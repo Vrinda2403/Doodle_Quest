@@ -15,7 +15,7 @@ import express from "express";
 const router = express.Router();
 
 // This route gets the questions
-router.get("/quiz", generateQuiz);
+router.get("/quiz",protect, generateQuiz);
 
 // This route saves the score. It is protected.
 
