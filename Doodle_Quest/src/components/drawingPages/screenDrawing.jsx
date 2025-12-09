@@ -600,7 +600,7 @@ function ScreenDrawing() {
   const [activeTask, setActiveTask] = useState(null);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
-  // ✅ NEW STATES FOR "HELP" FLOW
+  // NEW STATES FOR "HELP" FLOW
   const [clueState, setClueState] = useState("ask"); // 'ask' | 'visible' | 'hidden'
   const [aiFeedback, setAiFeedback] = useState(""); // Stores AI guess if wrong
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -788,7 +788,7 @@ function ScreenDrawing() {
       {/* Main Area */}
       <div className="flex-col bg-center min-h-[85vh] p-6 bg-[length:100%_100%]" style={{ backgroundImage: `url(${screenBG})` }}>
         
-        {/* ✅ LAYOUT FIX: Changed 'items-start' to 'items-center' to center the left boxes */}
+        {/* LAYOUT FIX: Changed 'items-start' to 'items-center' to center the left boxes */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
           
           {/* LEFT COLUMN: SPLIT BOXES */}
