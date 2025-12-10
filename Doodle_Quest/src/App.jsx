@@ -76,6 +76,7 @@ import PaperDrawing from "./components/drawingPages/paperDrawing";
 import ScreenDrawing from "./components/drawingPages/screenDrawing";
 import Storytime from "./components/story/storytime";
 import ProtectedRoute from "./components/ProtectedRoutes";
+import Animatics from "./components/Animatics";
 
 // Audio
 import Tune from "./assets/audio/Tuning.mp3";
@@ -140,6 +141,7 @@ function App() {
         <Route path="/screendrawing" element={<ProtectedRoute><ScreenDrawing /></ProtectedRoute>} />
         <Route path="/paperdrawing" element={<ProtectedRoute><PaperDrawing /></ProtectedRoute>} />
         <Route path="/storytime" element={<ProtectedRoute><Storytime /></ProtectedRoute>} />
+        <Route path="/animatics" element={<ProtectedRoute><Animatics /></ProtectedRoute>} />
 
         {/* PARENT ROUTE */}
         <Route path="/parent" element={<ProtectedRoute><Parent /></ProtectedRoute>} />

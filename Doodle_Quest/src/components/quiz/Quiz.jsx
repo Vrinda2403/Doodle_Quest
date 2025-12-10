@@ -364,13 +364,13 @@ useEffect(() => {
 
 </div>
 
-  {/* {audioUrl && (
+  {audioUrl && (
     <audio
       controls
       src={audioUrl}
       className="mt-4 w-full max-w-md mx-auto border-2 border-purple-400 rounded-xl shadow-lg"
     />
-  )} */}
+  )}
 
 
 

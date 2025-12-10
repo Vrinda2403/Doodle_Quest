@@ -110,8 +110,8 @@ const uploadDoodle = asyncHandler(async (req, res) => {
 
 
 const story=await storyContent(req.query.obj,req.query.lang);
-// const img=await storyimage(story);
-const img="https://cdn.photographylife.com/wp-content/uploads/2014/06/Nikon-D810-Image-Sample-6.jpg"
+ const img=await storyimage(story);
+//const img="https://cdn.photographylife.com/wp-content/uploads/2014/06/Nikon-D810-Image-Sample-6.jpg"
 
 //  const stream = await audioService(story);
 

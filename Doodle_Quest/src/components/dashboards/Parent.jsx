@@ -496,7 +496,7 @@
 
 
 
-//       {/* ✅ === TASK MANAGEMENT SECTION (UPDATED WITH TOGGLE) === */}
+//       {/*  === TASK MANAGEMENT SECTION (UPDATED WITH TOGGLE) === */}
 //       <div className="w-full max-w-6xl mx-auto mt-10 px-6">
 //         <div className="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden">
 
@@ -647,6 +647,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useUser, useAuth } from '@clerk/clerk-react';
 import { useNavigate } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import { io } from "socket.io-client";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -944,10 +945,11 @@ const Parent = () => {
           DoodleQuest
         </div>
         <div className="text-3xl font-robotoSlab">Guardian's Hub</div>
-        <div className="flex gap-4">
-          <img src="/src/assets/home.png" alt="Home" width="30" />
-          <img src="/src/assets/post.png" alt="Post" width="30" />
-        </div>
+        <Link to ='/'>
+                  <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
+                    <img src="/src/assets/home-icon.png" />
+                  </button>
+                  </Link>
       </nav>
 
       <div className="text-[#4A0303] font-robotoSlab text-5xl mt-8 text-center my-10">
@@ -972,35 +974,7 @@ const Parent = () => {
       {/* --- MAIN DASHBOARD GRID --- */}
       <div className="max-w-[1400px] mx-auto w-full px-6 flex gap-6 items-start">
 
-        {/* === LEFT SIDEBAR === */}
-        <div className="w-64 bg-[#0F172A] text-white rounded-lg overflow-hidden shadow-lg flex-shrink-0 flex flex-col py-20">
-          {menuItems.map((item, index) => (
-            <div key={index} className="flex items-center h-20 w-full group cursor-pointer">
-              <div className="w-[60px] flex justify-center items-center h-full relative">
-                {index !== menuItems.length - 1 && (
-                  <div className="absolute bottom-0 top-1/2 w-px bg-gray-700 -z-10 h-full"></div>
-                )}
-                {index !== 0 && (
-                  <div className="absolute top-0 bottom-1/2 w-px bg-gray-700 -z-10 h-full"></div>
-                )}
-                <div className={`rounded-full p-1 ${item.active ? 'bg-white' : 'bg-transparent'}`}>
-                  <div className={`w-2 h-2 rounded-full ${item.active ? 'bg-black' : 'bg-gray-500'}`}></div>
-                </div>
-              </div>
-              <div className="flex-1 pr-6 flex items-center">
-                <div className={`w-full py-2 text-lg font-bold tracking-wide transition-all duration-200
-                            ${item.active
-                    ? 'bg-white text-black text-center rounded shadow-md scale-105'
-                    : 'text-white opacity-70 pl-4 hover:opacity-100'
-                  }`}
-                >
-                  {item.label}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
+      
         {/* === RIGHT CONTENT AREA === */}
         <div className="flex-grow bg-[#E2E2EA] p-6 rounded-2xl shadow-inner">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">

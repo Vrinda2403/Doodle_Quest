@@ -189,12 +189,12 @@ const navItems = [
   { name: "Stories", img: "images/stories.png", to: "/storytime" },
   { name: "Rewards", img: "images/awards.PNG", to: "/quizreward" },
   { name: "Parental", img: "images/parental.png", to: "/parent" },
-  {
-    name: "Home",
-    img: "images/home.png",
-    to: "/",
-    special: "border-4 border-yellow-400",
-  },
+  // {
+  //   name: "",
+  //   img: "images/home.png",
+  //   to: "/",
+  //   special: "border-4 border-yellow-400",
+  // },
   { name: "Doodles", img: "images/sun.PNG", to: "/doddledeck" },
   { name: "Puzzles", img: "images/puzzles.png", to: "/quiz" },
   { name: "Logout", img: "images/logout.png", to: "/login" },
@@ -273,9 +273,8 @@ const Welcome2 = () => {
                   className="flex flex-col items-center cursor-pointer"
                 >
                   <img
-                    className={`w-[60px] h-[60px] rounded-full object-cover ${
-                      item.special || ""
-                    }`}
+                    className={`w-[60px] h-[60px] rounded-full object-cover ${item.special || ""
+                      }`}
                     src={item.img}
                     alt={item.name}
                   />
@@ -288,9 +287,8 @@ const Welcome2 = () => {
               <Link key={index} to={item.to}>
                 <div className="flex flex-col items-center">
                   <img
-                    className={`w-[60px] h-[60px] rounded-full object-cover ${
-                      item.special || ""
-                    }`}
+                    className={`w-[60px] h-[60px] rounded-full object-cover ${item.special || ""
+                      }`}
                     src={item.img}
                     alt={item.name}
                   />
@@ -315,26 +313,34 @@ const Welcome2 = () => {
               Play. Doodle. Grow!
             </h1>
 
-<div className="flex gap-6 font-['Roboto_Slab'] justify-center">
-  <Link to= "/paperdrawing">
-  <button
-    onClick={() => handleModeSelection("paper")}
-    disabled={loading}
-    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
-  >
-    PAPER MODE
-  </button>
-  </Link>
- <Link to = "/screendrawing" >
-  <button
-    onClick={() => handleModeSelection("screen")}
-    disabled={loading}
-    className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
-  >
-    SCREEN MODE
-  </button>
-  </Link>
-</div>
+            <div className="flex gap-6 font-['Roboto_Slab'] justify-center">
+              <Link to="/paperdrawing">
+                <button
+                  onClick={() => handleModeSelection("paper")}
+                  disabled={loading}
+                  className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+                >
+                  PAPER MODE
+                </button>
+              </Link>
+              <Link to="/screendrawing" >
+                <button
+                  onClick={() => handleModeSelection("screen")}
+                  disabled={loading}
+                  className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+                >
+                  SCREEN MODE
+                </button>
+              </Link>
+              <Link to="/animatics" >
+                <button
+
+                  className="bg-[#F4C721] text-black font-semibold px-6 py-3 rounded-md hover:opacity-80 shadow-[4px_4px_0px_#000000]"
+                >
+                  FUN TIME
+                </button>
+              </Link>
+            </div>
           </div>
 
           <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">

@@ -17,6 +17,7 @@ import modeRoutes from "./routes/modeRoute.js";
 import audioRoute from "./routes/audioroute.js";
 import parentalRoutes from "./routes/parentalRoute.js";
 import nounRoute from "./routes/nounRoute.js";
+import speechRoutes from "./routes/speechroute.js";
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ mongoose.connect(process.env.MONGO_URI)
   .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // ROUTES
+app.use("/api", speechRoutes);
 app.use("/api/time", timeRoute);
 app.use("/api/story", storyroute);
 app.use("/api/quiz", quizroute);
