@@ -377,7 +377,7 @@
 //                               Done
 //                             </button>
 //                           ) : (
-//                             <span>✅</span>
+//                             <span></span>
 //                           )}
 //                         </td>
 //                       </tr>
@@ -397,6 +397,7 @@
 // export default PaperDrawing;
 import { useEffect, useRef, useState } from "react";
 import Groq from "groq-sdk";
+import { Link } from "react-router-dom";
 
 function PaperDrawing() {
   const videoRef = useRef(null);
@@ -552,6 +553,11 @@ function PaperDrawing() {
         <div className="font-['Saira Stencil One'] text-4xl text-white">
           Paper Doodles
         </div>
+        <Link to ='/'>
+                  <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
+                    <img src="/src/assets/home-icon.png" />
+                  </button>
+                  </Link>
       </div>
 
       {/* Main Content */}

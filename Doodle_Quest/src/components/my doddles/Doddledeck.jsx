@@ -244,7 +244,7 @@ const navigate = useNavigate();
     return new Date(dateString).toLocaleDateString();
   };
 
-  // ✅ CALCULATE SCORE INSTANTLY (Frontend Logic)
+  //  CALCULATE SCORE INSTANTLY (Frontend Logic)
   // 20 pts per doodle, 10 pts per quiz
   // const totalScore = history 
   //   ? (history.doodles.length * 20) + (history.quizAttempts.length * 10) 
@@ -267,19 +267,22 @@ const rows = Array.from({ length: maxRows });
   return (
     <div className="bg-[#F4EDE6] min-h-screen pb-10">
       
-      {/* ✅ NAVBAR (Fixed Color) */}
+      {/*  NAVBAR (Fixed Color) */}
       <nav className="bg-[#2C2A4A] px-6 py-2 flex items-center justify-between shadow-lg text-white h-20">
         <div className="text-center font-orbitron text-xl ml-7 font-bold bg-gradient-to-r from-[#EDFFF5] to-[rgba(133,213,237,0.74)] bg-clip-text text-transparent">
             DoodleQuest
         </div>
         <div className="text-5xl font-robotoSlab">Doodle Deck</div>
         <div className="flex gap-9 ml-6">
-          <Link to="/"><div className="home"><img src="/src/assets/home.png" alt="" width="40" /></div></Link>
-          <div className="post"><img src="/src/assets/post.png" alt="" width="40" /></div>
+          <Link to ='/'>
+                    <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
+                      <img src="/src/assets/home-icon.png" />
+                    </button>
+                    </Link>
         </div>
       </nav>
 
-      {/* ✅ TOTAL SCORE HEADER */}
+      {/*  TOTAL SCORE HEADER */}
       <div className="container m-auto mt-10 text-center">
          <div className="inline-block bg-white px-10 py-4 rounded-full shadow-xl border-4 border-[#F4C721] transform hover:scale-105 transition">
             <h2 className="text-2xl font-bold font-robotoSlab text-[#2C2A4A]">
@@ -296,7 +299,7 @@ const rows = Array.from({ length: maxRows });
         {history && (
           <div className="w-full max-w-7xl bg-white shadow-2xl rounded-lg overflow-hidden border border-black">
             
-            {/* ✅ ONE SINGLE HEADER ROW */}
+            {/* ONE SINGLE HEADER ROW */}
             <div className="grid grid-cols-5 text-center border-b border-black">
                 <div className="py-4 font-bold font-robotoSlab bg-pink-200 border-r border-black">DATE</div>
                 <div className="py-4 font-bold font-robotoslab bg-blue-200 border-r border-black">DOODLES</div>
@@ -305,7 +308,7 @@ const rows = Array.from({ length: maxRows });
                 <div className="py-4 font-bold font-robotoSlab bg-purple-200">POINTS</div>
             </div>
 
-            {/* ✅ DYNAMIC ROWS LOOP */}
+            {/* DYNAMIC ROWS LOOP */}
             {history?.doodles && history.stories && history.quizAttempts && (
             history.doodles.map((doodle, index) => {
                 // const doodle = history.doodles[index];

@@ -1,4 +1,5 @@
 import React, { use, useState } from 'react';
+import {Link} from 'react-router-dom';
 import { useEffect } from 'react';
 import { useAuth } from "@clerk/clerk-react";
 import { useSearchParams } from "react-router-dom";
@@ -98,7 +99,7 @@ useEffect(() => {
                 <div className="flex items-center gap-4">
 
   {/* Language Selector */}
-  <select
+  {/* <select
     className="bg-[#0b245c] text-white px-3 py-2 rounded-lg font-['Spline Sans']"
     value={language}
     onChange={(e) => setLanguage(e.target.value)}
@@ -107,7 +108,7 @@ useEffect(() => {
     <option value="hindi">Hindi</option>
     <option value="punjabi">Punjabi</option>
     <option value="spanish">Spanish</option>
-  </select>
+  </select> */}
 
   {/* Audio Button */}
   <button
@@ -117,13 +118,16 @@ useEffect(() => {
     🔊 Audio
   </button>
 
-{/* {audioUrl && (
+{audioUrl && (
   <audio controls src={audioUrl} className="w-full" />
-)} */}
+)}
 
   {/* Icons */}
-  <img src="/src/assets/home-icon.png" alt="Home" className="w-8 h-8" />
-  <img src="/src/assets/click.png" className="w-8 h-8 rounded" alt="Back" />
+  <Link to ='/'>
+                      <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
+                        <img src="/src/assets/home-icon.png" />
+                      </button>
+                      </Link>
 </div>
 
       </nav>
@@ -135,7 +139,7 @@ useEffect(() => {
           
           {/* Story Content */}
           <div className="relative text-white font-['Spline Sans'] text-4xl p-8 w-1/2 flex flex-col justify-center">
-            <p className="leading-snug md:leading-normal text-xl md:text-3xl whitespace-pre-line">
+            <p className="leading-snug md:leading-normal text-xl md:text-md whitespace-pre-line">
               {/* The little bird sang a joyful tune.<br />
               A sleepy fox dreamt beneath the moon.<br />
               The wind whispered secrets through the trees,<br />

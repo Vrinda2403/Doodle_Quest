@@ -584,27 +584,500 @@
 
 // export default ScreenDrawing;
 
+// import React, { useRef, useEffect, useState } from "react";
+// import screenBG from "../../assets/screenbg.png";
+// import { useAuth } from "@clerk/clerk-react";
+// import axios from "axios";
+// import saveaudio from "../../assets/audio/save.wav";
+
+// function ScreenDrawing() {
+//   const canvasRef = useRef(null);
+//   const drawingState = useRef({ isDrawing: false, lastX: 0, lastY: 0 });
+//   const audioRef = useRef(null);
+  
+//   const { getToken, userId } = useAuth();
+//   const [tasks, setTasks] = useState([]);
+//   const [activeTask, setActiveTask] = useState(null);
+//   const [loadingTasks, setLoadingTasks] = useState(true);
+
+//   // NEW STATES FOR "HELP" FLOW
+//   const [clueState, setClueState] = useState("ask"); // 'ask' | 'visible' | 'hidden'
+//   const [aiFeedback, setAiFeedback] = useState(""); // Stores AI guess if wrong
+//   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+//   // --- 1. Fetch Tasks ---
+//   useEffect(() => {
+//     const fetchTasks = async () => {
+//       try {
+//         const token = await getToken();
+//         if (!token) return;
+//         const response = await axios.get('http://localhost:3000/api/tasks/my-tasks', {
+//           headers: { Authorization: `Bearer ${token}` }
+//         });
+        
+//         setTasks(response.data);
+//         const currentTask = response.data.find(t => t.status !== 'completed');
+//         setActiveTask(currentTask || null);
+        
+//         // Reset clue state when new task loads
+//         setClueState("ask");
+//         setAiFeedback("");
+
+//       } catch (err) {
+//         console.error("Error fetching tasks:", err);
+//       } finally {
+//         setLoadingTasks(false);
+//       }
+//     };
+//     fetchTasks();
+//   }, [getToken]);
+
+//   // --- 2. Canvas Logic (Unchanged) ---
+//   useEffect(() => {
+//     const canvas = canvasRef.current;
+//     if (!canvas) return;
+//     const context = canvas.getContext("2d");
+//     const setCanvasSize = () => {
+//       canvas.width = canvas.offsetWidth;
+//       canvas.height = canvas.offsetHeight;
+//       context.strokeStyle = "black";
+//       context.lineWidth = 4;
+//       context.lineCap = "round";
+//       context.lineJoin = "round";
+//     };
+//     setCanvasSize();
+//     const startDrawing = (e) => {
+//       drawingState.current.isDrawing = true;
+//       [drawingState.current.lastX, drawingState.current.lastY] = [e.offsetX, e.offsetY];
+//     };
+//     const stopDrawing = () => { drawingState.current.isDrawing = false; };
+//     const draw = (e) => {
+//       if (!drawingState.current.isDrawing) return;
+//       context.beginPath();
+//       context.moveTo(drawingState.current.lastX, drawingState.current.lastY);
+//       context.lineTo(e.offsetX, e.offsetY);
+//       context.stroke();
+//       [drawingState.current.lastX, drawingState.current.lastY] = [e.offsetX, e.offsetY];
+//     };
+//     canvas.addEventListener("mousedown", startDrawing);
+//     canvas.addEventListener("mouseup", stopDrawing);
+//     canvas.addEventListener("mouseout", stopDrawing);
+//     canvas.addEventListener("mousemove", draw);
+//     window.addEventListener("resize", setCanvasSize);
+//     return () => {
+//       canvas.removeEventListener("mousedown", startDrawing);
+//       canvas.removeEventListener("mouseup", stopDrawing);
+//       window.removeEventListener("resize", setCanvasSize);
+//     };
+//   }, []);
+
+//   const handleClearCanvas = () => {
+//     const canvas = canvasRef.current;
+//     const context = canvas.getContext("2d");
+//     context.clearRect(0, 0, canvas.width, canvas.height);
+//   };
+
+//   // --- 3. Smart Submit Logic ---
+//   const handleSubmitDoodle = async () => {
+//     if (!activeTask) return alert("No active task!");
+    
+//     const canvas = canvasRef.current;
+//     const imageBase64 = canvas.toDataURL("image/png");
+    
+//     // CASE A: BLIND MODE (Clue Hidden) -> Verify with AI
+//     if (clueState === "hidden") {
+//         setIsAnalyzing(true);
+//         try {
+//             // 1. Analyze with Backend AI (Gemini Vision)
+//             const res = await axios.post("http://localhost:3000/api/doodle/analyze", {
+//                 userId,
+//                 image: imageBase64
+//             });
+
+//             const aiLabel = res.data.label.toLowerCase(); 
+//             const target = activeTask.title.toLowerCase();
+
+//             console.log(`🎯 AI Saw: ${aiLabel} | Target: ${target}`);
+
+//             // 2. Check match (Fuzzy check)
+//             if (aiLabel.includes(target)) {
+//                 // SUCCESS! Proceed to upload
+//                 setAiFeedback("✨ Perfect match!");
+//                 await uploadAndComplete(imageBase64);
+//             } else {
+//                 // FAIL! Show Clue & Feedback
+//                 setAiFeedback(`I saw "${aiLabel}". Try using the clue!`);
+//                 setClueState("visible"); // Force show clue
+//                 alert(`Oops! That looks like ${aiLabel}. Look at the clue box and try again!`);
+//             }
+//         } catch (err) {
+//             console.error("AI Check Failed", err);
+//             // Fallback: If AI fails, just let them submit
+//             await uploadAndComplete(imageBase64);
+//         } finally {
+//             setIsAnalyzing(false);
+//         }
+//     } 
+//     // CASE B: HELP MODE (Clue Visible) -> Just Submit
+//     else {
+//         await uploadAndComplete(imageBase64);
+//     }
+//   };
+
+//   // --- 4. Core Upload Function ---
+//   const uploadAndComplete = async (imageBase64) => {
+//     if(audioRef.current) audioRef.current.play();
+//     const token = await getToken();
+    
+//     // Convert Base64 to Blob for Upload
+//     const res = await fetch(imageBase64);
+//     const blob = await res.blob();
+//     const formData = new FormData();
+//     formData.append("doodleImage", blob, "doodle.png");
+//     formData.append("prompt", activeTask.title);
+
+//     try {
+//         // Upload
+//         await axios.post(
+//           `http://localhost:3000/api/storage/upload-doodle`, 
+//           formData, 
+//           { headers: { Authorization: `Bearer ${token}`, "Content-Type": "multipart/form-data" } }
+//         );
+
+//         // Mark Complete
+//         await axios.put(`http://localhost:3000/api/tasks/complete/${activeTask._id}`, {}, {
+//             headers: { Authorization: `Bearer ${token}` }
+//         });
+
+//         // Update Local State (No Refresh)
+//         const updatedTasks = tasks.map(t => 
+//             t._id === activeTask._id ? { ...t, status: 'completed' } : t
+//         );
+//         setTasks(updatedTasks);
+        
+//         // Find Next Task
+//         const nextTask = updatedTasks.find(t => t.status !== 'completed');
+//         setActiveTask(nextTask || null);
+        
+//         // Reset UI for next task
+//         setClueState("ask");
+//         setAiFeedback("");
+//         handleClearCanvas();
+//         alert("Great job! Loading next task...");
+
+//     } catch (err) {
+//         console.error("Upload failed", err);
+//         alert("Something went wrong saving your doodle.");
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-[#EAD6DE] flex flex-col pb-20">
+      
+//       {/* Navbar (Same) */}
+//       <nav className="bg-[#2C2A4A] px-6 py-2 flex items-center justify-between shadow-lg text-white">
+//         <img src="/src/assets/doodle-quest-logo.png" alt="Logo" className="h-12" />
+//         <h1 className="font-['Roboto_Slab'] text-5xl tracking-wider">Screen Doodles</h1>
+//         <div className="flex items-center space-x-4">
+//           <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
+//             <img src="/src/assets/home-icon.png" />
+//           </button>
+//         </div>
+//       </nav>
+
+//       {/* Main Area */}
+//       <div className="flex-col bg-center min-h-[85vh] p-6 bg-[length:100%_100%]" style={{ backgroundImage: `url(${screenBG})` }}>
+        
+//         {/* LAYOUT FIX: Changed 'items-start' to 'items-center' to center the left boxes */}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+          
+//           {/* LEFT COLUMN: SPLIT BOXES */}
+//           <div className="lg:col-span-1 flex flex-col gap-6 w-full">
+            
+//             {/* 1. ASSIGNMENT BOARD */}
+//             <div className="bg-white rounded-2xl shadow-xl border-4 border-[#3B17AB] p-6 text-center relative overflow-hidden transform hover:scale-[1.02] transition duration-300">
+//                <div className="absolute top-0 left-0 w-full h-3 bg-[#3B17AB]"></div>
+//                <h2 className="text-gray-500 font-bold text-xs uppercase tracking-widest mb-2">Current Mission</h2>
+//                {activeTask ? (
+//                  <h1 className="text-4xl font-['Roboto_Slab'] text-[#2C2A4A] animate-pulse drop-shadow-sm">
+//                    Draw a {activeTask.title}
+//                  </h1>
+//                ) : (
+//                  <h1 className="text-xl text-gray-400">All missions complete! 🎉</h1>
+//                )}
+//             </div>
+
+//             {/* 2. MAGIC CLUE BOX */}
+//             <div className="bg-white h-72 w-full border-4 border-white rounded-2xl shadow-xl flex flex-col items-center justify-center p-4 text-center relative transition-all duration-500">
+//                <h2 className="absolute top-3 left-4 text-sm font-bold text-gray-400 flex items-center gap-1">
+//                  💡 Clue Box
+//                </h2>
+
+//                {activeTask ? (
+//                  <>
+//                    {/* STATE A: ASK FOR HELP */}
+//                    {clueState === "ask" && (
+//                      <div className="animate-in fade-in zoom-in flex flex-col gap-4">
+//                         <p className="text-2xl font-bold text-gray-700">Do you need help?</p>
+//                         <div className="flex gap-4 justify-center">
+//                            <button 
+//                              onClick={() => setClueState("hidden")}
+//                              className="bg-red-500 hover:bg-red-600 text-white text-lg px-8 py-2 rounded-full font-bold shadow-lg transform hover:scale-110 transition"
+//                            >
+//                              NO 🧠
+//                            </button>
+//                            <button 
+//                              onClick={() => setClueState("visible")}
+//                              className="bg-green-500 hover:bg-green-600 text-white text-lg px-8 py-2 rounded-full font-bold shadow-lg transform hover:scale-110 transition"
+//                            >
+//                              YES 👀
+//                            </button>
+//                         </div>
+//                      </div>
+//                    )}
+
+//                    {/* STATE B: SHOW IMAGE (Help/Fail Mode) */}
+//                    {clueState === "visible" && (
+//                      <div className="animate-in fade-in zoom-in">
+//                         {activeTask.taskImage ? (
+//                           <img src={activeTask.taskImage} alt="Clue" className="w-36 h-36 object-contain mb-2 drop-shadow-md mx-auto" />
+//                         ) : (
+//                           <div className="text-6xl mb-2">🎨</div>
+//                         )}
+//                         <p className="text-sm text-gray-500 px-4">{activeTask.description}</p>
+                        
+//                         {/* AI FEEDBACK MESSAGE */}
+//                         {aiFeedback && (
+//                             <div className="mt-3 bg-red-100 border border-red-200 text-red-600 text-xs font-bold px-3 py-1 rounded-full animate-bounce">
+//                                 🤖 {aiFeedback}
+//                             </div>
+//                         )}
+//                      </div>
+//                    )}
+
+//                    {/* STATE C: BLIND MODE (Hidden) */}
+//                    {clueState === "hidden" && (
+//                      <div className="animate-in fade-in zoom-in">
+//                         <div className="text-7xl mb-4 opacity-20">🙈</div>
+//                         <p className="font-bold text-xl text-[#2C2A4A]">Draw from memory!</p>
+//                         <p className="text-sm text-gray-500 mt-1">I will check your drawing.</p>
+//                         {isAnalyzing && <p className="text-blue-600 font-bold animate-pulse mt-3 text-lg">🤖 Checking...</p>}
+//                      </div>
+//                    )}
+//                  </>
+//                ) : (
+//                  <div className="text-gray-300 text-6xl">🌟</div>
+//                )}
+//             </div>
+//           </div>
+
+//           {/* Right Column: Screen Canvas */}
+//           <div className="lg:col-span-2">
+//             <div className="flex items-center gap-2 mb-2">
+//               <img src="/src/assets/screen.png" alt="Icon" className="w-7 h-7" />
+//               <h2 className="text-xl font-['Orbitron'] font-bold text-white">Screen Canvas</h2>
+//             </div>
+//             <canvas ref={canvasRef} className="bg-white w-full h-[65vh] border-4 border-white rounded-2xl shadow-xl"></canvas>
+//           </div>
+//         </div>
+
+//         {/* FOOTER BUTTONS */}
+//         <div className="flex justify-end font-['Saira_Stencil_One'] tracking-wide mt-6 gap-6 pr-4">
+//           <button onClick={handleClearCanvas} className="bg-[#D0021B] px-10 py-3 rounded-xl text-white text-xl shadow-[4px_4px_0px_#000000] hover:bg-red-700 transition">
+//             Clear
+//           </button>
+          
+//           <button 
+//             onClick={handleSubmitDoodle} 
+//             disabled={isAnalyzing}
+//             className={`px-10 py-3 rounded-xl text-white text-xl shadow-[4px_4px_0px_#000000] transition flex items-center gap-3
+//               ${isAnalyzing ? "bg-gray-400 cursor-wait" : "bg-[#4CAF50] hover:bg-green-700"}
+//             `}
+//           >
+//             {isAnalyzing ? "Checking..." : (clueState === "hidden" ? "Check Drawing" : "Submit")}
+//           </button>
+          
+//           <audio src={saveaudio} hidden ref={audioRef} preload="auto" />
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default ScreenDrawing;
+
+
+
 import React, { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import screenBG from "../../assets/screenbg.png";
+import {Link} from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import axios from "axios";
+import Logo from "../../assets/Logo2.png"
 import saveaudio from "../../assets/audio/save.wav";
-
+import helpaudio from "../../assets/audio/help.wav"; 
+import responseaudio from "../../assets/audio/response.wav"; 
+import doodleaudio from "../../assets/audio/doodle.wav";
 function ScreenDrawing() {
   const canvasRef = useRef(null);
+  const navigate = useNavigate();
   const drawingState = useRef({ isDrawing: false, lastX: 0, lastY: 0 });
   const audioRef = useRef(null);
-  
+  const [showLimitPopup, setShowLimitPopup] = useState(false);
   const { getToken, userId } = useAuth();
   const [tasks, setTasks] = useState([]);
   const [activeTask, setActiveTask] = useState(null);
   const [loadingTasks, setLoadingTasks] = useState(true);
 
-  // NEW STATES FOR "HELP" FLOW
+  //  NEW STATES FOR "HELP" FLOW
   const [clueState, setClueState] = useState("ask"); // 'ask' | 'visible' | 'hidden'
   const [aiFeedback, setAiFeedback] = useState(""); // Stores AI guess if wrong
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [query, setQuery] = useState("");
+  const [icons, setIcons] = useState([]);
+  const [clue,setclue]=useState(false);
 
+  // const fetchIcons = async () => {
+  //   if (!query) return;
+
+  //   const res = await fetch(`http://localhost:3000/api/noun/icons?q=${query}`);
+  //   const data = await res.json();
+
+  //   // Noun Project v2 response structure
+  //   setIcons(data.icons || []);
+  // };
+  const fetchIcons = async (word) => {
+  if (!word) return;
+
+  const res = await fetch(`http://localhost:3000/api/noun/icons?q=${word}`);
+  const data = await res.json();
+
+  console.log("UI SETTING ICONS →", data);
+
+  setIcons(data.icons || []);
+};
+     let mediaRecorder;
+let audioChunks = [];
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+    mediaRecorder = new MediaRecorder(stream, {
+      mimeType: "audio/webm"
+    });
+
+    mediaRecorder.ondataavailable = event => {
+      if (event.data.size > 0) audioChunks.push(event.data);
+    };
+
+    mediaRecorder.start();
+    console.log("Recording started automatically...");
+  } 
+  catch (e) {
+    console.error("Mic permission denied:", e);
+  }
+}
+
+async function stopRecordingAndSend() {
+  return new Promise(resolve => {
+    mediaRecorder.onstop = async () => {
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
+
+      // Send to backend
+      const formData = new FormData();
+      formData.append("audio", audioBlob, "recording.webm");
+
+      const res = await fetch("http://localhost:3000/api/speech", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await res.json();
+      console.log("Transcription:", data);
+      
+
+      resolve(data);
+    };
+
+    mediaRecorder.stop();
+    console.log("Stopped & sending to backend...");
+  });
+}
+// useEffect(() => {
+    
+//     const audio=new Audio(helpaudio);
+//     audio.play();
+
+//     audio.onended = () => {
+//   startRecording(); // your recording function
+// };
+//     //  startRecording();
+//       setTimeout(async () => {
+//       const result = await stopRecordingAndSend();
+//       const audio2=new Audio(responseaudio);
+//       audio2.play();
+//       console.log("Child said:", result.transcript);
+      
+//       // const img=await clueimage(transcript);
+//       const res = await fetch(`http://localhost:3000/api/clue?${result.transcript}`, {});
+//       const data = await res.json();
+//       seturl(data);
+    
+        
+//       }, 10000); // wait 10 sec for child speech
+// }, []);
+  // const [iconOptions, setIconOptions] = useState([]);
+  // const [selectedIcon, setSelectedIcon] = useState(null);
+  // const [loadingIcons, setLoadingIcons] = useState(false);
+  // const [aiData, setAiData] = useState(null); // Stores age & suggestions
+  // const [showSuggestions, setShowSuggestions] = useState(false); // Toggles dropdown
+  // const wrapperRef = useRef(null); // Detects clicks outside
+  //   const [taskMode, setTaskMode] = useState('assign'); // 'assign' or 'review'
+  //   const [taskTitle, setTaskTitle] = useState("");
+  //   const [taskDesc, setTaskDesc] = useState("");
+  //   const [assigning, setAssigning] = useState(false);
+//  const fetchIcons = async (query) => {
+//     if (!query) return;
+//     setLoadingIcons(true);
+//     setIconOptions([]);
+//     try {
+//       const res = await axios.get(`http://localhost:3000/api/noun/icons?q=${query}`);
+//       if (res.data.icons) {
+//         setIconOptions(res.data.icons);
+//       }
+//     } catch (err) {
+//       console.error("Failed to fetch icons", err);
+//     } finally {
+//       setLoadingIcons(false);
+//     }
+//   };
+
+function handleclick()
+{
+  setclue(true);
+  const audio=new Audio(helpaudio);
+    audio.play();
+    audio.onended = () => {
+  startRecording(); // your recording function
+   setTimeout(async () => {
+      const result = await stopRecordingAndSend();
+      const audio2=new Audio(responseaudio);
+      audio2.play();
+      console.log("Child said:", result.transcript);
+      fetchIcons(result.transcript);
+   },5000);
+   
+}
+}
+  useEffect(()=>{
+if(!tasks || tasks.length===0) 
+{
+const audio=new Audio(doodleaudio);
+    audio.play();
+};
+},[tasks])
+ 
   // --- 1. Fetch Tasks ---
   useEffect(() => {
     const fetchTasks = async () => {
@@ -670,12 +1143,31 @@ function ScreenDrawing() {
       window.removeEventListener("resize", setCanvasSize);
     };
   }, []);
+const [selectedIcon, setSelectedIcon] = useState(null);
 
   const handleClearCanvas = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
+
+  useEffect(() => {
+  const eventSource = new EventSource(`http://localhost:3000/api/time/stream/${userId}`);
+
+  eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (data.message === "LIMIT_REACHED") {
+      setShowLimitPopup(true);  // show popup
+      eventSource.close();
+    }
+  };
+
+  return () => {
+    eventSource.close();
+  };
+}, []);
+
 
   // --- 3. Smart Submit Logic ---
   const handleSubmitDoodle = async () => {
@@ -776,19 +1268,21 @@ function ScreenDrawing() {
       
       {/* Navbar (Same) */}
       <nav className="bg-[#2C2A4A] px-6 py-2 flex items-center justify-between shadow-lg text-white">
-        <img src="/src/assets/doodle-quest-logo.png" alt="Logo" className="h-12" />
+        <img src={Logo} alt="Logo" className="h-12" />
         <h1 className="font-['Roboto_Slab'] text-5xl tracking-wider">Screen Doodles</h1>
         <div className="flex items-center space-x-4">
+          <Link to ='/'>
           <button className="w-16 h-16 rounded-full flex items-center justify-center p-2 hover:bg-gray-200 transition bg-white/20">
             <img src="/src/assets/home-icon.png" />
           </button>
+          </Link>
         </div>
       </nav>
 
       {/* Main Area */}
       <div className="flex-col bg-center min-h-[85vh] p-6 bg-[length:100%_100%]" style={{ backgroundImage: `url(${screenBG})` }}>
         
-        {/* LAYOUT FIX: Changed 'items-start' to 'items-center' to center the left boxes */}
+        {/* ✅ LAYOUT FIX: Changed 'items-start' to 'items-center' to center the left boxes */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
           
           {/* LEFT COLUMN: SPLIT BOXES */}
@@ -812,7 +1306,7 @@ function ScreenDrawing() {
                <h2 className="absolute top-3 left-4 text-sm font-bold text-gray-400 flex items-center gap-1">
                  💡 Clue Box
                </h2>
-
+                
                {activeTask ? (
                  <>
                    {/* STATE A: ASK FOR HELP */}
@@ -854,7 +1348,7 @@ function ScreenDrawing() {
                         )}
                      </div>
                    )}
-
+                   
                    {/* STATE C: BLIND MODE (Hidden) */}
                    {clueState === "hidden" && (
                      <div className="animate-in fade-in zoom-in">
@@ -866,7 +1360,70 @@ function ScreenDrawing() {
                    )}
                  </>
                ) : (
-                 <div className="text-gray-300 text-6xl">🌟</div>
+                <div>
+                 {/* <div className="text-gray-300 text-4xl">Would You like me to give you some clues?</div> */}
+
+
+                    <div>
+                                       
+      
+      {!clue ? (
+      <button onClick={handleclick}>Get Clue</button>
+      ):(
+          <>
+      {/* ICON RESULTS */}
+      {/* <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", marginTop: "20px" }}>
+        {icons.map((icon, i) => (
+          <div key={i}>
+            <img
+              src={icon.thumbnail_url}
+              alt="icon"
+              style={{ width: 60, height: 60 }}
+            />
+          </div>
+        ))}
+      </div> */}
+      <div
+  style={{
+    display: "flex",
+    gap: "10px",
+    flexWrap: "wrap",
+    marginTop: "20px",
+  }}
+>
+  {!selectedIcon
+    ? icons.map((icon, i) => (
+        <div
+          key={i}
+          onClick={() => setSelectedIcon(icon.thumbnail_url)}
+          style={{
+            cursor: "pointer",
+            border: "2px solid #ddd",
+            padding: "5px",
+            borderRadius: "8px",
+          }}
+        >
+          <img
+            src={icon.thumbnail_url}
+            alt="icon"
+            style={{ width: 60, height: 60 }}
+          />
+        </div>
+      ))
+    : (
+        <img
+          src={selectedIcon}
+          alt="selected icon"
+          style={{ width: 80, height: 80 }}
+        />
+      )}
+</div>
+
+      </>
+      )}
+    
+                    </div>
+                 </div>
                )}
             </div>
           </div>
@@ -900,6 +1457,33 @@ function ScreenDrawing() {
           <audio src={saveaudio} hidden ref={audioRef} preload="auto" />
         </div>
       </div>
+      {showLimitPopup && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[999]">
+    <div className="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full">
+
+      <h2 className="text-2xl font-bold text-red-600 mb-4">
+        ⏳ Time’s Up!
+      </h2>
+
+      <p className="text-gray-700 text-lg mb-6">
+        Your daily screen time limit is over.  
+        Continue your creativity in <b>Paper Mode</b> ✍️
+      </p>
+
+      <button
+        onClick={() => {
+          setShowLimitPopup(false);
+          navigate("/paperdrawing"); // Redirect to paper mode
+        }}
+        className="bg-blue-600 text-white px-6 py-2 rounded-xl text-lg font-bold shadow-lg hover:bg-blue-700"
+      >
+        Go to Paper Mode
+      </button>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
